@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Secure Seat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0F2A44 0%, #1a3a54 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .offline-container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 24px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(15, 42, 68, 0.2);
+        }
+
+        .offline-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #0F2A44;
+            margin-bottom: 12px;
+        }
+
+        p {
+            color: #5F6C7B;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .action-button {
+            display: inline-block;
+            background: #0F2A44;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .action-button:hover {
+            background: #0a1f31;
+        }
+
+        .offline-tips {
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid #E3E8EF;
+            text-align: left;
+        }
+
+        .offline-tips h3 {
+            font-size: 12px;
+            color: #5F6C7B;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .offline-tips ul {
+            list-style: none;
+            font-size: 13px;
+            color: #5F6C7B;
+        }
+
+        .offline-tips li {
+            margin-bottom: 8px;
+        }
+
+        .offline-tips li:before {
+            content: "✓ ";
+            color: #1F8A70;
+            font-weight: bold;
+            margin-right: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">📵</div>
+        <h1>You're Offline</h1>
+        <p>Looks like you've lost your internet connection. Please check your connection and try again.</p>
+        <button class="action-button" onclick="location.reload()">Try Again</button>
+
+        <div class="offline-tips">
+            <h3>What You Can Do</h3>
+            <ul>
+                <li>Check your Wi-Fi or mobile connection</li>
+                <li>Turn off Airplane mode if it's on</li>
+                <li>Reload the page when connected</li>
+                <li>Install the app for better offline support</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

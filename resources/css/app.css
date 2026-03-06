@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dark Mode Styles */
+@layer base {
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+    }
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+}
+
+@layer components {
+  /* Hide scrollbar while keeping scroll functionality */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Dark mode card styling */
+  .dark .bg-brand-card {
+    @apply bg-gray-800;
+  }
+
+  .dark .bg-white {
+    @apply bg-gray-800;
+  }
+
+  /* Dark mode text styling */
+  .dark .text-gray-600,
+  .dark .text-brand-secondary {
+    @apply text-gray-300;
+  }
+
+  .dark .text-gray-900,
+  .dark .text-brand-primary {
+    @apply text-gray-100;
+  }
+
+  .dark .text-gray-400 {
+    color: rgb(107, 114, 128);
+  }
+
+  .dark .text-gray-500 {
+    color: rgb(156, 163, 175);
+  }
+
+  .dark .text-green-600 {
+    @apply text-green-400;
+  }
+
+  .dark .text-red-600 {
+    @apply text-red-400;
+  }
+
+  .dark .text-blue-900 {
+    @apply text-blue-100;
+  }
+
+  .dark .text-blue-800 {
+    @apply text-blue-200;
+  }
+
+  /* Dark mode input styling */
+  .dark input,
+  .dark textarea,
+  .dark select {
+    @apply bg-gray-700 border-gray-600 text-gray-100;
+  }
+
+  .dark input::placeholder {
+    color: rgb(107, 114, 128);
+  }
+
+  /* Dark mode border styling */
+  .dark .border-brand-border {
+    @apply border-gray-700;
+  }
+
+  .dark .bg-brand-background {
+    @apply bg-gray-900;
+  }
+
+  .dark .shadow-card {
+    @apply shadow-lg shadow-black/30;
+  }
+
+  /* Dark mode button styling */
+  .dark .bg-brand-border {
+    @apply bg-gray-700;
+  }
+
+  .dark .hover\:bg-brand-background:hover {
+    @apply bg-gray-800;
+  }
+
+  /* Dark mode badge styling */
+  .dark .bg-green-100 {
+    @apply bg-green-900/30;
+  }
+
+  .dark .bg-gray-300 {
+    @apply bg-gray-600;
+  }
+}
+
+/* Google Translate Widget - Complete Hide */
+.goog-te-gadget {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+.goog-te-banner {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.goog-te-combo {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+}
+
+.goog-te-menu-value {
+  display: none !important;
+}
+
+.goog-te-menu-frame {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.goog-te-tooltip {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+#google_translate_element {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Hide all iframe elements from Google Translate */
+iframe[src*="translate"],
+iframe[id*="goog"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  border: none !important;
+}
+
+.dark .goog-te-combo {
+  display: none !important;
+}
