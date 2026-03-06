@@ -4,6 +4,18 @@ import { Head, Link, useForm, usePage, router } from '@inertiajs/react';
 import VendorAppLayout from '@/Layouts/VendorAppLayout';
 import { ArrowLeft, Upload, X, ImagePlus, Info } from 'lucide-react';
 
+const convertTo12Hour = (time24h) => {
+    if (!time24h) return '';
+
+    const [hourStr, minute] = time24h.split(':');
+    let hour = parseInt(hourStr, 10);
+    const period = hour >= 12 ? 'PM' : 'AM';
+
+    hour = hour % 12 || 12;
+
+    return `${String(hour).padStart(2, '0')}:${minute} ${period}`;
+};
+
 const convertTo24Hour = (time12h) => {
     if (!time12h) return '';
 
@@ -26,7 +38,7 @@ const convertTo24Hour = (time12h) => {
 
 export default function CreateExperience({ categories, bookingModes }) {
     const { user } = usePage().props;
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post, transform, errors, processing } = useForm({
         title: '',
         category: '',
         location: '',
@@ -86,9 +98,10 @@ export default function CreateExperience({ categories, bookingModes }) {
         e.preventDefault();
 
         if (isFormComplete()) {
-            const convertedTime = convertTo24Hour(data.start_time);
-
-            setData('start_time', convertedTime);
+            transform((formData) => ({
+                ...formData,
+                start_time: convertTo24Hour(formData.start_time),
+            }));
 
             post(route('vendor.experiences.store'));
         }
