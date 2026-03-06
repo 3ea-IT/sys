@@ -84,13 +84,13 @@ export default function CreateExperience({ categories, bookingModes }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
         if (isFormComplete()) {
-            post(route('vendor.experiences.store'), {
-                data: {
-                    ...data,
-                    start_time: convertTo24Hour(data.start_time),
-                },
-            });
+            const convertedTime = convertTo24Hour(data.start_time);
+
+            setData('start_time', convertedTime);
+
+            post(route('vendor.experiences.store'));
         }
     };
 
