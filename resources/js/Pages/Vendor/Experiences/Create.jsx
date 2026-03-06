@@ -100,7 +100,7 @@ export default function CreateExperience({ categories, bookingModes }) {
         knowledge: 'Knowledge',
         wellness: 'Wellness',
         travel: 'Travel',
-        fine_dining: 'Dining',
+        dining: 'Dining',
     };
 
     const displayBookingModes = bookingModes ?? {
