@@ -61,7 +61,7 @@ class KYCController extends Controller
 
         $validated = $request->validate([
             'business_name' => 'required|string|max:255',
-            'business_type' => 'required|string|in:Entertainment,Professional Events,Religious & Wellness,Dining Access,Travel & Attractions',
+            'business_type' => 'required|string|max:255',
             'business_description' => 'required|string|max:1000',
             'phone' => 'required|regex:/^\d{10}$/|numeric',
             'address' => 'required|string|max:255',
