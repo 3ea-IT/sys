@@ -12,6 +12,8 @@ class Hold extends Model
         'user_id',
         'experience_id', 
         'expires_at',
+        'party_size',
+        'per_person_amount',
         'status',
         'source', // 'direct' or 'waitlist'
         'confirmed_at',

@@ -10,7 +10,6 @@ export default function Analytics() {
         switch (status?.toLowerCase()) {
             case 'confirmed': return { bar: 'from-brand-success to-brand-success/70', dot: 'bg-brand-success', pill: 'bg-brand-success/10 text-brand-success border border-brand-success/20' };
             case 'cancelled': return { bar: 'from-brand-danger to-brand-danger/70', dot: 'bg-brand-danger', pill: 'bg-brand-danger/10 text-brand-danger border border-brand-danger/20' };
-            case 'validated': return { bar: 'from-brand-primary to-brand-primary/70', dot: 'bg-brand-primary', pill: 'bg-brand-primary/10 text-brand-primary border border-brand-primary/20' };
             default: return { bar: 'from-brand-warning to-brand-warning/70', dot: 'bg-brand-warning', pill: 'bg-brand-warning/10 text-brand-warning border border-brand-warning/20' };
         }
     };

@@ -123,6 +123,19 @@ class ExperienceController extends Controller
             'supportsHold' => $experience->supportsHoldBooking(),
         ];
         
+        // Calculate instant booking stats - count booked seats from confirmed bookings
+        $instantBookedCount = Booking::where('experience_id', $experience->id)
+            ->where('booking_type', 'instant')
+            ->where('status', 'confirmed')
+            ->sum('party_size'); // Sum party_size to get total booked seats
+        
+        $instantTotalAvailability = $experience->instant_availability;
+        
+        // Add instant_availability explicitly to data for real-time updates
+        $data['instant_availability'] = $instantTotalAvailability;
+        $data['instant_booked_count'] = $instantBookedCount;
+        $data['instant_remaining_count'] = $instantTotalAvailability - $instantBookedCount;
+        
         // Return JSON for AJAX requests, Inertia for page loads
         if (request()->expectsJson()) {
             return response()->json($data);

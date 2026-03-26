@@ -55,7 +55,6 @@ Route::middleware(['auth', 'vendor'])->prefix('vendor')->name('vendor.')->group(
     // Bookings
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
-    Route::post('/bookings/{booking}/check-in', [BookingController::class, 'checkIn'])->name('bookings.check-in');
     Route::post('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
     Route::get('/bookings/export', [BookingController::class, 'export'])->name('bookings.export');
 

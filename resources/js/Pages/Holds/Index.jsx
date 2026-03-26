@@ -23,7 +23,14 @@ export default function HoldsIndex({ active = [], expiring = [], past = [], wait
 
   useEffect(() => {
     const timers = {};
-    active.forEach((hold) => {
+    // Initialize timers for all holds (active, expiring, past)
+    // Handle cases where props might be null/undefined
+    const allHolds = [
+      ...(Array.isArray(active) ? active : []),
+      ...(Array.isArray(expiring) ? expiring : []),
+      ...(Array.isArray(past) ? past : []),
+    ];
+    allHolds.forEach((hold) => {
       if (hold.expires_at) {
         const expires = new Date(hold.expires_at).getTime();
         const now = Date.now();
@@ -31,7 +38,7 @@ export default function HoldsIndex({ active = [], expiring = [], past = [], wait
       }
     });
     setHoldTimers(timers);
-  }, [active]);
+  }, [active, expiring, past]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -131,7 +138,7 @@ export default function HoldsIndex({ active = [], expiring = [], past = [], wait
           <div className="flex items-center justify-between py-2 border-t border-b border-brand-border dark:border-gray-700">
             <span className="text-xs text-brand-secondary dark:text-gray-400">Price</span>
             <span className="font-bold text-brand-primary dark:text-gray-100">
-              ₹{parseFloat(experience.price || 0).toFixed(0)}
+              ₹{parseFloat(experience.instant_price || 0).toFixed(0)}
             </span>
           </div>
 
@@ -249,7 +256,7 @@ export default function HoldsIndex({ active = [], expiring = [], past = [], wait
             <span className="text-xl font-black text-blue-600 dark:text-blue-400">#{item.position}</span>
           </div>
           <p className="text-xs text-brand-secondary dark:text-gray-400 mt-1">
-            ₹{parseFloat(experience.price || 0).toFixed(0)}
+            ₹{parseFloat(experience.instant_price || 0).toFixed(0)}
           </p>
         </div>
 

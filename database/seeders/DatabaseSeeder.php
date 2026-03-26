@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             ExperienceSeeder::class,
             HoldSeeder::class,
             WalletTransactionSeeder::class,
+            CinemaSeeder::class,
         ]);
     }
 }

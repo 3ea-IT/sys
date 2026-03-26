@@ -3,6 +3,7 @@ import AppLayout from '@/Layouts/AppLayout';
 import { Link, router, usePage } from '@inertiajs/react';
 import { ArrowLeft, Lock, Clock, ShieldCheck, CreditCard } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export default function Active({ hold = {} }) {
   const { auth } = usePage().props;
@@ -28,8 +29,9 @@ export default function Active({ hold = {} }) {
   // ── Wallet integration ──
   const walletBalance = parseFloat(user?.wallet?.balance || 0);
   const holdTokenPaid = parseFloat(hold?.hold_token_paid || experience.hold_token || 0);
-  const balanceDue = parseFloat(experience.price || 0) - holdTokenPaid;
-  const hasSufficientBalance = walletBalance >= balanceDue;
+  const experiencePrice = parseFloat(experience.instant_price || 0);
+  const remainingBalance = experiencePrice - holdTokenPaid; // Amount still needed after hold token
+  const hasSufficientBalance = walletBalance >= remainingBalance;
 
   useEffect(() => {
     if (secondsLeft <= 0) {
@@ -71,12 +73,78 @@ export default function Active({ hold = {} }) {
     : '#D64545';
 
   // ── Actions ──
-  const handleConfirm = () => {
-    if (!hasSufficientBalance) {
-      alert(`Insufficient balance. Need ₹${balanceDue.toFixed(2)}. Current: ₹${walletBalance.toFixed(2)}`);
+  const handleConfirm = async () => {
+    // Request Razorpay payment order for hold confirmation
+    try {
+      const response = await axios.post('/api/payment/hold-confirm-order', {
+        hold_id: hold?.id,
+      });
+
+      if (response.data.success) {
+        openRazorpayCheckout(response.data);
+      } else {
+        alert(response.data.message || 'Failed to initiate payment');
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || 'Failed to create payment order');
+    }
+  };
+
+  // Razorpay Checkout Helper - Script is now loaded from blade template
+  const openRazorpayCheckout = (paymentData, retries = 0) => {
+    if (!window.Razorpay) {
+      // Retry up to 5 times with 200ms delay
+      if (retries < 5) {
+        setTimeout(() => {
+          openRazorpayCheckout(paymentData, retries + 1);
+        }, 200);
+        return;
+      }
+
+      // If still not loaded, show detailed error
+      console.error('Razorpay failed to load after retries');
+      alert('Razorpay checkout failed to load. This usually means your network is blocking the payment gateway. Try disabling ad blockers and refresh the page.');
       return;
     }
-    router.post(`/holds/${hold?.id}/confirm`);
+
+    const options = {
+      key: paymentData.key,
+      amount: paymentData.amount * 100, // Amount in paise
+      currency: paymentData.currency,
+      name: 'Secure My Seat',
+      description: 'Hold Confirmation Payment',
+      order_id: paymentData.order_id,
+      handler: async (response) => {
+        // Verify payment on backend
+        try {
+          const verifyResponse = await axios.post('/api/payment/verify', {
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          });
+
+          if (verifyResponse.data.success) {
+            alert(verifyResponse.data.message);
+            router.visit(verifyResponse.data.redirect);
+          } else {
+            alert(verifyResponse.data.message || 'Payment verification failed');
+          }
+        } catch (error) {
+          alert(error.response?.data?.message || 'Failed to verify payment');
+        }
+      },
+      prefill: {
+        name: user?.name || '',
+        email: user?.email || '',
+        contact: user?.phone || '',
+      },
+      theme: {
+        color: '#0F2A44',
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
   };
 
   const handleRelease = () => {
@@ -188,7 +256,7 @@ export default function Active({ hold = {} }) {
               {experience?.category?.toUpperCase() || 'EXPERIENCE'}
             </p>
           </div>
-          <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-brand-border dark:bg-gray-700">
+          <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-brand-border dark:bg-gray-700">
             <img
               src={
                 experience?.image
@@ -212,14 +280,12 @@ export default function Active({ hold = {} }) {
             <span className="font-bold text-brand-primary">₹{holdTokenPaid.toFixed(2)}</span>
           </div>
           <div className="flex items-center justify-between pt-2 border-t border-brand-border dark:border-gray-700">
-            <span className="text-sm text-brand-secondary dark:text-gray-400">Balance Due</span>
-            <span className={`font-bold ${hasSufficientBalance ? 'text-brand-primary' : 'text-brand-danger'}`}>
-              ₹{balanceDue.toFixed(2)}
-            </span>
+            <span className="text-sm text-brand-secondary dark:text-gray-400">Confirmation Payment</span>
+            <span className="font-bold text-brand-primary">₹{experiencePrice.toFixed(2)}</span>
           </div>
           <div className="flex items-center justify-between pt-2 border-t border-brand-border dark:border-gray-700">
-            <span className="text-sm font-semibold text-brand-secondary dark:text-gray-300">Total Price</span>
-            <span className="text-xl font-black text-brand-primary">₹{parseFloat(experience.price || 0).toFixed(0)}</span>
+            <span className="text-sm font-semibold text-brand-secondary dark:text-gray-300">Total for Booking</span>
+            <span className="text-xl font-black text-brand-primary">₹{parseFloat(experience.instant_price || 0).toFixed(0)}</span>
           </div>
         </div>
 
@@ -230,7 +296,7 @@ export default function Active({ hold = {} }) {
             <p className="text-xs text-blue-800 dark:text-blue-200 font-medium">Wallet Balance</p>
             <p className={`text-sm font-bold ${hasSufficientBalance ? 'text-green-600 dark:text-green-400' : 'text-brand-danger'}`}>
               ₹{walletBalance.toFixed(2)}
-              {walletBalance < balanceDue && (
+              {walletBalance < remainingBalance && (
                 <span className="ml-1 text-[10px]">(Add Funds)</span>
               )}
             </p>
@@ -253,7 +319,7 @@ export default function Active({ hold = {} }) {
         <p className="text-xs text-brand-secondary dark:text-gray-400 leading-relaxed">
           {expired 
             ? 'This hold has expired and the seat is now available to others.' 
-            : `Your ₹${holdTokenPaid.toFixed(2)} hold token secures this seat. Confirm before timer expires to complete booking, or it auto-releases with full refund.`
+            : `Your ₹${holdTokenPaid.toFixed(2)} hold token secures this seat. Confirm before timer expires to pay the full booking amount of ₹${experiencePrice.toFixed(2)} via Razorpay, or it auto-releases with full refund.`
           }
         </p>
       </div>
@@ -261,15 +327,15 @@ export default function Active({ hold = {} }) {
       {/* ── Confirm Booking ── ENHANCED */}
       <button
         onClick={handleConfirm}
-        disabled={expired || !hasSufficientBalance}
+        disabled={expired}
         className={`w-full flex items-center justify-center gap-2 font-semibold py-4 rounded-lg text-base transition-all duration-200 shadow-md mb-3 ${
-          expired || !hasSufficientBalance
+          expired
             ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
             : 'bg-brand-success hover:bg-opacity-90 active:bg-opacity-80 text-white'
         }`}
       >
         <ShieldCheck className="w-5 h-5" />
-        Confirm Booking (₹{balanceDue.toFixed(2)})
+        Confirm Booking (₹{experiencePrice.toFixed(2)})
         <span>→</span>
       </button>
 

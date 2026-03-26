@@ -16,14 +16,14 @@ export default function Settlements() {
                 <div className="bg-gradient-to-r from-brand-primary to-brand-primary/80 rounded-lg shadow-card p-6 text-white">
                     <p className="text-sm font-semibold opacity-90 uppercase tracking-wide">Total Earnings</p>
                     <p className="text-4xl font-bold mt-3">₹{totalEarnings?.toLocaleString() || '0'}</p>
-                    <p className="text-sm opacity-75 mt-2">From all validated bookings</p>
+                    <p className="text-sm opacity-75 mt-2">From all confirmed bookings</p>
                 </div>
 
                 {/* Settlement History */}
                 <div className="bg-white rounded-lg shadow-sm border border-brand-border overflow-hidden">
                     <div className="p-4 border-b border-brand-border">
                         <h2 className="text-lg font-bold text-brand-primary">Settlement History</h2>
-                        <p className="text-xs text-brand-secondary mt-1">Earnings from validated bookings grouped by date</p>
+                        <p className="text-xs text-brand-secondary mt-1">Earnings from confirmed bookings grouped by date</p>
                     </div>
 
                         <div className="overflow-x-auto">
@@ -64,7 +64,7 @@ export default function Settlements() {
 
                             {settlements.data?.length === 0 && (
                                 <div className="p-8 text-center text-brand-secondary">
-                                    No settlements yet. Validated bookings will appear here.
+                                    No settlements yet. Confirmed bookings will appear here.
                                 </div>
                             )}
                         </div>
@@ -102,7 +102,7 @@ export default function Settlements() {
                         <div className="space-y-3">
                             <div className="flex items-start gap-3 pl-2">
                                 <Check size={16} className="text-brand-success flex-shrink-0 mt-0.5" />
-                                <p className="text-sm text-brand-primary">Settlements are processed for <span className="font-semibold">validated bookings only</span></p>
+                                <p className="text-sm text-brand-primary">Settlements are processed for <span className="font-semibold">confirmed bookings only</span></p>
                             </div>
                             <div className="flex items-start gap-3 pl-2">
                                 <Check size={16} className="text-brand-success flex-shrink-0 mt-0.5" />

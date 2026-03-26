@@ -12,6 +12,28 @@ export default function AppLayout({ children }) {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Razorpay script is now loaded globally from the blade template
+  // This effect just verifies it's loaded
+  useEffect(() => {
+    // Check if Razorpay is available (loaded from CDN)
+    const checkRazorpay = setInterval(() => {
+      if (window.Razorpay) {
+        console.log('✅ Razorpay is available');
+        clearInterval(checkRazorpay);
+      }
+    }, 500);
+
+    // Stop checking after 10 seconds
+    setTimeout(() => {
+      clearInterval(checkRazorpay);
+      if (!window.Razorpay) {
+        console.warn('⚠️ Razorpay did not load within 10 seconds');
+      }
+    }, 10000);
+
+    return () => clearInterval(checkRazorpay);
+  }, []);
+
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
       // Prevent the mini-infobar from appearing
@@ -181,7 +203,7 @@ export default function AppLayout({ children }) {
           {/* Logo */}
           <Link href="/dashboard" className="flex items-center gap-2 flex-1">
             <span className="text-lg md:text-xl font-bold text-brand-primary dark:text-blue-400">
-              Secure Your Seat
+              Secure My Seat
             </span>
           </Link>
 
@@ -343,7 +365,7 @@ export default function AppLayout({ children }) {
               <FooterIcon href={usePage().props.auth?.user ? "/holds" : "/login"}         icon={Ticket} label="My Seats" currentUrl={url} />
               {/* ── Centre elevated Explore circle ── */}
               <ExploreIcon href="/explore" currentUrl={url} />
-              <FooterIcon href={usePage().props.auth?.user ? "/notifications" : "/login"} icon={Bell}   label="Alerts"   currentUrl={url} />
+              <FooterIcon href={usePage().props.auth?.user ? "/bookings" : "/login"} icon={Calendar}   label="Bookings"   currentUrl={url} />
               <FooterIcon href={usePage().props.auth?.user ? "/profile" : "/login"}       icon={User}   label="Profile"  currentUrl={url} />
             </div>
           </div>
@@ -356,7 +378,7 @@ export default function AppLayout({ children }) {
           <header className="sticky top-0 z-20 bg-white dark:bg-gray-800 border-b border-brand-border dark:border-gray-700 px-6 xl:px-8 py-4 flex items-center justify-between">
             {/* Logo/Title */}
             <Link href="/dashboard" className="flex items-center gap-2">
-              <span className="text-xl font-bold text-brand-primary dark:text-blue-400">Secure Your Seat</span>
+              <span className="text-xl font-bold text-brand-primary dark:text-blue-400">Secure My Seat</span>
             </Link>
 
             {/* User Avatar */}

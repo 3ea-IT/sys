@@ -15,11 +15,13 @@
         <meta name="apple-mobile-web-app-title" content="Secure Seat">
         <link rel="apple-touch-icon" href="/assets/secure_seat_logo.png">
 
-        <title inertia>{{ config('app.name', 'Secure Your Seat') }}</title>
+        <title inertia>{{ config('app.name', 'Secure My Seat') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+        
 
         <!-- Scripts -->
         @routes
@@ -30,4 +32,6 @@
     <body class="font-sans antialiased">
         @inertia
     </body>
+    <!-- Razorpay Payment Gateway -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
 </html>

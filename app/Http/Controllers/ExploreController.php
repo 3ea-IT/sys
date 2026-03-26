@@ -63,6 +63,7 @@ class ExploreController extends Controller
                     'hold_id' => $userHold?->id ?? null,
                     'is_booked' => $userBooking !== null,  // NEW: User has confirmed booking
                     'booking_id' => $userBooking?->id ?? null,  // NEW: Link to booking
+                    'seats_full' => $exp->areAllSeatsFull(),  // NEW: Check if all seats are booked
                     'badge' => $exp->priority_score > 80 ? 'PRIORITY ACCESS' : null, // New: Priority badge
                 ];
             });
@@ -123,6 +124,7 @@ class ExploreController extends Controller
                     'hold_id' => $userHold?->id ?? null,
                     'is_booked' => $userBooking !== null,  // NEW: User has confirmed booking
                     'booking_id' => $userBooking?->id ?? null,  // NEW: Link to booking
+                    'seats_full' => $exp->areAllSeatsFull(),  // NEW: Check if all seats are booked
                     'badge' => $exp->priority_score > 80 ? 'PRIORITY ACCESS' : null, // New: Priority badge
                 ];
             });

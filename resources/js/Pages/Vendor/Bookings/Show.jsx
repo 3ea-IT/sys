@@ -10,8 +10,6 @@ export default function BookingShow() {
         switch (status) {
             case 'confirmed':
                 return { color: 'bg-brand-success/10 text-brand-success border border-brand-success/20', label: 'Confirmed' };
-            case 'validated':
-                return { color: 'bg-brand-primary/10 text-brand-primary border border-brand-primary/20', label: 'Validated' };
             case 'cancelled':
                 return { color: 'bg-brand-danger/10 text-brand-danger border border-brand-danger/20', label: 'Cancelled' };
             default:

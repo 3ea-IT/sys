@@ -43,7 +43,7 @@ export default function HelpAndSupport() {
     {
       icon: BookOpen,
       title: "User Guide",
-      description: "Learn how to use Secure Your Seat",
+      description: "Learn how to use Secure My Seat",
       href: "#",
       color: "from-blue-500 to-blue-600"
     },
@@ -146,7 +146,7 @@ export default function HelpAndSupport() {
                 User Guide
               </h3>
               <p className="text-xs md:text-sm text-brand-secondary dark:text-gray-400">
-                Learn how to use Secure Your Seat
+                Learn how to use Secure My Seat
               </p>
             </div>
           </Link>

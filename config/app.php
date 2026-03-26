@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Secure Your Seat'),
+    'name' => env('APP_NAME', 'Secure My Seat'),
 
     /*
     |--------------------------------------------------------------------------

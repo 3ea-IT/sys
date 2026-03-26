@@ -94,7 +94,7 @@ export default function BookingShow({ booking = {} }) {
       {/* Header */}
       <div className="flex items-center gap-3 mb-8 pb-6 border-b border-brand-border dark:border-gray-700">
         <button
-          onClick={() => window.history.back()}
+          onClick={() => router.visit('/bookings')}
           className="p-2 hover:bg-brand-border dark:hover:bg-gray-700 rounded-lg transition-colors"
         >
           <ArrowLeft className="w-5 h-5 text-brand-secondary dark:text-gray-400" />

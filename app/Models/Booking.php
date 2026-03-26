@@ -11,9 +11,9 @@ use App\Models\Hold;
 class Booking extends Model
 {
     protected $fillable = [
-        'user_id', 'experience_id', 'booking_type', 'status',
+        'user_id', 'experience_id', 'booking_type', 'party_size', 'per_person_amount', 'status',
         'total_amount', 'paid_amount', 'hold_token_paid',
-        'confirmed_at', 'cancelled_at', 'validated_at'
+        'confirmed_at', 'cancelled_at'
     ];
 
     public function user() { return $this->belongsTo(User::class); }

@@ -12,7 +12,6 @@ export default function BookingsIndex() {
         switch (status) {
             case 'confirmed': return { pill: `text-brand-success border border-brand-success/20 bg-brand-success/10`, dot: 'bg-brand-success' };
             case 'cancelled': return { pill: `text-brand-danger border border-brand-danger/20 bg-brand-danger/10`, dot: 'bg-brand-danger' };
-            case 'validated': return { pill: `text-brand-primary border border-brand-primary/20 bg-brand-primary/10`, dot: 'bg-brand-primary' };
             case 'on_hold': return { pill: `text-brand-warning border border-brand-warning/20 bg-brand-warning/10`, dot: 'bg-brand-warning' };
             default: return { pill: `text-brand-secondary border border-brand-secondary/20 bg-brand-secondary/10`, dot: 'bg-brand-secondary' };
         }
@@ -26,7 +25,6 @@ export default function BookingsIndex() {
         { key: 'confirmed', label: 'Confirmed', count: stats?.confirmedBookings ?? 0 },
         { key: 'on_hold', label: 'On Hold', count: stats?.totalHolds ?? 0 },
         { key: 'cancelled', label: 'Cancelled', count: stats?.cancelledBookings ?? 0 },
-        { key: 'validated', label: 'Validated', count: stats?.validatedBookings ?? 0 },
     ];
 
     const filtered = allBookings.filter((booking) => {
@@ -155,7 +153,6 @@ export default function BookingsIndex() {
                     )}
 
                     {filtered.map((booking) => {
-                        const isValidated = booking.status === 'validated';
                         const isOnHold = booking.status === 'on_hold';
                         const statusStyle = getStatusStyle(booking.status);
                         const avatarGrad = getAvatarColor(booking.user?.name);
@@ -250,21 +247,6 @@ export default function BookingsIndex() {
                                             >
                                                 View Details <ChevronRight className="w-3.5 h-3.5" />
                                             </Link>
-                                            {!isValidated && (
-                                                <Link
-                                                    href={route('vendor.bookings.check-in', booking.id.replace('booking-', ''))}
-                                                    method="post"
-                                                    as="button"
-                                                    className="checkin-btn flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold text-white bg-brand-primary hover:bg-brand-primary/90 rounded-xl py-2.5 transition-all shadow-sm shadow-brand-primary/20"
-                                                >
-                                                    <ScanLine className="w-3.5 h-3.5" /> Validate
-                                                </Link>
-                                            )}
-                                            {isValidated && (
-                                                <div className="flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold text-brand-success bg-brand-success/10 rounded-xl py-2.5 border border-brand-success/20">
-                                                    <CheckCircle2 className="w-3.5 h-3.5" /> Validated
-                                                </div>
-                                            )}
                                         </>
                                     )}
                                 </div>

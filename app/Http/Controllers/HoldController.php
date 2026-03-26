@@ -19,9 +19,10 @@ class HoldController extends Controller
      * 
      * Flow:
      * 1. Check booking mode support
-     * 2. Deduct token from wallet
-     * 3. Create hold with configured duration
-     * 4. If no availability, add to waitlist instead
+     * 2. Validate party_size (max 2 for holds)
+     * 3. Deduct token from wallet (multiplied by party_size)
+     * 4. Create hold with configured duration
+     * 5. If no availability, add to waitlist instead
      */
     public function store(Request $request)
     {
@@ -32,13 +33,16 @@ class HoldController extends Controller
 
         $request->validate([
             'experience_id' => 'required|exists:experiences,id',
+            'party_size' => 'required|integer|min:1|max:2', // Max 2 people for holds
         ]);
 
         $experience = Experience::find($request->experience_id);
+        $partySize = (int) $request->party_size;
         
         \Log::info('Hold store initiated', [
             'user_id' => auth()->id(),
             'experience_id' => $request->experience_id,
+            'party_size' => $partySize,
             'experience_status' => $experience->status,
             'approval_status' => $experience->approval_status,
         ]);
@@ -58,66 +62,75 @@ class HoldController extends Controller
         $user = auth()->user();
         $wallet = $user->wallet;
         
+        // Calculate token amount for party size
+        $tokenAmount = $experience->hold_token * $partySize;
+        
         \Log::info('Wallet check', [
             'user_id' => $user->id,
             'wallet_exists' => $wallet !== null,
             'wallet_balance' => $wallet?->balance ?? 0,
-            'hold_token' => $experience->hold_token,
+            'hold_token_for_party' => $tokenAmount,
         ]);
 
-        // Check if user has sufficient balance for hold token
-        if (!$wallet || $wallet->balance < $experience->hold_token) {
+        // Check if user has sufficient balance for hold token (multiplied by party_size)
+        if (!$wallet || $wallet->balance < $tokenAmount) {
             \Log::warning('Insufficient wallet balance for hold', [
                 'user_id' => $user->id,
                 'balance' => $wallet?->balance ?? 0,
-                'required' => $experience->hold_token,
+                'required' => $tokenAmount,
             ]);
             return back()->with('error', 'Insufficient wallet balance for hold token. Add funds to your wallet.');
         }
 
         // ATOMIC TRANSACTION: Protect against race conditions
-        return DB::transaction(function () use ($user, $experience, $wallet, $request) {
+        return DB::transaction(function () use ($user, $experience, $wallet, $request, $partySize, $tokenAmount) {
             // Double-check availability (race condition protection)
+            // Account for party_size in capacity calculation
             $activeHoldsCount = Hold::where('experience_id', $experience->id)
                 ->where('status', Hold::STATUS_ACTIVE)
                 ->where('expires_at', '>', Carbon::now())
-                ->count();
+                ->get()
+                ->sum('party_size'); // Sum party sizes instead of count
 
             $instantBookingsCount = \App\Models\Booking::where('experience_id', $experience->id)
                 ->where('status', 'confirmed')
-                ->count();
+                ->get()
+                ->sum('party_size'); // Sum party sizes instead of count
 
             $totalClaimedSeats = $activeHoldsCount + $instantBookingsCount;
             $availableSeats = $experience->capacity - $totalClaimedSeats;
 
-            if ($availableSeats <= 0) {
-                // No direct availability - add to waitlist
+            if ($availableSeats < $partySize) {
+                // Not enough seats for the party - add to waitlist
                 Waitlist::addToWaitlist($user->id, $experience->id);
                 
                 return redirect()
                     ->route('holds.index')
-                    ->with('info', 'No seats available. You have been added to the waitlist. We will notify you when a seat becomes available.');
+                    ->with('info', "No {$partySize} seat(s) available. You have been added to the waitlist. We will notify you when seats become available.");
             }
 
-            // Deduct token from wallet
-            $wallet->decrement('balance', $experience->hold_token);
+            // Deduct token from wallet (multiplied by party_size)
+            $wallet->decrement('balance', $tokenAmount);
 
             // Log wallet transaction
             \App\Models\WalletTransaction::create([
                 'wallet_id' => $wallet->id,
                 'type' => 'debit',
-                'amount' => $experience->hold_token,
-                'description' => "Hold token for {$experience->title}",
+                'amount' => $tokenAmount,
+                'description' => "Hold token for {$partySize} person(s) - {$experience->title}",
                 'reference_id' => null, // Will be updated after hold creation
                 'reference_type' => 'hold',
             ]);
 
-            // Create the hold with duration from experience settings
+            // Create the hold with duration from experience settings and party_size
             $holdDurationMinutes = $experience->hold_duration ?? 30;
+            $perPersonAmount = $experience->hold_token;
             $hold = Hold::create([
                 'user_id' => $user->id,
                 'experience_id' => $experience->id,
                 'expires_at' => Carbon::now()->addMinutes($holdDurationMinutes),
+                'party_size' => $partySize,
+                'per_person_amount' => $perPersonAmount,
                 'status' => Hold::STATUS_ACTIVE,
                 'source' => Hold::SOURCE_DIRECT,
             ]);
@@ -126,6 +139,7 @@ class HoldController extends Controller
                 'hold_id' => $hold->id,
                 'user_id' => $user->id,
                 'experience_id' => $experience->id,
+                'party_size' => $partySize,
                 'status' => $hold->status,
                 'expires_at' => $hold->expires_at,
             ]);
@@ -144,7 +158,7 @@ class HoldController extends Controller
                     'success' => true,
                     'holdId' => $hold->id,
                     'isSecured' => true,
-                    'message' => "Hold created! You have {$holdDurationMinutes} minutes to confirm."
+                    'message' => "Hold created for {$partySize} person(s)! You have {$holdDurationMinutes} minutes to confirm."
                 ]);
             }
             
@@ -217,8 +231,11 @@ class HoldController extends Controller
             abort(403, 'Unauthorized');
         }
 
+        // Load experience with all properties
+        $hold->load('experience');
+
         return Inertia::render('Holds/Active', [
-            'hold' => $hold->load('experience'),
+            'hold' => $hold,
             'timeRemaining' => $hold->time_remaining,
             'holdDuration' => $hold->experience->hold_duration,
         ]);
@@ -259,13 +276,14 @@ class HoldController extends Controller
         $experience = $hold->experience;
         $user = $hold->user;
         $wallet = $user->wallet;
+        $partySize = $hold->party_size ?? 1;
 
-        // Calculate remaining amount
-        $fullPrice = $experience->instant_price ?? $experience->price;
-        $tokenAlreadyPaid = $experience->hold_token;
+        // Calculate remaining amount (accounting for party_size)
+        $fullPrice = ($experience->instant_price ?? $experience->price) * $partySize;
+        $tokenAlreadyPaid = $experience->hold_token * $partySize;
         $remainingAmount = max(0, $fullPrice - $tokenAlreadyPaid);
 
-        return DB::transaction(function () use ($hold, $experience, $user, $wallet, $fullPrice, $tokenAlreadyPaid, $remainingAmount) {
+        return DB::transaction(function () use ($hold, $experience, $user, $wallet, $fullPrice, $tokenAlreadyPaid, $remainingAmount, $partySize) {
             // If there's a remaining amount, deduct from wallet
             if ($remainingAmount > 0) {
                 if (!$wallet || $wallet->balance < $remainingAmount) {
@@ -279,17 +297,20 @@ class HoldController extends Controller
                     'wallet_id' => $wallet->id,
                     'type' => 'debit',
                     'amount' => $remainingAmount,
-                    'description' => "Confirmation payment for {$experience->title}",
+                    'description' => "Confirmation payment for {$partySize} person(s) - {$experience->title}",
                     'reference_id' => $hold->id,
                     'reference_type' => 'hold',
                 ]);
             }
 
-            // Create booking record
+            // Create booking record with party_size and per_person_amount
+            $perPersonPrice = $experience->instant_price ?? $experience->price;
             $booking = \App\Models\Booking::create([
                 'user_id' => $user->id,
                 'experience_id' => $experience->id,
                 'booking_type' => 'hold_confirmed',
+                'party_size' => $partySize,
+                'per_person_amount' => $perPersonPrice,
                 'status' => 'confirmed',
                 'total_amount' => $fullPrice,
                 'paid_amount' => $fullPrice,
@@ -300,7 +321,7 @@ class HoldController extends Controller
             $hold->confirm($booking->id);
 
             return redirect()->route('bookings.show', $booking->id)
-                ->with('success', 'Booking confirmed! Your ticket is ready.');
+                ->with('success', "Booking confirmed for {$partySize} person(s)! Your ticket is ready.");
         });
     }
 

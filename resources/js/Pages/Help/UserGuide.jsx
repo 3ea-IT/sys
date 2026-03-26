@@ -146,7 +146,7 @@ export default function UserGuide() {
           icon={Zap}
         >
           <p className="text-sm text-brand-secondary dark:text-gray-400 mb-4">
-            You have two flexible ways to secure your seat.
+            You have two flexible ways to secure my seat.
           </p>
 
           <Subsection title="Option 1: Instant Booking">

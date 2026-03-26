@@ -22,7 +22,7 @@ export default function FAQ() {
     {
       id: 1,
       question: "How do I book an experience?",
-      answer: "You can book experiences in two ways: instant booking for immediate access, or by placing a hold to secure your seat. Navigate to Explore, select an experience, and choose your preferred booking method.",
+      answer: "You can book experiences in two ways: instant booking for immediate access, or by placing a hold to secure my seat. Navigate to Explore, select an experience, and choose your preferred booking method.",
       category: "Booking",
       icon: Zap
     },
@@ -129,7 +129,7 @@ export default function FAQ() {
           </h1>
         </div>
         <p className="text-sm text-brand-secondary dark:text-gray-400 px-1">
-          Find answers to common questions about Secure Your Seat
+          Find answers to common questions about Secure My Seat
         </p>
       </div>
 

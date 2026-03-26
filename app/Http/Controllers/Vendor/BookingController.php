@@ -107,7 +107,7 @@ class BookingController extends Controller
         $totalHolds = $holds->count();
         $confirmedBookings = $transformedBookings->where('status', 'confirmed')->count();
         $cancelledBookings = $transformedBookings->where('status', 'cancelled')->count();
-        $validatedBookings = $transformedBookings->where('status', 'validated')->count();
+
 
         return Inertia::render('Vendor/Bookings/Index', [
             'user' => $vendor,
@@ -122,7 +122,6 @@ class BookingController extends Controller
                 'totalHolds' => $totalHolds,
                 'confirmedBookings' => $confirmedBookings,
                 'cancelledBookings' => $cancelledBookings,
-                'validatedBookings' => $validatedBookings,
             ],
         ]);
     }
@@ -142,31 +141,7 @@ class BookingController extends Controller
         ]);
     }
 
-    /**
-     * Validate/check-in a booking
-     * 
-     * ⚠️ IMPORTANT: This method is ONLY for attendance validation
-     * Payment is processed at booking creation or hold confirmation time
-     * This method does NOT handle any payment processing
-     */
-    public function checkIn(Booking $booking)
-    {
-        if ($booking->experience->vendor_id !== Auth::id()) {
-            abort(403);
-        }
 
-        if ($booking->status === 'validated') {
-            return back()->with('warning', 'Booking already validated.');
-        }
-
-        // Only update status - no payment logic here
-        $booking->update([
-            'status' => 'validated',
-            'validated_at' => now(),
-        ]);
-
-        return back()->with('success', 'Booking validated successfully.');
-    }
 
     /**
      * Cancel a booking
@@ -177,8 +152,8 @@ class BookingController extends Controller
             abort(403);
         }
 
-        if (in_array($booking->status, ['cancelled', 'validated'])) {
-            return back()->with('warning', 'This booking cannot be cancelled.');
+        if ($booking->status === 'cancelled') {
+            return back()->with('warning', 'This booking is already cancelled.');
         }
 
         $booking->update([
@@ -208,8 +183,8 @@ class BookingController extends Controller
         $settlements = Booking::whereHas('experience', function ($query) use ($vendor) {
             $query->where('vendor_id', $vendor->id);
         })->with('experience')
-         ->where('status', 'validated')
-         ->selectRaw('DATE(validated_at) as settlement_date, COUNT(*) as booking_count, SUM(paid_amount) as amount')
+         ->where('status', 'confirmed')
+         ->selectRaw('DATE(confirmed_at) as settlement_date, COUNT(*) as booking_count, SUM(paid_amount) as amount')
          ->groupBy('settlement_date')
          ->latest('settlement_date')
          ->paginate(20);

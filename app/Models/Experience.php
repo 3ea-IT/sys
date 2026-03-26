@@ -15,6 +15,8 @@ class Experience extends Model
         'location',
         'start_date',
         'start_time',
+        'end_date',
+        'end_time',
         'description',
         'highlights',
         'price',
@@ -23,7 +25,6 @@ class Experience extends Model
         'capacity',
         'priority_score',
         'status',
-        // NEW dual-mode fields
         'booking_mode',           // 'instant', 'both'
         'instant_price',          // full instant booking price
         'instant_availability',   // instant seats count
@@ -41,6 +42,8 @@ class Experience extends Model
         'status' => ExperienceStatus::class,
         'start_date' => 'date',
         'start_time' => 'string',
+        'end_date' => 'date',
+        'end_time' => 'string',
     ];
 
     // Existing image accessor
@@ -74,6 +77,21 @@ class Experience extends Model
     public function getAvailableInstantSeatsAttribute()
     {
         return max(0, $this->instant_availability);
+    }
+
+    // NEW: Check if all instant seats are fully booked
+    public function areAllSeatsFull()
+    {
+        if (!$this->instant_availability) {
+            return false;
+        }
+        
+        $instantBookedCount = Booking::where('experience_id', $this->id)
+            ->where('booking_type', 'instant')
+            ->where('status', 'confirmed')
+            ->sum('party_size');
+        
+        return $instantBookedCount >= $this->instant_availability;
     }
 
     // Relationships

@@ -136,6 +136,7 @@ export default function CategoryExplore({ category = '', experiences = [] }) {
                 is_secured={exp.is_secured || false}
                 hold_id={exp.hold_id || null}
                 booking_mode={exp.booking_mode || 'both'}
+                seats_full={exp.seats_full || false}
               />
             ))
           )}
@@ -160,7 +161,7 @@ function FilterButton({ label, active, onClick, className = '' }) {
   );
 }
 
-function FeaturedCard({ id, title, location, date, attendees, price, instant_price = null, instant_availability = 0, hold_token = null, image, badge, is_booked = false, booking_id = null, is_secured = false, hold_id = null, booking_mode = 'both' }) {
+function FeaturedCard({ id, title, location, date, attendees, price, instant_price = null, instant_availability = 0, hold_token = null, image, badge, is_booked = false, booking_id = null, is_secured = false, hold_id = null, booking_mode = 'both', seats_full = false }) {
   const { auth } = usePage().props;
   const user = auth?.user;
   
@@ -193,10 +194,18 @@ function FeaturedCard({ id, title, location, date, attendees, price, instant_pri
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
+    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 transition-all relative ${seats_full ? 'opacity-50' : 'hover:shadow-md'}`}>
+      {/* Seats Full Strip */}
+      {seats_full && (
+        <div className="absolute top-[40%] left-0 right-0 z-40 bg-gradient-to-r from-red-600 to-red-700 backdrop-blur-sm px-4 py-1.5 text-center">
+          <p className="text-white text-xs font-bold tracking-wide">🚫 SEATS FULL</p>
+        </div>
+      )}
+
       <Link
-        href={`/experience/${id}`}
-        className="block"
+        href={seats_full ? '#' : `/experience/${id}`}
+        className={`block ${seats_full ? 'pointer-events-none cursor-not-allowed' : ''}`}
+        onClick={(e) => seats_full && (e.preventDefault(), e.stopPropagation())}
       >
         <div className="relative h-40">
           <img

@@ -50,7 +50,20 @@ class UserController extends Controller
         }]);
 
         return Inertia::render('Admin/Users/Show', [
-            'user' => $user,
+            'viewedUser' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'city' => $user->city,
+                'state' => $user->state,
+                'country' => $user->country,
+                'role' => $user->role,
+                'is_suspended' => $user->is_suspended,
+                'email_verified_at' => $user->email_verified_at,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ],
         ]);
     }
 

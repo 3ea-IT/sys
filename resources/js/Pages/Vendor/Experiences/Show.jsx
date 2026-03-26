@@ -79,13 +79,17 @@ export default function ShowExperience() {
                                         <CalendarCheck size={13} className="text-brand-secondary flex-shrink-0" />
                                         <p className="text-xs text-brand-secondary">
                                             {new Date(experience.start_date).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
+                                            {experience.end_date && ` to ${new Date(experience.end_date).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}`}
                                         </p>
                                     </div>
                                 )}
                                 {experience.start_time && (
                                     <div className="flex items-center gap-1.5">
                                         <Clock size={13} className="text-brand-secondary flex-shrink-0" />
-                                        <p className="text-xs text-brand-secondary">{formatTime12Hour(experience.start_time)}</p>
+                                        <p className="text-xs text-brand-secondary">
+                                            {formatTime12Hour(experience.start_time)}
+                                            {experience.end_time && ` to ${formatTime12Hour(experience.end_time)}`}
+                                        </p>
                                     </div>
                                 )}
                             </div>

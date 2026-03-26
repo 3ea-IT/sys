@@ -72,45 +72,56 @@ class BookingController extends Controller
                           ->where('instant_availability', '>', 0);
                 }),
             ],
+            'party_size' => 'required|integer|min:1', // Allow any number for instant booking
         ]);
 
         $experience = Experience::findOrFail($request->experience_id);
+        $partySize = (int) $request->party_size;
 
         // Double-check availability (race condition protection)
         if (!$experience->supportsInstantBooking()) {
             return back()->with('error', 'Instant tickets are no longer available.');
         }
 
+        // Check if enough seats are available for the party size
+        if ($experience->instant_availability < $partySize) {
+            return back()->with('error', "Only {$experience->instant_availability} ticket(s) available for instant booking.");
+        }
+
         // Use DB transaction
-        return DB::transaction(function () use ($user, $experience, $request) {
-            // 1. Create booking
+        return DB::transaction(function () use ($user, $experience, $request, $partySize) {
+            // 1. Create booking with party_size and per_person_amount
+            $perPersonAmount = $experience->instant_price;
+            $totalAmount = $perPersonAmount * $partySize;
             $booking = Booking::create([
                 'user_id' => $user->id,
                 'experience_id' => $experience->id,
                 'booking_type' => 'instant',
+                'party_size' => $partySize,
+                'per_person_amount' => $perPersonAmount,
                 'status' => 'confirmed',
-                'total_amount' => $experience->instant_price,
-                'paid_amount' => $experience->instant_price,
+                'total_amount' => $totalAmount,
+                'paid_amount' => $totalAmount,
                 'confirmed_at' => now(),
             ]);
 
-            // 2. Deduct inventory
-            $experience->decrement('instant_availability');
+            // 2. Deduct inventory (multiply by party_size)
+            $experience->decrement('instant_availability', $partySize);
 
             // 3. Deduct from wallet
             $wallet = $user->wallet ?? $user->wallet()->create(['balance' => 0]);
-            if ($wallet->balance < $experience->instant_price) {
+            if ($wallet->balance < $totalAmount) {
                 throw new \Exception('Insufficient wallet balance');
             }
 
-            $wallet->decrement('balance', $experience->instant_price);
+            $wallet->decrement('balance', $totalAmount);
 
             // 4. Create transaction record
             WalletTransaction::create([
                 'wallet_id' => $wallet->id,
-                'amount' => $experience->instant_price,
+                'amount' => $totalAmount,
                 'type' => 'debit',
-                'description' => "Instant booking #{$booking->id} - {$experience->title}",
+                'description' => "Instant booking #{$booking->id} for {$partySize} people - {$experience->title}",
                 'reference_type' => 'booking',
                 'reference_id' => $booking->id,
             ]);
@@ -121,12 +132,12 @@ class BookingController extends Controller
                     'success' => true,
                     'bookingId' => $booking->id,
                     'isBooked' => true,
-                    'message' => 'Ticket confirmed successfully!'
+                    'message' => "Ticket confirmed for {$partySize} person(s)!"
                 ]);
             }
             
             return redirect()->route('bookings.show', $booking)
-                ->with('success', 'Ticket confirmed successfully! Check your booking.');
+                ->with('success', "Ticket confirmed for {$partySize} person(s)!");
         });
     }
 

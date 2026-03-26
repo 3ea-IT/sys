@@ -7,6 +7,8 @@ use App\Models\Experience;
 use App\Models\Hold;
 use App\Models\WalletTransaction;
 use App\Models\Booking;
+use App\Models\Movie;
+use App\Models\MovieTicketBooking;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 
@@ -18,6 +20,29 @@ class DashboardController extends Controller
 
         // ── Unauthenticated: return public experience list with no hold/booking state ──
         if (!$user) {
+            $movies = Movie::whereHas('showSlots', function ($query) {
+                $query->where('movie_show_slots.status', '!=', 'sold_out')
+                    ->where('show_date', '>=', now()->toDateString())
+                    ->where('available_seats', '>', 0);
+            })
+            ->limit(5)
+            ->get()
+            ->map(function ($movie) {
+                return [
+                    'id'                   => $movie->id,
+                    'title'                => $movie->title,
+                    'image'                => $movie->image,
+                    'category'             => $movie->genre ?? 'Movie',
+                    'language'             => $movie->language,
+                    'format'               => $movie->format,
+                    'description'          => $movie->description,
+                    'rating'               => $movie->rating,
+                    'duration'             => $movie->duration,
+                    'distance'             => number_format(mt_rand(1, 10) / 10, 1) . ' mi',
+                    'booking_mode'         => 'instant',
+                ];
+            });
+
             return Inertia::render('Dashboard', [
                 'nearby' => Experience::available()
                     ->orderBy('priority_score', 'desc')
@@ -40,8 +65,10 @@ class DashboardController extends Controller
                             'hold_id'              => null,
                             'is_booked'            => false,
                             'booking_id'           => null,
+                            'seats_full'           => $exp->areAllSeatsFull(),
                         ];
                     }),
+                'movies' => $movies,
                 'expiring' => [],
                 'activity' => [
                     ['title' => 'Welcome', 'subtitle' => 'Sign in to see your activity', 'time' => 'Now'],
@@ -95,6 +122,7 @@ class DashboardController extends Controller
                     'hold_id'              => $activeHolds->get($exp->id),
                     'is_booked'            => $confirmedBookings->has($exp->id),
                     'booking_id'           => $confirmedBookings->get($exp->id),
+                    'seats_full'           => $exp->areAllSeatsFull(),
                 ];
             });
 
@@ -153,6 +181,37 @@ class DashboardController extends Controller
             'user_id' => $wallet->user_id,
         ];
 
-        return Inertia::render('Dashboard', compact('nearby', 'expiring', 'activity') + ['wallet' => $walletData]);
+        // ── Movie tickets (unique movies with upcoming shows) ──────────────
+        $bookedMovieIds = MovieTicketBooking::where('user_id', $user->id)
+            ->where('movie_ticket_bookings.status', '!=', 'cancelled')
+            ->join('movie_show_slots', 'movie_ticket_bookings.movie_show_slot_id', '=', 'movie_show_slots.id')
+            ->pluck('movie_show_slots.movie_id')
+            ->unique();
+
+        $movies = Movie::whereHas('showSlots', function ($query) {
+            $query->where('movie_show_slots.status', '!=', 'sold_out')
+                ->where('show_date', '>=', now()->toDateString())
+                ->where('available_seats', '>', 0);
+        })
+        ->limit(5)
+        ->get()
+        ->map(function ($movie) use ($bookedMovieIds) {
+            return [
+                'id'                   => $movie->id,
+                'title'                => $movie->title,
+                'image'                => $movie->image,
+                'category'             => $movie->genre ?? 'Movie',
+                'language'             => $movie->language,
+                'format'               => $movie->format,
+                'description'          => $movie->description,
+                'rating'               => $movie->rating,
+                'duration'             => $movie->duration,
+                'distance'             => number_format(mt_rand(1, 10) / 10, 1) . ' mi',
+                'is_booked'            => $bookedMovieIds->contains($movie->id),
+                'booking_mode'         => 'instant',
+            ];
+        });
+
+        return Inertia::render('Dashboard', compact('nearby', 'expiring', 'activity', 'movies') + ['wallet' => $walletData]);
     }
 }

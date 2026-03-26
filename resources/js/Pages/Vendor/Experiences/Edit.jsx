@@ -65,6 +65,8 @@ export default function EditExperience() {
         location: experience.location || '',
         start_date: experience.start_date || '',
         start_time: convertTo12Hour(experience.start_time) || '',
+        end_date: experience.end_date || '',
+        end_time: convertTo12Hour(experience.end_time) || '',
         description: experience.description || '',
         highlights: parseHighlightsFromHtml(experience.highlights) || '',
         booking_mode: experience.booking_mode || 'both',
@@ -123,6 +125,7 @@ export default function EditExperience() {
             transform((formData) => ({
                 ...formData,
                 start_time: convertTo24Hour(formData.start_time),
+                end_time: formData.end_time ? convertTo24Hour(formData.end_time) : null,
             }));
 
             post(route('vendor.experiences.update', experience.id), {
@@ -224,6 +227,27 @@ export default function EditExperience() {
                             error={errors.start_time}
                             placeholder="e.g. 02:30 PM"
                             required={true}
+                        />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 pt-3 border-t border-brand-border/40">
+                        <InputField
+                            label="End Date (Optional)"
+                            name="end_date"
+                            type="date"
+                            value={data.end_date}
+                            onChange={(v) => setData('end_date', v)}
+                            error={errors.end_date}
+                            help="Leave blank for single-day events"
+                        />
+                        <InputField
+                            label="End Time (Optional)"
+                            name="end_time"
+                            type="text"
+                            value={data.end_time}
+                            onChange={(v) => setData('end_time', v)}
+                            error={errors.end_time}
+                            placeholder="e.g. 05:00 PM"
+                            help="Leave blank for single-day events"
                         />
                     </div>
                 </SectionCard>

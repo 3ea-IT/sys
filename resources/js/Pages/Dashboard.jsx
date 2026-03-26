@@ -3,6 +3,7 @@ import { Link, usePage, router } from "@inertiajs/react";
 
 export default function Dashboard({
   nearby = [],
+  movies = [],
   expiring = [],
   activity = [],
   wallet = {},
@@ -63,6 +64,15 @@ export default function Dashboard({
     router.visit(`/experience/${exp.id}`);
   };
 
+  const handleMovieClick = (movie) => {
+    if (!user) {
+      router.visit('/login');
+      return;
+    }
+    // Go to cinema selection page for this movie
+    router.visit(`/movies/${movie.id}/cinemas`);
+  };
+
   return (
     <AppLayout>
       {/* Header - UNCHANGED */}
@@ -73,34 +83,16 @@ export default function Dashboard({
         </h1>
       </div>
 
-      {/* Wallet Card - UNCHANGED */}
-      <div className="mt-6 md:mt-8 lg:mt-10 bg-brand-primary text-white rounded-lg md:rounded-2xl p-5 md:p-8 lg:p-10 shadow-card">
-        <div className="flex justify-between items-start gap-4">
-          <div>
-            <p className="text-xs md:text-sm uppercase opacity-80 tracking-wider">Wallet Balance</p>
-            <p className="text-2xl md:text-4xl lg:text-5xl font-bold mt-1 md:mt-2">
-              ₹{typeof wallet?.balance === 'number' ? wallet.balance.toFixed(2) : parseFloat(wallet?.balance || 0).toFixed(2)}
-            </p>
-
-            <div className="flex items-center gap-2 mt-2 md:mt-3 text-xs md:text-sm opacity-80">
-              <span className="w-2 h-2 bg-green-400 rounded-full" />
-              Secured & Encrypted
-            </div>
-          </div>
-
-          <Link
-            href={user ? "/wallet" : "#"}
-            onClick={(e) => {
-              if (!user) {
-                e.preventDefault();
-                router.visit('/login');
-              }
-            }}
-            className="text-xs underline opacity-80 cursor-pointer"
-          >
-            Transaction History
-          </Link>
-        </div>
+      {/* Banner Image */}
+      <div className="mt-4 md:mt-8 lg:mt-10 rounded-lg md:rounded-2xl overflow-hidden shadow-card">
+        <img
+          src="/banner/banner-1.png"
+          alt="Banner"
+          className="w-full h-auto object-cover"
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
       </div>
 
       {/* Nearby Experiences - ENHANCED WITH DUAL MODE */}
@@ -129,9 +121,16 @@ export default function Dashboard({
             return (
               <div
                 key={exp.id}
-                onClick={() => !exp.is_booked && !exp.is_secured && router.visit(`/experience/${exp.id}`)}
-                className="min-w-[240px] bg-white dark:bg-gray-800 rounded-lg shadow-card overflow-hidden hover:shadow-xl transition-shadow flex flex-col cursor-pointer"
+                onClick={() => !exp.is_booked && !exp.is_secured && !exp.seats_full && router.visit(`/experience/${exp.id}`)}
+                className={`min-w-[240px] mr-1 bg-white dark:bg-gray-800 rounded-lg shadow-card overflow-hidden flex flex-col cursor-pointer transition-all relative ${exp.seats_full ? 'opacity-50' : 'hover:shadow-xl'}`}
               >
+                {/* Seats Full Strip */}
+                {exp.seats_full && (
+                  <div className="absolute top-[40%] left-0 right-0 z-40 bg-gradient-to-r from-red-600 to-red-700 backdrop-blur-sm px-3 py-1.5 text-center">
+                    <p className="text-white text-xs font-bold tracking-wide">🚫 SEATS FULL</p>
+                  </div>
+                )}
+
                 {/* Image or Placeholder */}
                 <div className="relative h-32 overflow-hidden">
                   <img 
@@ -192,18 +191,28 @@ export default function Dashboard({
                       // Only instant booking available
                       <button
                         onClick={(e) => handleInstantBooking(e, exp)}
-                        className="mt-2 w-full text-center text-sm py-2.5 rounded-lg font-semibold bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition-all"
+                        disabled={exp.seats_full}
+                        className={`mt-2 w-full text-center text-sm py-2.5 rounded-lg font-semibold transition-all ${
+                          exp.seats_full
+                            ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                            : 'bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800'
+                        }`}
                       >
-                        ⚡ Book Now
+                        {exp.seats_full ? '❌ Fully Booked' : '⚡ Book Now'}
                       </button>
                     ) : (
                       // Both booking modes available
                       <div className="mt-2 flex flex-row gap-1.5">
                         <button
                           onClick={(e) => handleInstantBooking(e, exp)}
-                          className="flex-1 text-center text-xs py-2 px-1 rounded-lg font-semibold bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition-all whitespace-nowrap"
+                          disabled={exp.seats_full}
+                          className={`flex-1 text-center text-xs py-2 px-1 rounded-lg font-semibold transition-all whitespace-nowrap ${
+                            exp.seats_full
+                              ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                              : 'bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800'
+                          }`}
                         >
-                          ⚡ Book
+                          {exp.seats_full ? '❌ Sold Out' : '⚡ Book'}
                         </button>
                         <button
                           onClick={(e) => handleHoldBooking(e, exp)}
@@ -236,9 +245,16 @@ export default function Dashboard({
             return (
               <div
                 key={exp.id}
-                onClick={() => !exp.is_booked && !exp.is_secured && router.visit(`/experience/${exp.id}`)}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-card overflow-hidden hover:shadow-xl transition-shadow flex flex-col cursor-pointer"
+                onClick={() => !exp.is_booked && !exp.is_secured && !exp.seats_full && router.visit(`/experience/${exp.id}`)}
+                className={`bg-white dark:bg-gray-800 rounded-lg shadow-card overflow-hidden flex flex-col cursor-pointer relative transition-all ${exp.seats_full ? 'opacity-50' : 'hover:shadow-xl'}`}
               >
+                {/* Seats Full Strip */}
+                {exp.seats_full && (
+                  <div className="absolute top-[40%] left-0 right-0 z-40 bg-gradient-to-r from-red-600 to-red-700 backdrop-blur-sm px-3 py-1 text-center">
+                    <p className="text-white text-xs font-bold tracking-wide">🚫 SEATS FULL</p>
+                  </div>
+                )}
+
                 {/* Image or Placeholder */}
                 <div className="relative h-32 overflow-hidden">
                   <img 
@@ -299,18 +315,28 @@ export default function Dashboard({
                       // Only instant booking available
                       <button
                         onClick={(e) => handleInstantBooking(e, exp)}
-                        className="mt-2 w-full text-center text-sm py-2.5 rounded-lg font-semibold bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition-all"
+                        disabled={exp.seats_full}
+                        className={`mt-2 w-full text-center text-sm py-2.5 rounded-lg font-semibold transition-all ${
+                          exp.seats_full
+                            ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                            : 'bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800'
+                        }`}
                       >
-                        ⚡ Book Now
+                        {exp.seats_full ? '❌ Fully Booked' : '⚡ Book Now'}
                       </button>
                     ) : (
                       // Both booking modes available
                       <div className="mt-2 flex flex-row gap-1.5">
                         <button
                           onClick={(e) => handleInstantBooking(e, exp)}
-                          className="flex-1 text-center text-xs py-2 px-1 rounded-lg font-semibold bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition-all whitespace-nowrap"
+                          disabled={exp.seats_full}
+                          className={`flex-1 text-center text-xs py-2 px-1 rounded-lg font-semibold transition-all whitespace-nowrap ${
+                            exp.seats_full
+                              ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                              : 'bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800'
+                          }`}
                         >
-                          ⚡ Book
+                          {exp.seats_full ? '❌ Sold Out' : '⚡ Book'}
                         </button>
                         <button
                           onClick={(e) => handleHoldBooking(e, exp)}
@@ -336,7 +362,140 @@ export default function Dashboard({
 
       </section>
 
-      {/* Expiring Soon */}
+      {/* Movie Tickets - INSTANT BOOKING ONLY */}
+      <section className="mt-6 md:mt-8 lg:mt-10">
+        <div className="flex justify-between items-center mb-4 md:mb-6 px-0">
+          <h2 className="font-semibold text-lg md:text-2xl lg:text-3xl text-brand-primary dark:text-gray-100">
+            🎬 Trending Movies
+          </h2>
+          <Link href="/movies" className="text-xs md:text-sm text-brand-secondary dark:text-gray-400 hover:text-brand-primary transition-colors">
+            View all
+          </Link>
+        </div>
+
+        {/* Mobile/Tablet: Horizontal Scroll */}
+        <div className="lg:hidden flex gap-4 overflow-x-auto no-scrollbar pb-1">
+          {movies.length === 0 && (
+            <p className="text-sm text-brand-secondary dark:text-gray-400">
+              No movies available
+            </p>
+          )}
+
+          {movies.map(movie => {
+            return (
+              <div
+                key={movie.id}
+                onClick={() => handleMovieClick(movie)}
+                className={`min-w-[240px] mr-1 bg-white dark:bg-gray-800 rounded-lg shadow-card overflow-hidden flex flex-col cursor-pointer transition-all relative hover:shadow-xl`}
+              >
+                {/* Image or Placeholder */}
+                <div className="relative h-32 overflow-hidden">
+                  <img 
+                    src={movie.image 
+                      ? (movie.image.startsWith('/') ? movie.image : `/assets/movies/${movie.image}`) 
+                      : 'https://images.unsplash.com/photo-1489599849228-ed304dbb6b38?w=400&h=160&fit=crop'}
+                    alt={movie.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = 'https://images.unsplash.com/photo-1489599849228-ed304dbb6b38?w=400&h=160&fit=crop';
+                    }}
+                  />
+
+                  <span className="absolute top-2 left-2 bg-black/70 text-white text-[10px] px-2 py-1 rounded">
+                    {movie.format || 'MOVIE'}
+                  </span>
+                  <span className="absolute bottom-2 right-2 bg-white text-[10px] px-2 py-1 rounded shadow-sm">
+                    🎟️ {movie.available_seats}/{movie.total_seats}
+                  </span>
+                </div>
+
+                <div className="p-3 flex-1 flex flex-col">
+                  <h3 className="text-sm font-semibold line-clamp-2 dark:text-gray-100">
+                    {movie.title}
+                  </h3>
+                  <p className="text-xs text-brand-secondary dark:text-gray-400 mt-1">
+                    {movie.language} • {movie.genre}
+                  </p>
+                  <p className="text-xs text-brand-secondary dark:text-gray-400 mt-0.5">
+                    ⏱️ {movie.duration || '150'} mins
+                  </p>
+
+                  {/* Show Selection Button */}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleMovieClick(movie);
+                    }}
+                    className="mt-2 w-full text-center text-sm py-2.5 rounded-lg font-semibold bg-orange-600 text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-800 transition-all"
+                  >
+                    🎭 Select Cinema
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Desktop: Grid Layout */}
+        <div className="hidden lg:grid lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          {movies.map(movie => {
+            return (
+              <div
+                key={movie.id}
+                onClick={() => handleMovieClick(movie)}
+                className={`bg-white dark:bg-gray-800 rounded-lg shadow-card overflow-hidden flex flex-col cursor-pointer relative transition-all hover:shadow-xl`}
+              >
+                {/* Image or Placeholder */}
+                <div className="relative h-32 overflow-hidden">
+                  <img 
+                    src={movie.image 
+                      ? (movie.image.startsWith('/') ? movie.image : `/assets/movies/${movie.image}`) 
+                      : 'https://images.unsplash.com/photo-1489599849228-ed304dbb6b38?w=400&h=160&fit=crop'}
+                    alt={movie.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = 'https://images.unsplash.com/photo-1489599849228-ed304dbb6b38?w=400&h=160&fit=crop';
+                    }}
+                  />
+
+                  <span className="absolute top-2 left-2 bg-black/70 text-white text-[10px] px-2 py-1 rounded">
+                    {movie.format || 'MOVIE'}
+                  </span>
+                  <span className="absolute bottom-2 right-2 bg-orange-600 text-white text-[10px] px-2 py-1 rounded shadow-sm font-semibold">
+                    {movie.rating || 'UA'}
+                  </span>
+                </div>
+
+                <div className="p-3 flex-1 flex flex-col">
+                  <h3 className="text-sm font-semibold line-clamp-2 dark:text-gray-100">
+                    {movie.title}
+                  </h3>
+                  <p className="text-xs text-brand-secondary dark:text-gray-400 mt-1">
+                    {movie.language} • {movie.genre}
+                  </p>
+                  <p className="text-xs text-brand-secondary dark:text-gray-400 mt-0.5">
+                    ⏱️ {movie.duration || '150'} mins
+                  </p>
+
+                  {/* Show Selection Button */}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleMovieClick(movie);
+                    }}
+                    className="mt-2 w-full text-center text-sm py-2.5 rounded-lg font-semibold bg-orange-600 text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-800 transition-all"
+                  >
+                    🎭 Select Cinema
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+      </section>
       <section className="mt-6 md:mt-8 lg:mt-10">
         <div className="flex justify-between items-center mb-4 md:mb-6 px-0">
           <h2 className="font-semibold text-lg md:text-2xl lg:text-3xl text-brand-primary dark:text-gray-100">

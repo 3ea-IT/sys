@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\QueryController;
+use App\Http\Controllers\Admin\ExperienceController;
+use App\Http\Controllers\Admin\BookingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,4 +40,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/queries/{query}/assign', [QueryController::class, 'assign'])->name('queries.assign');
     Route::post('/queries/{query}/resolve', [QueryController::class, 'resolve'])->name('queries.resolve');
 
+    // Experiences Management
+    Route::resource('experiences', ExperienceController::class)->only(['index', 'show']);
+    Route::get('/experiences/{experience}/edit', [ExperienceController::class, 'edit'])->name('experiences.edit');
+    Route::post('/experiences/{experience}/approve', [ExperienceController::class, 'approve'])->name('experiences.approve');
+    Route::post('/experiences/{experience}/reject', [ExperienceController::class, 'reject'])->name('experiences.reject');
+
+    // Bookings Management
+    Route::get('/bookings', [BookingsController::class, 'index'])->name('bookings.index');
+    Route::get('/bookings/{booking}', [BookingsController::class, 'show'])->name('bookings.show');
 });

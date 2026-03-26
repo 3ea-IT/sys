@@ -8,7 +8,7 @@ import { ThemeProvider } from './Contexts/ThemeContext';
 import { LanguageProvider } from './Contexts/LanguageContext';
 import { LoaderProvider } from './Contexts/LoaderContext';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Secure Your Seat';
+const appName = import.meta.env.VITE_APP_NAME || 'Secure My Seat';
 
 // Setup Google Translate callback before loading script
 window.googleTranslateElementInit = function() {

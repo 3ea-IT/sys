@@ -44,6 +44,8 @@ export default function CreateExperience({ categories, bookingModes }) {
         location: '',
         start_date: '',
         start_time: '',
+        end_date: '',
+        end_time: '',
         description: '',
         highlights: '',
         booking_mode: 'both',
@@ -101,6 +103,7 @@ export default function CreateExperience({ categories, bookingModes }) {
             transform((formData) => ({
                 ...formData,
                 start_time: convertTo24Hour(formData.start_time),
+                end_time: formData.end_time ? convertTo24Hour(formData.end_time) : null,
             }));
 
             post(route('vendor.experiences.store'));
@@ -197,6 +200,27 @@ export default function CreateExperience({ categories, bookingModes }) {
                             error={errors.start_time}
                             placeholder="e.g. 02:30 PM"
                             required={true}
+                        />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 pt-3 border-t border-brand-border/40">
+                        <InputField
+                            label="End Date (Optional)"
+                            name="end_date"
+                            type="date"
+                            value={data.end_date}
+                            onChange={(v) => setData('end_date', v)}
+                            error={errors.end_date}
+                            help="Leave blank for single-day events"
+                        />
+                        <InputField
+                            label="End Time (Optional)"
+                            name="end_time"
+                            type="text"
+                            value={data.end_time}
+                            onChange={(v) => setData('end_time', v)}
+                            error={errors.end_time}
+                            placeholder="e.g. 05:00 PM"
+                            help="Leave blank for single-day events"
                         />
                     </div>
                 </SectionCard>
