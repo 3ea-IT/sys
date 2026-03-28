@@ -5,17 +5,25 @@ import AppLayout from '@/Layouts/AppLayout';
 export default function CinemaSelection() {
     const { movie, cinemas } = usePage().props;
 
+    // Convert minutes to HH:MM format
+    const formatDuration = (minutes) => {
+        if (!minutes) return '0h 0m';
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return `${hours}h ${mins}m`;
+    };
+
     const handleCinemaClick = (cinema) => {
         window.location.href = `/movies/${movie.id}/cinemas/${cinema.id}/slots`;
     };
 
     const handleBackClick = () => {
-        window.location.href = '/';
+        window.location.href = '/dashboard';
     };
 
     return (
         <AppLayout>
-            <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-7xl">
+            <div className="container mx-auto py-0 max-w-7xl">
                 {/* Movie Header */}
                 <div className="mb-6 sm:mb-8">
                     <button
@@ -36,10 +44,10 @@ export default function CinemaSelection() {
                         <div className="flex-1 min-w-0">
                             <h1 className="text-xl sm:text-3xl font-bold text-gray-900 mb-2">{movie.title}</h1>
                             <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3 text-gray-600 mb-2 sm:mb-3">
-                                <div className="flex items-center gap-1">
+                                {/* <div className="flex items-center gap-1">
                                     <span className="text-xs sm:text-sm font-medium">Rating:</span>
                                     <span className="text-xs sm:text-sm">{movie.rating}</span>
-                                </div>
+                                </div> */}
                                 <div className="flex items-center gap-1">
                                     <span className="text-xs sm:text-sm font-medium">Language:</span>
                                     <span className="text-xs sm:text-sm">{movie.language}</span>
@@ -49,8 +57,12 @@ export default function CinemaSelection() {
                                     <span className="text-xs sm:text-sm">{movie.format}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <span className="text-xs sm:text-sm font-medium">Dur:</span>
-                                    <span className="text-xs sm:text-sm">⏱️ {movie.duration}m</span>
+                                    <span className="text-xs sm:text-sm font-medium">Duration:</span>
+                                    <span className="text-xs sm:text-sm">⏱️ {formatDuration(movie.duration)}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <span className="text-xs sm:text-sm font-medium">Genre:</span>
+                                    <span className="text-xs sm:text-sm">{movie.genre}</span>
                                 </div>
                             </div>
                             <p className="text-gray-700 text-xs sm:text-sm line-clamp-2">{movie.description}</p>

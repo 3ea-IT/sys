@@ -1,5 +1,5 @@
 import { Link, usePage, router } from "@inertiajs/react";
-import { Home, User, Search, Ticket, Bell, LogOut, Settings, HelpCircle, Menu, X, Calendar } from "lucide-react";
+import { Home, User, Search, Ticket, Bell, LogOut, Settings, Film, HelpCircle, Menu, X, Calendar } from "lucide-react";
 import { useState, useEffect } from "react";
 import PWAInstallPrompt from "../Components/PWAInstallPrompt";
 import AppLoader from "../Components/AppLoader";
@@ -99,7 +99,7 @@ export default function AppLayout({ children }) {
               onClick={() => setSidebarOpen(false)}
               currentUrl={url}
             />
-            {usePage().props.auth?.user && (
+            {/* {usePage().props.auth?.user && (
               <SidebarLink
                 href="/holds"
                 icon={Ticket}
@@ -107,7 +107,7 @@ export default function AppLayout({ children }) {
                 onClick={() => setSidebarOpen(false)}
                 currentUrl={url}
               />
-            )}
+            )} */}
             <SidebarLink
               href="/explore"
               icon={Search}
@@ -265,7 +265,7 @@ export default function AppLayout({ children }) {
                 onClick={() => setSidebarOpen(false)}
                 currentUrl={url}
               />
-              {usePage().props.auth?.user && (
+              {/* {usePage().props.auth?.user && (
                 <SidebarLink
                   href="/holds"
                   icon={Ticket}
@@ -273,7 +273,7 @@ export default function AppLayout({ children }) {
                   onClick={() => setSidebarOpen(false)}
                   currentUrl={url}
                 />
-              )}
+              )} */}
               <SidebarLink
                 href="/explore"
                 icon={Search}
@@ -353,7 +353,7 @@ export default function AppLayout({ children }) {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 px-4 pt-6 pb-32 md:pb-40 lg:pb-48 md:px-6 overflow-y-auto overflow-x-hidden">
+        <main className="flex-1 px-4 pt-2 pb-32 md:pb-40 lg:pb-48 md:px-6 overflow-y-auto overflow-x-hidden">
           {children}
         </main>
 
@@ -362,7 +362,8 @@ export default function AppLayout({ children }) {
           <div className="w-full bg-white dark:bg-gray-800 shadow-xl px-1 py-1.5 md:p-2 rounded-xs border-t md:border border-brand-border dark:border-gray-700">
             <div className="flex justify-between items-end gap-0.5 md:gap-1">
               <FooterIcon href="/dashboard"     icon={Home}   label="Home"     currentUrl={url} />
-              <FooterIcon href={usePage().props.auth?.user ? "/holds" : "/login"}         icon={Ticket} label="My Seats" currentUrl={url} />
+              {/* <FooterIcon href={usePage().props.auth?.user ? "/holds" : "/login"}         icon={Ticket} label="My Seats" currentUrl={url} /> */}
+              <FooterIcon href="/movies" icon={Film}   label="Movies"   currentUrl={url} />
               {/* ── Centre elevated Explore circle ── */}
               <ExploreIcon href="/explore" currentUrl={url} />
               <FooterIcon href={usePage().props.auth?.user ? "/bookings" : "/login"} icon={Calendar}   label="Bookings"   currentUrl={url} />

@@ -204,11 +204,11 @@ export default function VendorKYC({ vendor, kyc }) {
                     className={`w-full px-4 py-2.5 rounded-lg border border-brand-border bg-white text-brand-primary text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${kyc?.business_type ? 'opacity-60 cursor-not-allowed bg-gray-100' : ''}`}
                   >
                     <option value="">Select business type</option>
-                    <option value="Entertainment">Entertainment</option>
-                    <option value="Knowledge">Knowledge</option>
-                    <option value="Wellness">Wellness</option>
-                    <option value="Travel">Travel</option>
-                    <option value="Dining">Dining</option>
+                    <option value="Movies">Movies</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Music Shows">Music Shows</option>
+                    <option value="TATA IPL 2026">TATA IPL 2026</option>
+                    <option value="Comedy Shows">Comedy Shows</option>
                   </select>
                   {kyc?.business_type && (
                     <p className="text-xs text-green-600 mt-1">✓ Set during registration</p>

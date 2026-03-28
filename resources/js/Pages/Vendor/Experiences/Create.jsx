@@ -112,11 +112,11 @@ export default function CreateExperience({ categories, bookingModes }) {
 
     // Fallback options for demo
     const displayCategories = categories ?? {
-        entertainment: 'Entertainment',
-        knowledge: 'Knowledge',
-        wellness: 'Wellness',
-        travel: 'Travel',
-        dining: 'Dining',
+        movies: 'Movies',
+        sports: 'Sports',
+        'music-shows': 'Music Shows',
+        'tata-ipl-2026': 'TATA IPL 2026',
+        'comedy-shows': 'Comedy Shows',
     };
 
     const displayBookingModes = bookingModes ?? {

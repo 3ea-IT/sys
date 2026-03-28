@@ -12,6 +12,8 @@ use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\SupportQueryController;
 use App\Http\Controllers\MovieTicketController;
+use App\Http\Controllers\IplController;
+use App\Http\Controllers\IplMatchBookingController;
 use Inertia\Inertia;
 
 /*
@@ -70,6 +72,26 @@ Route::middleware('auth')->group(function () {
     // Movie cinema and slot selection
     Route::get('/movies/{movie}/cinemas', [MovieTicketController::class, 'showCinemas'])->name('movies.cinemas');
     Route::get('/movies/{movie}/cinemas/{cinema}/slots', [MovieTicketController::class, 'showSlots'])->name('movies.slots');
+    Route::get('/movies/{movie}/cinemas/{cinema}/slots/{slot}/seats', [MovieTicketController::class, 'seatingPage'])->name('seating.page');
+    
+    // Payment routes
+    Route::post('/api/movie-tickets/create-razorpay-order', [MovieTicketController::class, 'createRazorpayOrder'])->name('movie-tickets.create-razorpay-order');
+    Route::post('/api/movie-tickets/verify-payment', [MovieTicketController::class, 'verifyAndCreateBooking'])->name('movie-tickets.verify-payment');
+    Route::get('/movie-tickets/booking/{booking}', [MovieTicketController::class, 'showBookingConfirmation'])->name('booking-confirmation');
+    
+    Route::post('/api/ipl-matches/create-razorpay-order', [IplMatchBookingController::class, 'createRazorpayOrder'])->name('ipl-matches.create-razorpay-order');
+    Route::post('/api/ipl-matches/verify-payment', [IplMatchBookingController::class, 'verifyAndCreateBooking'])->name('ipl-matches.verify-payment');
+    Route::get('/ipl', [IplController::class, 'index'])->name('ipl.index');
+    Route::get('/ipl/match/{id}', function ($id) {
+        return inertia('Ipl/MatchDetail', ['matchId' => $id]);
+    })->name('ipl.match');
+    Route::get('/ipl/match/{id}/seats', function ($id) {
+        return inertia('Ipl/MatchSeatingSelection', [
+            'matchId' => $id,
+            'razorpayKey' => config('services.razorpay.key'),
+        ]);
+    })->name('ipl.match.seats');
+    Route::get('/ipl/match-booking/{booking}', [IplMatchBookingController::class, 'showBookingConfirmation'])->name('ipl.match.booking.confirmation');
 });
 
 Route::group([], function () {

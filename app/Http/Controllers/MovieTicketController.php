@@ -134,34 +134,21 @@ class MovieTicketController extends Controller
     {
         $user = Auth::user();
 
-        $showSlots = MovieShowSlot::upcomingShows()
-            ->paginate(15);
-
-        $userBookedSlotIds = $user 
-            ? MovieTicketBooking::where('user_id', $user->id)
-                ->where('status', '!=', 'cancelled')
-                ->pluck('movie_show_slot_id')
-                ->toArray()
-            : [];
+        $movies = Movie::where('status', 'active')
+            ->orderBy('title')
+            ->get();
 
         return Inertia::render('MovieTickets/Index', [
-            'movies' => $showSlots->map(function ($slot) use ($userBookedSlotIds) {
+            'movies' => $movies->map(function ($movie) {
                 return [
-                    'id' => $slot->id,
-                    'title' => $slot->movie->title,
-                    'image' => $slot->movie->image,
-                    'cinema' => $slot->cinema->name,
-                    'cinema_location' => $slot->cinema->location,
-                    'price' => (float) $slot->price,
-                    'available_seats' => $slot->available_seats,
-                    'total_seats' => $slot->total_seats,
-                    'show_date' => $slot->show_date->format('M d, Y'),
-                    'show_time' => $slot->show_time->format('h:i A'),
-                    'language' => $slot->movie->language,
-                    'format' => $slot->movie->format,
-                    'screen_name' => $slot->screen_name,
-                    'is_booked' => in_array($slot->id, $userBookedSlotIds),
-                    'seats_full' => $slot->available_seats <= 0,
+                    'id' => $movie->id,
+                    'title' => $movie->title,
+                    'image' => $movie->image,
+                    'language' => $movie->language,
+                    'format' => $movie->format,
+                    'genre' => $movie->genre,
+                    'duration' => $movie->duration,
+                    'description' => $movie->description,
                 ];
             }),
         ]);
@@ -229,6 +216,8 @@ class MovieTicketController extends Controller
         $request->validate([
             'movie_show_slot_id' => 'required|exists:movie_show_slots,id',
             'quantity' => 'required|integer|min:1|max:10',
+            'seat_numbers' => 'required|array|min:1',
+            'seat_numbers.*' => 'required|string|regex:/^[A-O]\d+$/',
         ]);
 
         $slot = MovieShowSlot::findOrFail($request->movie_show_slot_id);
@@ -248,18 +237,25 @@ class MovieTicketController extends Controller
             return response()->json(['error' => 'You already have a booking for this show'], 400);
         }
 
+        // Validate seat count matches quantity
+        $seatNumbers = $request->input('seat_numbers', []);
+        if (count($seatNumbers) !== $request->quantity) {
+            return response()->json(['error' => 'Number of seats must match quantity'], 400);
+        }
+
         // Check if enough seats are available
         if ($request->quantity > $slot->available_seats) {
             return response()->json(['error' => "Only {$slot->available_seats} seats available"], 400);
         }
 
-        // Create booking
+        // Create booking with seat numbers
         $totalAmount = $slot->price * $request->quantity;
 
         $booking = MovieTicketBooking::create([
             'user_id' => $user->id,
             'movie_show_slot_id' => $slot->id,
             'quantity' => $request->quantity,
+            'seat_numbers' => $seatNumbers,
             'total_amount' => $totalAmount,
             'amount_per_ticket' => $slot->price,
             'status' => 'confirmed',
@@ -334,4 +330,251 @@ class MovieTicketController extends Controller
 
         return response()->json(['error' => 'Cannot cancel this booking'], 400);
     }
+
+    /**
+     * Show seating selection page
+     */
+    public function seatingPage(Movie $movie, Cinema $cinema, MovieShowSlot $slot)
+    {
+        return Inertia::render('MovieTickets/SeatingSelection', [
+            'movie' => $movie,
+            'cinema' => $cinema,
+            'selectedSlot' => [
+                'id' => $slot->id,
+                'price' => (float) $slot->price,
+                'available_seats' => $slot->available_seats,
+                'show_date' => $slot->show_date->format('M d, Y'),
+                'show_time' => $slot->show_time->format('h:i A'),
+                'screen_name' => $slot->screen_name,
+            ],
+            'quantity' => request('quantity', 1),
+            'razorpayKey' => config('services.razorpay.key'),
+        ]);
+    }
+
+    /**
+     * Create Razorpay order for payment
+     */
+    public function createRazorpayOrder(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $request->validate([
+            'movie_show_slot_id' => 'required|exists:movie_show_slots,id',
+            'quantity' => 'required|integer|min:1|max:10',
+            'seat_numbers' => 'required|array|min:1',
+            'seat_numbers.*' => 'required|string|regex:/^[A-O]\d+$/',
+        ]);
+
+        $slot = MovieShowSlot::findOrFail($request->movie_show_slot_id);
+
+        // Validate booking before creating order
+        if (!$slot->isAvailable()) {
+            return response()->json(['error' => 'Show is sold out'], 400);
+        }
+
+        $existingBooking = MovieTicketBooking::where('user_id', $user->id)
+            ->where('movie_show_slot_id', $slot->id)
+            ->where('status', '!=', 'cancelled')
+            ->first();
+
+        if ($existingBooking) {
+            return response()->json(['error' => 'You already have a booking for this show'], 400);
+        }
+
+        $seatNumbers = $request->input('seat_numbers', []);
+        if (count($seatNumbers) !== $request->quantity) {
+            return response()->json(['error' => 'Number of seats must match quantity'], 400);
+        }
+
+        if ($request->quantity > $slot->available_seats) {
+            return response()->json(['error' => "Only {$slot->available_seats} seats available"], 400);
+        }
+
+        // Create Razorpay order
+        $totalAmount = $slot->price * $request->quantity;
+
+        try {
+            $razorpay = new \Razorpay\Api\Api(
+                config('services.razorpay.key'),
+                config('services.razorpay.secret')
+            );
+
+            $order = $razorpay->order->create([
+                'amount' => $totalAmount * 100, // Amount in paise
+                'currency' => 'INR',
+                'receipt' => 'booking_' . uniqid(),
+                'notes' => [
+                    'movie_show_slot_id' => $slot->id,
+                    'user_id' => $user->id,
+                    'quantity' => $request->quantity,
+                    'seat_numbers' => json_encode($seatNumbers),
+                ]
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'orderId' => $order->id,
+                'amount' => $totalAmount,
+                'currency' => 'INR',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to create payment order: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Verify Razorpay payment and create booking
+     */
+    public function verifyAndCreateBooking(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        try {
+            $validated = $request->validate([
+                'razorpay_order_id' => 'required|string',
+                'razorpay_payment_id' => 'required|string',
+                'razorpay_signature' => 'required|string',
+                'movie_show_slot_id' => 'required|exists:movie_show_slots,id',
+                'quantity' => 'required|integer|min:1|max:10',
+                'seat_numbers' => 'required|array|min:1',
+                'seat_numbers.*' => 'required|string|regex:/^[A-O]\d+$/',
+            ]);
+            \Log::info('Verify payment validation passed', ['validated' => $validated]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::warning('Verify payment validation failed', ['errors' => $e->errors(), 'request_data' => $request->all()]);
+            return response()->json(['error' => 'Validation failed', 'details' => $e->errors()], 422);
+        }
+
+        // Verify Razorpay signature
+        $razorpay = new \Razorpay\Api\Api(
+            config('services.razorpay.key'),
+            config('services.razorpay.secret')
+        );
+
+        try {
+            $attributes = [
+                'razorpay_order_id' => $request->razorpay_order_id,
+                'razorpay_payment_id' => $request->razorpay_payment_id,
+                'razorpay_signature' => $request->razorpay_signature
+            ];
+
+            $razorpay->utility->verifyPaymentSignature($attributes);
+            \Log::info('Razorpay signature verification passed');
+        } catch (\Exception $e) {
+            \Log::error('Razorpay signature verification failed', [
+                'error' => $e->getMessage(),
+                'order_id' => $request->razorpay_order_id,
+                'payment_id' => $request->razorpay_payment_id,
+            ]);
+            return response()->json(['error' => 'Payment verification failed: ' . $e->getMessage()], 400);
+        }
+
+        // Verify slot availability again
+        $slot = MovieShowSlot::findOrFail($request->movie_show_slot_id);
+
+        if (!$slot->isAvailable() || $request->quantity > $slot->available_seats) {
+            return response()->json(['error' => 'Seats no longer available'], 400);
+        }
+
+        // Check if user already has a booking
+        $existingBooking = MovieTicketBooking::where('user_id', $user->id)
+            ->where('movie_show_slot_id', $slot->id)
+            ->where('status', '!=', 'cancelled')
+            ->first();
+
+        if ($existingBooking) {
+            return response()->json(['error' => 'You already have a booking for this show'], 400);
+        }
+
+        // Create booking record
+        $seatNumbers = $request->input('seat_numbers', []);
+        $totalAmount = $slot->price * $request->quantity;
+
+        $booking = MovieTicketBooking::create([
+            'user_id' => $user->id,
+            'movie_show_slot_id' => $slot->id,
+            'quantity' => $request->quantity,
+            'seat_numbers' => $seatNumbers,
+            'total_amount' => $totalAmount,
+            'amount_per_ticket' => $slot->price,
+            'status' => 'completed',
+            'booking_reference' => 'BOOK' . strtoupper(uniqid()),
+        ]);
+
+        // Update available seats
+        $slot->updateAvailableSeats($request->quantity);
+
+        return response()->json([
+            'success' => true,
+            'booking_id' => $booking->id,
+            'booking_reference' => $booking->booking_reference,
+            'message' => 'Payment successful! Your booking is confirmed.'
+        ]);
+    }
+
+    /**
+     * Show booking confirmation page with all details
+     */
+    public function showBookingConfirmation(MovieTicketBooking $booking)
+    {
+        $user = Auth::user();
+
+        if (!$user || $booking->user_id !== $user->id) {
+            return redirect('/login')->with('error', 'Unauthorized access');
+        }
+
+        // Get all related data
+        $slot = $booking->movieShowSlot;
+        $movie = $slot->movie;
+        $cinema = $slot->cinema;
+
+        return Inertia::render('MovieTickets/BookingConfirmation', [
+            'booking' => [
+                'id' => $booking->id,
+                'booking_reference' => $booking->booking_reference,
+                'quantity' => $booking->quantity,
+                'seat_numbers' => is_array($booking->seat_numbers) ? $booking->seat_numbers : json_decode($booking->seat_numbers, true),
+                'total_amount' => $booking->total_amount,
+                'amount_per_ticket' => $booking->amount_per_ticket,
+                'status' => $booking->status,
+                'created_at' => $booking->created_at->format('M d, Y h:i A'),
+            ],
+            'movie' => [
+                'id' => $movie->id,
+                'title' => $movie->title,
+                'image' => $movie->image,
+                'category' => $movie->category ?? $movie->genre,
+                'genre' => $movie->genre,
+                'language' => $movie->language,
+                'format' => $movie->format,
+                'duration' => $movie->duration,
+                'rating' => $movie->rating,
+                'description' => $movie->description,
+            ],
+            'cinema' => [
+                'id' => $cinema->id,
+                'name' => $cinema->name,
+                'location' => $cinema->location,
+                'type' => $cinema->type,
+                'image' => $cinema->image,
+            ],
+            'slot' => [
+                'id' => $slot->id,
+                'show_date' => $slot->show_date->format('Y-m-d'),
+                'show_time' => $slot->show_time,
+                'screen_name' => $slot->screen_name,
+                'price' => $slot->price,
+            ],
+        ]);
+    }
 }
+

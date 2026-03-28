@@ -11,9 +11,9 @@ class ExperienceSeeder extends Seeder
     {
         Experience::insert([
             [
-                'title' => 'Azure Sky Lounge',
+                'title' => 'Latest Movie Releases',
                 'location' => 'Downtown District',
-                'category' => 'dining',
+                'category' => 'movies',
                 'price' => 120,
                 'hold_token' => 20,
                 'hold_duration' => 30,
@@ -39,9 +39,9 @@ class ExperienceSeeder extends Seeder
                 'instant_availability' => 50,
             ],
             [
-                'title' => 'Founders Leadership Workshop',
+                'title' => 'Sports Tournament Access',
                 'location' => 'Innovation Hub',
-                'category' => 'knowledge',
+                'category' => 'sports',
                 'price' => 75,
                 'hold_token' => 15,
                 'hold_duration' => 60,
@@ -53,9 +53,9 @@ class ExperienceSeeder extends Seeder
                 'instant_availability' => 20,
             ],
             [
-                'title' => 'Wellness Retreat Entry',
+                'title' => 'Music Concert Night',
                 'location' => 'Green Valley',
-                'category' => 'wellness',
+                'category' => 'music-shows',
                 'price' => 200,
                 'hold_token' => 25,
                 'hold_duration' => 120,

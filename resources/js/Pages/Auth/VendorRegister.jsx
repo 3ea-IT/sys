@@ -133,11 +133,11 @@ export default function VendorRegister() {
                 required
               >
                 <option value="">Select business type</option>
-                <option value="Entertainment">Entertainment (Movies, Concerts, Shows)</option>
-                <option value="Professional Events">Professional Events (Seminars, Workshops)</option>
-                <option value="Religious & Wellness">Religious & Wellness (Temple, Spiritual)</option>
-                <option value="Dining Access">Dining Access (Restaurants, Cafes)</option>
-                <option value="Travel & Attractions">Travel & Attractions (Tickets, Access)</option>
+                <option value="Movies">Movies (Film Screenings, Premieres)</option>
+                <option value="Sports">Sports (Tournaments, Matches, Events)</option>
+                <option value="Music Shows">Music Shows (Concerts, Live Performances)</option>
+                <option value="TATA IPL 2026">TATA IPL 2026 (Cricket Matches, Tickets)</option>
+                <option value="Comedy Shows">Comedy Shows (Stand-up, Comedy Events)</option>
               </select>
               <InputError message={errors.business_type} className="mt-1.5" />
             </div>

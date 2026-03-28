@@ -93,11 +93,11 @@ class ExperienceController extends Controller
     {
         // Always provide all available categories
         $categories = [
-            'Entertainment' => 'Entertainment',
-            'Knowledge' => 'Knowledge',
-            'Wellness' => 'Wellness',
-            'Travel' => 'Travel',
-            'Dining' => 'Dining',
+            'Movies' => 'Movies',
+            'Sports' => 'Sports',
+            'Music Shows' => 'Music Shows',
+            'TATA IPL 2026' => 'TATA IPL 2026',
+            'Comedy Shows' => 'Comedy Shows',
         ];
 
         return Inertia::render('Vendor/Experiences/Create', [
@@ -225,11 +225,11 @@ class ExperienceController extends Controller
             'user' => Auth::user(),
             'experience' => $experience,
             'categories' => [
-                'Entertainment' => 'Entertainment',
-                'Knowledge' => 'Knowledge',
-                'Wellness' => 'Wellness',
-                'Travel' => 'Travel',
-                'Dining' => 'Dining',
+                'Movies' => 'Movies',
+                'Sports' => 'Sports',
+                'Music Shows' => 'Music Shows',
+                'TATA IPL 2026' => 'TATA IPL 2026',
+                'Comedy Shows' => 'Comedy Shows',
             ],
             'bookingModes' => [
                 'instant' => 'Instant Booking (Full Payment)',

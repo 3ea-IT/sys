@@ -10,6 +10,7 @@ class MovieTicketBooking extends Model
         'user_id',
         'movie_show_slot_id',
         'quantity',
+        'seat_numbers',
         'total_amount',
         'amount_per_ticket',
         'status',
@@ -21,6 +22,7 @@ class MovieTicketBooking extends Model
         'total_amount' => 'decimal:2',
         'amount_per_ticket' => 'decimal:2',
         'quantity' => 'integer',
+        'seat_numbers' => 'array',
         'valid_until' => 'datetime',
     ];
 

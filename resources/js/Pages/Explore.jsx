@@ -130,22 +130,22 @@ export default function Explore({ categories = [], experiences = [], category = 
 
       {/* Categories */}
       <section className="mb-8 md:mb-12">
-        <h2 className="text-sm md:text-base font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 md:mb-6">Categories</h2>
+        <h2 className="text-sm md:text-base font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 md:mb-6">Event Categories</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-          <CategoryCard title="Entertainment" icon="🎭" image="/assets/categories/entertainment.jpg" href="/explore/entertainment" />
-          <CategoryCard title="Travel" icon="✈️" image="/assets/categories/travel.jpg" href="/explore/travel" />
-          <CategoryCard title="Knowledge" icon="📚" image="/assets/categories/knowledge.jpg" href="/explore/knowledge" />
-          <CategoryCard title="Wellness" icon="🧘" image="/assets/categories/wellness.jpg" href="/explore/wellness" />
+          <CategoryCard title="Movies" icon="🎬" image="/assets/categories/movies.jpg" href="/movies" />
+          <CategoryCard title="TATA IPL 2026" icon="🏏" image="/assets/categories/ipl.jpg" href="/ipl" />
+          <CategoryCard title="Sports" icon="⚽" image="/assets/categories/sports.jpg" href="/explore/sports" />
+          <CategoryCard title="Music Shows" icon="🎵" image="/assets/categories/music-shows.jpg" href="/explore/music-shows" />
         </div>
         <div className="mt-3 md:mt-4">
-          <CategoryCard title="Dining" icon="🍽️" image="/assets/categories/dining.jpg" href="/explore/dining" className="w-32 md:w-40" />
+          <CategoryCard title="Comedy Shows" icon="😂" image="/assets/categories/comedy-shows.jpg" href="/explore/comedy-shows" className="w-32 md:w-40" />
         </div>
       </section>
 
       {/* Featured Access */}
       <section>
         <div className="flex items-center justify-between mb-4 md:mb-6">
-          <h2 className="text-sm md:text-base font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Featured Access</h2>
+          <h2 className="text-sm md:text-base font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Featured Events</h2>
         </div>
 
         {/* Filters */}

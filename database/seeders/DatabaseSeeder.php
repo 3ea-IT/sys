@@ -18,6 +18,10 @@ class DatabaseSeeder extends Seeder
             HoldSeeder::class,
             WalletTransactionSeeder::class,
             CinemaSeeder::class,
+            MovieSeeder::class,
+            TeamsTableSeeder::class,
+            VenuesTableSeeder::class,
+            IplMatchesTableSeeder::class,
         ]);
     }
 }

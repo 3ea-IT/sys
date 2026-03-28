@@ -114,11 +114,11 @@ export default function UserGuide() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
             {[
-              { emoji: "🎬", text: "Entertainment (Movies, Concerts, Shows)" },
-              { emoji: "🎓", text: "Professional Events (Workshops, Seminars)" },
-              { emoji: "🛕", text: "Religious & Wellness (Darshan slots, Spiritual gatherings)" },
-              { emoji: "🍽", text: "Dining Access (Table reservations)" },
-              { emoji: "✈", text: "Travel & Attractions (Entry passes, Special access)" },
+              { emoji: "🎬", text: "Movies (Film Screenings, Premieres)" },
+              { emoji: "⚽", text: "Sports (Tournaments, Matches, Events)" },
+              { emoji: "🎵", text: "Music Shows (Concerts, Live Performances)" },
+              { emoji: "🏏", text: "TATA IPL 2026 (Cricket Matches, Tickets)" },
+              { emoji: "😂", text: "Comedy Shows (Stand-up, Comedy Events)" },
             ].map((category, idx) => (
               <div key={idx} className="text-sm text-brand-secondary dark:text-gray-400">
                 <span className="mr-2">{category.emoji}</span>

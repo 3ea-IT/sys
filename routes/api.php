@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Vendor\DashboardController;
+use App\Http\Controllers\IplController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,3 +26,5 @@ Route::middleware(['auth:sanctum', 'auth'])->prefix('vendor')->group(function ()
     Route::get('/dashboard-charts', [DashboardController::class, 'getChartData'])->name('api.vendor.dashboard-charts');
 });
 
+Route::get('/ipl-matches', [IplController::class, 'apiIplMatches']);
+Route::get('/ipl-matches/{id}', [IplController::class, 'apiIplMatchDetails']);

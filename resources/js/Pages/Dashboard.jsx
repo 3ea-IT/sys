@@ -11,6 +11,14 @@ export default function Dashboard({
   const { auth } = usePage().props;
   const user = auth?.user;
 
+  // Format minutes to HH:MM format
+  const formatDuration = (minutes) => {
+    if (!minutes) return '0h 0m';
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours}h ${mins}m`;
+  };
+
   const handleExperienceAction = (exp) => {
     if (!user) {
       router.visit('/login');
@@ -73,14 +81,50 @@ export default function Dashboard({
     router.visit(`/movies/${movie.id}/cinemas`);
   };
 
+  // Category definitions
+  const categories = [
+    { label: "Movies",        icon: "🎬", href: "/movies" },
+    { label: "TATA IPL 2026", icon: "🏏", href: "/ipl" },
+    { label: "Sports",        icon: "⚽", href: "/explore/sports" },
+    { label: "Music Shows",   icon: "🎵", href: "/explore/music-shows" },
+    { label: "Comedy Shows",  icon: "😂", href: "/explore/comedy-shows" },
+  ];
+
   return (
     <AppLayout>
       {/* Header - UNCHANGED */}
       <div>
         <p className="text-sm md:text-base text-brand-secondary dark:text-gray-400">Good evening,</p>
         <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-brand-primary dark:text-gray-100">
-          Welcome back, {user?.name?.split(' ')[0] || 'User'}
+          Welcome, {user?.name?.split(' ')[0] || 'User'}
         </h1>
+      </div>
+
+      {/* ── CATEGORY ICONS ROW - NEW ── */}
+      <div className="mt-4 -mx-4 md:-mx-6 lg:-mx-8">
+        <div className="flex overflow-x-auto no-scrollbar px-4 md:px-6 lg:px-8 pb-1 gap-1">
+          {categories.map((cat) => (
+            <Link
+              key={cat.label}
+              href={cat.href}
+              className="flex flex-col items-center gap-0.5 flex-shrink-0 px-2 group"
+            >
+              <div className="relative">
+                <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-lg group-hover:bg-gray-200 dark:group-hover:bg-gray-700 transition-all shadow-sm">
+                  {cat.icon}
+                </div>
+                {cat.badge && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[7px] font-bold px-0.5 py-0 rounded leading-none">
+                    {cat.badge}
+                  </span>
+                )}
+              </div>
+              <span className="text-[9px] text-center font-medium text-gray-700 dark:text-gray-300 leading-tight max-w-[50px] group-hover:text-brand-primary transition-colors">
+                {cat.label}
+              </span>
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* Banner Image */}
@@ -414,10 +458,10 @@ export default function Dashboard({
                     {movie.title}
                   </h3>
                   <p className="text-xs text-brand-secondary dark:text-gray-400 mt-1">
-                    {movie.language} • {movie.genre}
+                    {movie.language} • {movie.category}
                   </p>
                   <p className="text-xs text-brand-secondary dark:text-gray-400 mt-0.5">
-                    ⏱️ {movie.duration || '150'} mins
+                    ⏱️ {formatDuration(movie.duration || 150)}
                   </p>
 
                   {/* Show Selection Button */}
@@ -472,10 +516,10 @@ export default function Dashboard({
                     {movie.title}
                   </h3>
                   <p className="text-xs text-brand-secondary dark:text-gray-400 mt-1">
-                    {movie.language} • {movie.genre}
+                    {movie.language} • {movie.category}
                   </p>
                   <p className="text-xs text-brand-secondary dark:text-gray-400 mt-0.5">
-                    ⏱️ {movie.duration || '150'} mins
+                    ⏱️ {formatDuration(movie.duration || 150)}
                   </p>
 
                   {/* Show Selection Button */}

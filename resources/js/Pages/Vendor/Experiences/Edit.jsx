@@ -138,12 +138,11 @@ export default function EditExperience() {
 
     // Fallback options for demo
     const displayCategories = categories ?? {
-        adventure: 'Adventure',
-        culinary: 'Culinary',
-        wellness: 'Wellness',
-        arts: 'Arts & Culture',
-        education: 'Education',
+        movies: 'Movies',
         sports: 'Sports',
+        'music-shows': 'Music Shows',
+        'tata-ipl-2026': 'TATA IPL 2026',
+        'comedy-shows': 'Comedy Shows',
     };
 
     const displayBookingModes = bookingModes ?? {
