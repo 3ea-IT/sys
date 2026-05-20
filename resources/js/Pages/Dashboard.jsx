@@ -130,7 +130,7 @@ export default function Dashboard({
       {/* Banner Image */}
       <div className="mt-4 md:mt-8 lg:mt-10 rounded-lg md:rounded-2xl overflow-hidden shadow-card">
         <img
-          src="/banner/banner-1.png"
+          src="/banner/banner-new.png"
           alt="Banner"
           className="w-full h-auto object-cover"
           onError={(e) => {
