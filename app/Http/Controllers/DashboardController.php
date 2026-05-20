@@ -117,6 +117,8 @@ class DashboardController extends Controller
                     'supports_instant'     => $exp->supportsInstantBooking(),
                     'supports_hold'        => $exp->supportsHoldBooking(),
                     'distance'             => number_format(mt_rand(1, 10) / 10, 1) . ' mi',
+                    'start_date'           => $exp->start_date,
+                    'start_time'           => $exp->start_time,
                     // Resolved via collection lookup — zero extra DB queries
                     'is_secured'           => $activeHolds->has($exp->id),
                     'hold_id'              => $activeHolds->get($exp->id),

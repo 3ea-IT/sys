@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/movie-tickets/{booking}/cancel', [MovieTicketController::class, 'cancel'])->name('movie-tickets.cancel');
     
     // Movie cinema and slot selection
+    Route::post('/movies/preview/cinemas', [MovieTicketController::class, 'previewCinemas'])->name('movies.preview.cinemas');
     Route::get('/movies/{movie}/cinemas', [MovieTicketController::class, 'showCinemas'])->name('movies.cinemas');
     Route::get('/movies/{movie}/cinemas/{cinema}/slots', [MovieTicketController::class, 'showSlots'])->name('movies.slots');
     Route::get('/movies/{movie}/cinemas/{cinema}/slots/{slot}/seats', [MovieTicketController::class, 'seatingPage'])->name('seating.page');
@@ -132,5 +133,7 @@ Route::group([], function () {
         return Inertia::render('FAQ/Index');
     })->name('faqs');
 });
+
+Route::get('/getMovieDashboard', [MovieTicketController::class, 'getMovieDashboard']);
 
 require __DIR__.'/auth.php';

@@ -1,9 +1,109 @@
 import AppLayout from "@/Layouts/AppLayout";
 import { Link, router, usePage } from "@inertiajs/react";
 import { ArrowLeft, Calendar, Clock, MapPin, Ticket, Printer, Download, AlertCircle } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
+
 
 export default function BookingShow({ booking = {} }) {
+  const printRef = useRef(null);
+  // Print ticket: open a new window with only the ticket card, styled like match/movie tickets
+  const handlePrintTicket = () => {
+    const ticketNode = printRef.current;
+    if (!ticketNode) return;
+
+    // Collect all stylesheets from the current page
+    const styleSheets = Array.from(document.styleSheets)
+      .map((sheet) => {
+        try {
+          const rules = Array.from(sheet.cssRules || []).map(r => r.cssText).join('\n');
+          return `<style>${rules}</style>`;
+        } catch {
+          return sheet.href ? `<link rel=\"stylesheet\" href=\"${sheet.href}\" />` : '';
+        }
+      })
+      .join('\n');
+
+    const { experience = {} } = booking;
+    const printWindow = window.open('', '_blank', 'width=800,height=900');
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <title>Ticket — ${experience.title}</title>
+          ${styleSheets}
+          <style>
+            html, body {
+              background: #f3f4f6;
+              margin: 0;
+              padding: 0;
+              font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+            .print-shell {
+              min-height: 100vh;
+              display: flex;
+              align-items: flex-start;
+              justify-content: center;
+              padding: 24px 16px;
+            }
+            .print-card {
+              width: 100%;
+              max-width: 420px;
+              background: white;
+              border-radius: 12px;
+              box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+              padding: 32px 28px;
+              border: 2px solid #222;
+            }
+            @media print {
+              html, body { background: white; }
+              .print-shell { padding: 0; min-height: unset; }
+              .print-card {
+                box-shadow: none;
+                border-radius: 0;
+                padding: 16px;
+                max-width: 100%;
+              }
+              @page { size: A4; margin: 8mm; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="print-shell">
+            <div class="print-card">
+              ${ticketNode.innerHTML}
+            </div>
+          </div>
+          <script>
+            window.onload = function () {
+              const images = document.querySelectorAll('img');
+              let loaded = 0;
+              if (images.length === 0) {
+                window.print();
+                window.close();
+                return;
+              }
+              images.forEach(function(img) {
+                if (img.complete) {
+                  loaded++;
+                  if (loaded === images.length) { window.print(); window.close(); }
+                } else {
+                  img.onload = img.onerror = function () {
+                    loaded++;
+                    if (loaded === images.length) { window.print(); window.close(); }
+                  };
+                }
+              });
+            };
+          <\/script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
   const { auth } = usePage().props;
   const experience = booking?.experience || {};
   const [isLoading, setIsLoading] = useState(false);
@@ -280,7 +380,7 @@ export default function BookingShow({ booking = {} }) {
       </div>
 
       {/* Cancellation Policy */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6 mb-8 flex gap-4">
+      {/* <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6 mb-8 flex gap-4">
         <AlertCircle className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
         <div>
           <h4 className="font-bold text-blue-900 dark:text-blue-300 mb-2">Cancellation Policy</h4>
@@ -290,21 +390,21 @@ export default function BookingShow({ booking = {} }) {
             <li>• No refund for cancellations within 72 hours</li>
           </ul>
         </div>
-      </div>
+      </div> */}
 
       {/* Actions */}
       <div className="flex gap-3 flex-col sm:flex-row pb-20">
         {booking.status === "confirmed" && (
           <>
             <button
-              onClick={() => window.print()}
+              onClick={handlePrintTicket}
               className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-white dark:bg-gray-800 border border-brand-border dark:border-gray-700 rounded-lg font-semibold text-brand-primary dark:text-blue-400 hover:bg-brand-background dark:hover:bg-gray-700 transition-all"
             >
               <Printer className="w-5 h-5" />
               Print Ticket
             </button>
 
-            <button
+            {/* <button
               onClick={handleCancel}
               disabled={isLoading}
               className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg font-semibold text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-all disabled:opacity-50"
@@ -320,7 +420,7 @@ export default function BookingShow({ booking = {} }) {
                   Cancel Booking
                 </>
               )}
-            </button>
+            </button> */}
           </>
         )}
 
@@ -334,38 +434,33 @@ export default function BookingShow({ booking = {} }) {
         )}
       </div>
 
-      {/* Print Hidden Section */}
-      <div className="hidden print:block">
-        <style>{`
-          @media print {
-            body { padding: 20px; }
-            .no-print { display: none; }
-          }
-        `}</style>
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">🎫 Your Booking Ticket</h1>
-          <p className="text-gray-600">SecureSeat Reservations</p>
-        </div>
-
-        <div className="border-4 border-black p-8 mb-8">
-          <h2 className="text-2xl font-bold mb-4">{experience.title}</h2>
-          <p className="text-lg mb-2">📍 {experience.location}</p>
-          <p className="text-lg mb-8">Booking: #{booking.id}</p>
-
-          <div className="grid grid-cols-2 gap-8 mb-8">
+      {/* Print-Only Ticket Card (hidden on screen, used for print/download) */}
+      <div ref={printRef} style={{ display: 'none' }}>
+        <div style={{ maxWidth: 420, margin: '0 auto', background: 'white', borderRadius: 12, boxShadow: '0 4px 24px rgba(0,0,0,0.10)', padding: 32, border: '2px solid #222' }}>
+          <div style={{ textAlign: 'center', marginBottom: 24 }}>
+            <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 4 }}>🎫 Booking Confirmation</h1>
+            <div style={{ color: '#666', fontSize: 14 }}>SecureSeat Reservations</div>
+          </div>
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>{experience.title}</div>
+            <div style={{ fontSize: 15, marginBottom: 4 }}>📍 {experience.location}</div>
+            <div style={{ fontSize: 15, marginBottom: 4 }}>Booking: #{booking.id}</div>
+            <div style={{ fontSize: 15, marginBottom: 4 }}>Category: {experience.category || '—'}</div>
+            <div style={{ fontSize: 15, marginBottom: 4 }}>Booked By: {auth?.user?.name || '—'}</div>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
             <div>
-              <p className="text-sm font-bold text-gray-600">Amount Paid</p>
-              <p className="text-2xl font-bold">₹{parseFloat(booking.paid_amount || 0).toFixed(0)}</p>
+              <div style={{ fontSize: 13, color: '#666' }}>Amount Paid</div>
+              <div style={{ fontSize: 18, fontWeight: 700 }}>₹{parseFloat(booking.paid_amount || 0).toFixed(2)}</div>
             </div>
-            <div>
-              <p className="text-sm font-bold text-gray-600">Confirmation</p>
-              <p className="text-2xl font-bold">✅ CONFIRMED</p>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 13, color: '#666' }}>Status</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#16a34a' }}>✅ CONFIRMED</div>
             </div>
           </div>
-
-          <p className="text-center text-sm text-gray-600">
+          <div style={{ textAlign: 'center', fontSize: 13, color: '#666' }}>
             Booking Date: {formatDateTime(booking.confirmed_at)}
-          </p>
+          </div>
         </div>
       </div>
     </AppLayout>

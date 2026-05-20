@@ -166,7 +166,7 @@ export default function BookingShow() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="space-y-2">
+                        {/* <div className="space-y-2">
                             <Link
                                 href={route('vendor.bookings.check-in', booking.id)}
                                 method="post"
@@ -183,7 +183,7 @@ export default function BookingShow() {
                                 <ArrowLeft className="w-4 h-4" />
                                 Back to Bookings
                             </Link>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

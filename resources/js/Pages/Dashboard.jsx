@@ -77,8 +77,8 @@ export default function Dashboard({
       router.visit('/login');
       return;
     }
-    // Go to cinema selection page for this movie
-    router.visit(`/movies/${movie.id}/cinemas`);
+    // Go to cinema selection page for this movie via preview route
+    router.post('/movies/preview/cinemas', { movie });
   };
 
   // Category definitions
@@ -202,6 +202,26 @@ export default function Dashboard({
                   </h3>
                   <p className="text-xs text-brand-secondary dark:text-gray-400 mt-1">
                     {exp.location}
+                  </p>
+                  <p className="text-xs text-brand-secondary dark:text-gray-400 mt-1">
+                    {(() => {
+                      let dateStr = '';
+                      if (exp.start_date) {
+                        let d = exp.start_date;
+                        // Handle Carbon object serialization or ISO string
+                        if (typeof d === 'object' && d.date) d = d.date;
+                        try {
+                          const dateObj = new Date(d);
+                          dateStr = dateObj.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                        } catch {
+                          dateStr = d;
+                        }
+                      }
+                      return dateStr + (exp.start_time ? ` | ${exp.start_time}` : '');
+                    })()}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Seats: {exp.instant_availability || '50'}
                   </p>
 
                   {/* TWO SEPARATE BOOKING BUTTONS */}
@@ -540,7 +560,7 @@ export default function Dashboard({
         </div>
 
       </section>
-      <section className="mt-6 md:mt-8 lg:mt-10">
+      {/* <section className="mt-6 md:mt-8 lg:mt-10">
         <div className="flex justify-between items-center mb-4 md:mb-6 px-0">
           <h2 className="font-semibold text-lg md:text-2xl lg:text-3xl text-brand-primary dark:text-gray-100">
             Expiring Soon
@@ -548,10 +568,10 @@ export default function Dashboard({
           <Link href="/holds" className="text-xs md:text-sm text-brand-secondary dark:text-gray-400 hover:text-brand-primary transition-colors">
             View all
           </Link>
-        </div>
+        </div> */}
 
         {/* Mobile/Tablet: Horizontal Scroll */}
-        <div className="lg:hidden flex gap-6 overflow-x-auto pb-1 no-scrollbar">
+        {/* <div className="lg:hidden flex gap-6 overflow-x-auto pb-1 no-scrollbar">
           {expiring.length === 0 && (
             <p className="text-sm text-brand-secondary dark:text-gray-400">
               No expiring holds
@@ -605,10 +625,10 @@ export default function Dashboard({
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* Desktop: Grid Layout */}
-        <div className="hidden lg:grid lg:grid-cols-4 gap-6">
+        {/* <div className="hidden lg:grid lg:grid-cols-4 gap-6">
           {expiring.map(item => (
             <div
               key={item.id}
@@ -658,7 +678,7 @@ export default function Dashboard({
           ))}
         </div>
 
-      </section>
+      </section> */}
 
       {/* Recent Activity - UNCHANGED */}
       <section className="mt-6 md:mt-8 lg:mt-10">

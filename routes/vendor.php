@@ -43,6 +43,7 @@ Route::middleware(['auth', 'vendor'])->prefix('vendor')->name('vendor.')->group(
     // Help & Support
     Route::get('/help', function () { return inertia('Vendor/Help/Index'); })->name('help');
     Route::get('/help/guides', function () { return inertia('Vendor/Help/VendorGuide'); })->name('help.guides');
+    Route::get('/help/faq', function () { return inertia('Vendor/Help/FAQ'); })->name('help.faq');
     Route::get('/help/raise-query', function () { return inertia('Vendor/Help/RaiseQuery'); })->name('help.raise-query');
 
     // Experiences
@@ -56,6 +57,7 @@ Route::middleware(['auth', 'vendor'])->prefix('vendor')->name('vendor.')->group(
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::post('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+    Route::post('/bookings/{booking}/check-in', [BookingController::class, 'checkIn'])->name('bookings.check-in');
     Route::get('/bookings/export', [BookingController::class, 'export'])->name('bookings.export');
 
     // Holds

@@ -91,13 +91,13 @@ export default function BookingsIndex() {
                         <h1 className="text-2xl font-bold text-brand-primary tracking-tight">Bookings & Holds</h1>
                         <p className="text-xs text-brand-secondary mt-0.5">{filtered.length} of {totalCount} shown</p>
                     </div>
-                    <Link
+                    {/* <Link
                         href={route('vendor.bookings.export')}
                         className="flex items-center gap-1.5 bg-brand-primary text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-brand-primary/90 active:scale-95 transition-all shadow-md shadow-brand-primary/20"
                     >
                         <Download className="w-4 h-4" />
                         <span className="hidden sm:inline">Export CSV</span>
-                    </Link>
+                    </Link> */}
                 </div>
 
                 {/* ── Search ── */}

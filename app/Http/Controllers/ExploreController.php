@@ -45,6 +45,8 @@ class ExploreController extends Controller
                     'category' => $exp->category,
                     'location' => $exp->location,
                     'date' => $exp->date ?? now()->format('M d, Y'), // Fallback date if not available
+                    'start_date' => $exp->start_date,
+                    'end_date' => $exp->end_date,
                     'price' => $exp->price,
                     'hold_token' => $exp->hold_token,
                     'hold_duration' => $exp->hold_duration,
@@ -81,8 +83,8 @@ class ExploreController extends Controller
     {
         $user = Auth::user();
         
-        // Fetch experiences filtered by category (active only)
-        $experiences = Experience::where('category', $category)
+        // Fetch experiences filtered by category (active only, strict case-sensitive)
+        $experiences = Experience::whereRaw('BINARY category = ?', [$category])
             ->available() // Use model scope
             ->withCount(['activeHolds', 'bookings as instant_bookings_count'])
             ->orderBy('priority_score', 'desc')
@@ -106,6 +108,8 @@ class ExploreController extends Controller
                     'category' => $exp->category,
                     'location' => $exp->location,
                     'date' => $exp->date ?? now()->format('M d, Y'), // Fallback date if not available
+                    'start_date' => $exp->start_date,
+                    'end_date' => $exp->end_date,
                     'price' => $exp->price,
                     'hold_token' => $exp->hold_token,
                     'hold_duration' => $exp->hold_duration,

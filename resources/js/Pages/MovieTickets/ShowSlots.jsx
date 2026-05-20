@@ -38,8 +38,15 @@ export default function ShowSlots() {
         }
     };
 
+    // Normalize slot data so reduce can safely run
+    const normalizedShowSlots = Array.isArray(showSlots)
+        ? showSlots
+        : showSlots && typeof showSlots === 'object'
+        ? Object.values(showSlots)
+        : [];
+
     // Group slots by date
-    const slotsByDate = showSlots.reduce((acc, slot) => {
+    const slotsByDate = normalizedShowSlots.reduce((acc, slot) => {
         const date = slot.show_date;
         if (!acc[date]) {
             acc[date] = [];
@@ -197,7 +204,7 @@ export default function ShowSlots() {
                             </span>
                         </div>
 
-                        {showSlots.length === 0 ? (
+                        {!hasSlots ? (
                             <div className="text-center py-12 bg-white rounded-lg border-2 border-dashed border-gray-300">
                                 <p className="text-gray-500 text-base sm:text-lg">No shows available for this combination</p>
                             </div>

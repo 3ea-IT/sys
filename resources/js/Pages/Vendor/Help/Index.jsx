@@ -9,7 +9,8 @@ import {
   BookOpen,
   AlertCircle,
   Settings,
-  TrendingUp
+  TrendingUp,
+  MapPin
 } from "lucide-react";
 
 export default function VendorHelpAndSupport() {
@@ -33,10 +34,10 @@ export default function VendorHelpAndSupport() {
       color: "text-green-600 dark:text-green-400"
     },
     {
-      icon: MessageSquare,
-      title: "Live Chat",
-      description: "Chat with vendor support",
-      value: "Available 8AM - 7PM",
+      icon: MapPin,
+      title: "Office Address",
+      description: "Visit us in person",
+      value: "123 Tech Street, City, Country",
       bgColor: "bg-purple-100 dark:bg-purple-900/30",
       color: "text-purple-600 dark:text-purple-400"
     },
@@ -205,21 +206,6 @@ export default function VendorHelpAndSupport() {
                 </p>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Additional Info */}
-      <div className="bg-gradient-to-r from-brand-primary/5 to-brand-primary/10 border border-brand-border dark:border-brand-primary/20 dark:from-brand-primary/10 dark:to-brand-primary/5 rounded-lg p-4 md:p-6 mb-6">
-        <div className="flex gap-3">
-          <div className="flex-shrink-0">
-            <AlertCircle className="w-5 h-5 text-brand-primary dark:text-blue-400 mt-0.5" />
-          </div>
-          <div>
-            <h3 className="font-bold text-brand-primary dark:text-blue-100 mb-1">Premium Vendor Support</h3>
-            <p className="text-sm text-brand-secondary dark:text-blue-200">
-              Our dedicated vendor support team is here to help you succeed. We typically respond within 2-4 hours for urgent matters.
-            </p>
           </div>
         </div>
       </div>

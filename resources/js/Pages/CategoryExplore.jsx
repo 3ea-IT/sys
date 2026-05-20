@@ -10,10 +10,23 @@ export default function CategoryExplore({ category = '', experiences = [] }) {
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Format category title for display
-  const formatCategoryTitle = (cat) => {
-    return cat.charAt(0).toUpperCase() + cat.slice(1).replace(/([A-Z])/g, ' ₹1').trim();
+  const getEventStartDate = (exp) => exp.start_date || exp.date || exp.created_at || null;
+
+  const formatEventDate = (startDate, endDate) => {
+    if (!startDate) return 'Date unavailable';
+    const start = new Date(startDate);
+    if (Number.isNaN(start.getTime())) return startDate;
+    const options = { month: 'short', day: 'numeric', year: 'numeric' };
+    const formattedStart = start.toLocaleDateString('en-US', options);
+    if (!endDate) return formattedStart;
+    const end = new Date(endDate);
+    if (Number.isNaN(end.getTime()) || endDate === startDate) return formattedStart;
+    const formattedEnd = end.toLocaleDateString('en-US', options);
+    return `${formattedStart} - ${formattedEnd}`;
   };
+
+  // Format category title for display
+  const formatCategoryTitle = (cat) => cat;
 
   // FILTER LOGIC
   const filteredExperiences = experiences.filter((exp) => {
@@ -35,7 +48,10 @@ export default function CategoryExplore({ category = '', experiences = [] }) {
     if (activeFilter === 'date') {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      const expDate = new Date(exp.date || exp.created_at || Date.now());
+      const startDateStr = getEventStartDate(exp);
+      if (!startDateStr) return false;
+      const expDate = new Date(startDateStr);
+      if (Number.isNaN(expDate.getTime())) return false;
       expDate.setHours(0, 0, 0, 0);
       return expDate >= today;
     }
@@ -123,7 +139,7 @@ export default function CategoryExplore({ category = '', experiences = [] }) {
                 id={exp.id}
                 title={exp.title || 'Untitled'}
                 location={exp.location || 'Location'}
-                date={exp.date || "Oct 24, 2026"}
+                date={formatEventDate(exp.start_date || exp.date || exp.created_at, exp.end_date)}
                 attendees={exp.capacity || exp.location || '50'}
                 price={exp.instant_price ? parseFloat(exp.instant_price) : parseFloat(exp.hold_token || 0)}
                 instant_price={exp.instant_price}
@@ -233,7 +249,7 @@ function FeaturedCard({ id, title, location, date, attendees, price, instant_pri
               <Clock className="w-3.5 h-3.5" />
               <span>{date}</span>
             </div>
-            <span>{attendees}</span>
+            <span>Seats: {attendees}</span>
           </div>
         </div>
       </Link>

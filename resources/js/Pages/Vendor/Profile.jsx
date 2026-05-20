@@ -144,7 +144,7 @@ export default function VendorProfile() {
                         className="w-full bg-white border border-brand-border rounded-2xl py-3 text-brand-danger font-semibold flex items-center justify-center gap-2 hover:bg-brand-danger/5 transition-colors"
                     >
                         <LogOut size={16} />
-                        Sign Out
+                        Log Out
                     </button>
                 </div>
 

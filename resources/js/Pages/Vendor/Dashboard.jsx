@@ -390,37 +390,91 @@ export default function VendorDashboard() {
                     </div>
                 </div>
 
-                {/* Occupancy Rates Chart */}
+                {/* Occupancy Rates - Card Grid with Circular Progress */}
                 <div className="bg-white dark:bg-gray-800 rounded-xl border border-brand-border dark:border-gray-700 p-4 shadow-card">
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center justify-between mb-4">
                         <h3 className="text-base font-bold text-brand-primary">Live Experience Occupancy Breakdown</h3>
                         <Activity className="w-4 h-4 text-brand-secondary" />
                     </div>
                     {chartData?.occupancyRates && chartData.occupancyRates.length > 0 ? (
-                        <ResponsiveContainer width="100%" height={240}>
-                            <BarChart
-                                data={chartData.occupancyRates}
-                                margin={{ top: 5, right: 15, left: 60, bottom: 5 }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-                                <XAxis type="number" tick={{ fill: '#5F6C7B', fontSize: 9 }} tickLine={{ stroke: gridColor }} />
-                                <YAxis dataKey="experience" type="category" width={55} tick={{ fill: '#5F6C7B', fontSize: 8 }} tickLine={{ stroke: gridColor }} />
-                                <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: '#fff',
-                                        border: `1px solid ${gridColor}`,
-                                        borderRadius: '8px',
-                                        fontSize: '11px',
-                                    }}
-                                    formatter={(value) => `${value}%`}
-                                />
-                                <Legend wrapperStyle={{ fontSize: '11px' }} />
-                                <Bar dataKey="confirmedPercent" fill={OCCUPANCY_COLORS[0]} name="Confirmed %" />
-                                <Bar dataKey="holdsPercent" fill={OCCUPANCY_COLORS[1]} name="Holds %" />
-                            </BarChart>
-                        </ResponsiveContainer>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {chartData.occupancyRates.map((item, idx) => {
+                                const totalPercent = item.confirmedPercent + item.holdsPercent;
+                                const circumference = 2 * Math.PI * 45;
+                                const offset = circumference - (totalPercent / 100) * circumference;
+                                
+                                return (
+                                    <div key={idx} className="flex items-center gap-4 p-3 bg-brand-background dark:bg-gray-700/30 rounded-lg">
+                                        {/* Circular Progress Indicator */}
+                                        <div className="flex-shrink-0 relative">
+                                            <svg width="100" height="100" viewBox="0 0 100 100" className="transform -rotate-90">
+                                                {/* Background circle */}
+                                                <circle 
+                                                    cx="50" 
+                                                    cy="50" 
+                                                    r="45" 
+                                                    fill="none" 
+                                                    stroke="currentColor" 
+                                                    strokeWidth="3"
+                                                    className="text-gray-300 dark:text-gray-600"
+                                                />
+                                                {/* Confirmed segment (blue) */}
+                                                <circle 
+                                                    cx="50" 
+                                                    cy="50" 
+                                                    r="45" 
+                                                    fill="none" 
+                                                    stroke="#3B82F6"
+                                                    strokeWidth="3"
+                                                    strokeDasharray={`${(item.confirmedPercent / 100) * circumference} ${circumference}`}
+                                                    strokeLinecap="round"
+                                                />
+                                                {/* Holds segment (amber) */}
+                                                <circle 
+                                                    cx="50" 
+                                                    cy="50" 
+                                                    r="45" 
+                                                    fill="none" 
+                                                    stroke="#F59E0B"
+                                                    strokeWidth="3"
+                                                    strokeDasharray={`${(item.holdsPercent / 100) * circumference} ${circumference}`}
+                                                    strokeDashoffset={-((item.confirmedPercent / 100) * circumference)}
+                                                    strokeLinecap="round"
+                                                />
+                                            </svg>
+                                            {/* Center text */}
+                                            <div className="absolute inset-0 flex items-center justify-center flex-col">
+                                                <span className="text-lg font-bold text-brand-primary dark:text-gray-100">{totalPercent}%</span>
+                                                <span className="text-xs text-brand-secondary dark:text-gray-400">Booked</span>
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Details */}
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-semibold text-brand-primary dark:text-gray-100 truncate">{item.experience}</p>
+                                            <div className="mt-2 space-y-1">
+                                                <div className="flex items-center justify-between text-xs">
+                                                    <span className="flex items-center gap-1 text-brand-secondary dark:text-gray-400">
+                                                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                                                        Confirmed
+                                                    </span>
+                                                    <span className="font-semibold text-brand-primary dark:text-gray-100">{item.confirmedPercent}%</span>
+                                                </div>
+                                                <div className="flex items-center justify-between text-xs">
+                                                    <span className="flex items-center gap-1 text-brand-secondary dark:text-gray-400">
+                                                        <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                                                        Holds
+                                                    </span>
+                                                    <span className="font-semibold text-brand-primary dark:text-gray-100">{item.holdsPercent}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     ) : (
-                        <div className="h-240 flex items-center justify-center text-brand-secondary text-xs">
+                        <div className="h-40 flex items-center justify-center text-brand-secondary text-xs">
                             No occupancy data available yet
                         </div>
                     )}

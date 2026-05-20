@@ -36,4 +36,23 @@ return [
         'secret' => env('RAZORPAY_SECRET'),
     ],
 
+    'movieglu' => [
+        'base_url' => env('MOVIEGLU_BASE_URL', 'https://api-gate2.movieglu.com'),
+        'client' => env('MOVIEGLU_CLIENT'),
+        'api_key' => env('MOVIEGLU_API_KEY'),
+        'authorization' => env('MOVIEGLU_AUTHORIZATION'),
+        'territory' => env('MOVIEGLU_TERRITORY', 'IN'),
+        'api_version' => env('MOVIEGLU_API_VERSION', 'v201'),
+        'geolocation' => env('MOVIEGLU_GEOLOCATION', '0;0'),
+        'movies_endpoint' => env('MOVIEGLU_MOVIES_ENDPOINT', 'filmsInTheaters'),
+        'top_movies_endpoint' => env('MOVIEGLU_TOP_MOVIES_ENDPOINT', 'filmsNowShowing'),
+        'coming_soon_endpoint' => env('MOVIEGLU_COMING_SOON_ENDPOINT', 'filmsComingSoon'),
+        'cinemas_nearby_endpoint' => env('MOVIEGLU_CINEMAS_NEARBY_ENDPOINT', 'cinemasNearby'),
+        'cinema_details_endpoint' => env('MOVIEGLU_CINEMA_DETAILS_ENDPOINT', 'cinemaDetails'),
+        'film_details_endpoint' => env('MOVIEGLU_FILM_DETAILS_ENDPOINT', 'filmDetails'),
+        'cinema_live_search_endpoint' => env('MOVIEGLU_CINEMA_LIVE_SEARCH_ENDPOINT', 'cinemaLiveSearch'),
+        'showtimes_endpoint' => env('MOVIEGLU_SHOWTIMES_ENDPOINT', 'filmShowTimes'),
+        'cinema_showtimes_endpoint' => env('MOVIEGLU_CINEMA_SHOWTIMES_ENDPOINT', 'cinemaShowTimes'),
+    ],
+
 ];

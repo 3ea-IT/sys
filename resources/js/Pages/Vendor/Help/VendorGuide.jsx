@@ -1,9 +1,9 @@
+import React, { useEffect } from 'react';
+import { Head, Link, usePage } from "@inertiajs/react";
 import VendorAppLayout from "@/Layouts/VendorAppLayout";
-import { Link, usePage } from "@inertiajs/react";
 import {
   ArrowLeft,
   Zap,
-  Settings,
   BarChart3,
   Users,
   DollarSign,
@@ -13,16 +13,122 @@ import {
   FileText,
   TrendingUp,
   Lock,
-  RefreshCw,
   ShieldAlert,
   Smartphone,
 } from "lucide-react";
 
+const SECTIONS = [
+  { id: "section-1", title: "1. Getting Started", icon: Zap },
+  { id: "section-2", title: "2. Profile & Verification", icon: Lock },
+  { id: "section-3", title: "3. Creating Experiences", icon: FileText },
+  { id: "section-4", title: "4. Pricing & Inventory", icon: DollarSign },
+  { id: "section-5", title: "5. Managing Bookings", icon: Clock },
+  { id: "section-6", title: "6. Understanding Holds", icon: AlertCircle },
+  { id: "section-7", title: "7. Analytics & Reports", icon: BarChart3 },
+  { id: "section-8", title: "8. Settlements & Payments", icon: DollarSign },
+  { id: "section-9", title: "9. Customer Management", icon: Users },
+  { id: "section-10", title: "10. Ratings & Reviews", icon: Smartphone },
+  { id: "section-11", title: "11. Best Practices", icon: TrendingUp },
+  { id: "section-12", title: "12. Support & Troubleshooting", icon: ShieldAlert },
+];
+
 export default function VendorGuide() {
   const { user } = usePage().props;
 
+  const handleNavClick = (e, sectionId) => {
+    e.preventDefault();
+    const element = document.getElementById(sectionId);
+    console.log('Clicking: ', sectionId, 'Element:', !!element);
+    if (element) {
+      const mainElement = document.querySelector('main.overflow-y-auto');
+      
+      if (mainElement) {
+        // Desktop view - scroll the main container
+        console.log('Scrolling in main container (desktop)');
+        const mainRect = mainElement.getBoundingClientRect();
+        const elementRect = element.getBoundingClientRect();
+        const relativeTop = elementRect.top - mainRect.top + mainElement.scrollTop;
+        const scrollTop = relativeTop - 100;
+        
+        mainElement.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth'
+        });
+      } else {
+        // Mobile view - use scrollIntoView
+        console.log('Using scrollIntoView (mobile)');
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+      
+      window.location.hash = sectionId;
+    }
+  };
+
+  // Handle scroll on page load with hash
+  useEffect(() => {
+    const performScroll = () => {
+      const hash = window.location.hash.substring(1);
+      console.log('Hash from URL:', hash);
+      
+      if (hash) {
+        const element = document.getElementById(hash);
+        console.log('Element exists:', !!element);
+        
+        if (element) {
+          console.log('Scrolling to:', hash);
+          
+          // First, find the scrollable main container (desktop)
+          const mainElement = document.querySelector('main.overflow-y-auto');
+          
+          if (mainElement) {
+            // Desktop view - scroll the main container
+            console.log('Scrolling in main container (desktop view)');
+            // Calculate position relative to main container
+            const mainRect = mainElement.getBoundingClientRect();
+            const elementRect = element.getBoundingClientRect();
+            const relativeTop = elementRect.top - mainRect.top + mainElement.scrollTop;
+            const scrollTop = relativeTop - 100;
+            
+            console.log('Main rect:', mainRect);
+            console.log('Element rect:', elementRect);
+            console.log('Relative top:', relativeTop);
+            console.log('Scroll to:', scrollTop);
+            
+            mainElement.scrollTo({
+              top: scrollTop,
+              behavior: 'smooth'
+            });
+          } else {
+            // Mobile view - use scrollIntoView
+            console.log('Using scrollIntoView (mobile/default behavior)');
+            element.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        } else {
+          console.warn('Element not found:', hash);
+          // List all section IDs
+          const sections = document.querySelectorAll('[id^="section-"]');
+          console.log('Available sections:', Array.from(sections).map(s => s.id));
+        }
+      } else {
+        console.log('No hash in URL');
+      }
+    };
+
+    // Try scrolling with multiple delays to ensure DOM is ready
+    performScroll();
+    setTimeout(performScroll, 50);
+    setTimeout(performScroll, 200);
+    setTimeout(performScroll, 500);
+    setTimeout(performScroll, 1000);
+  }, []);
+
   return (
     <VendorAppLayout user={user}>
+      <Head title="Vendor Guide" />
+
       {/* Header */}
       <div className="mb-6 md:mb-8 pb-4 border-b border-brand-border dark:border-gray-700">
         <div className="flex items-center gap-2 mb-3">
@@ -45,36 +151,22 @@ export default function VendorGuide() {
       <div className="mb-8 bg-white dark:bg-gray-800 rounded-lg border border-brand-border dark:border-gray-700 p-4 md:p-6">
         <h2 className="text-lg font-bold text-brand-primary dark:text-gray-100 mb-4">Table of Contents</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          {[
-            "1. Getting Started",
-            "2. Profile & Verification",
-            "3. Creating Experiences",
-            "4. Pricing & Inventory",
-            "5. Managing Bookings",
-            "6. Understanding Holds",
-            "7. Analytics & Reports",
-            "8. Settlements & Payments",
-            "9. Customer Management",
-            "10. Ratings & Reviews",
-            "11. Best Practices",
-            "12. Support & Troubleshooting",
-          ].map((item) => (
-            <a
-              key={item}
-              href={`#${item.replace(/\s+/g, "-").toLowerCase()}`}
-              className="text-sm text-brand-primary dark:text-blue-400 hover:underline"
+          {SECTIONS.map((section) => (
+            <button
+              key={section.id}
+              onClick={(e) => handleNavClick(e, section.id)}
+              className="text-left text-sm text-brand-primary dark:text-blue-400 hover:underline focus:outline-none transition-colors"
             >
-              {item}
-            </a>
+              {section.title}
+            </button>
           ))}
         </div>
       </div>
 
       <div className="space-y-8 mb-10">
-
         {/* Section 1: Getting Started */}
-        <Section
-          id="1.-getting-started"
+        <SectionContent
+          id="section-1"
           title="1. Getting Started"
           icon={Zap}
         >
@@ -107,11 +199,11 @@ export default function VendorGuide() {
               ))}
             </ul>
           </Subsection>
-        </Section>
+        </SectionContent>
 
         {/* Section 2: Profile & Verification */}
-        <Section
-          id="2.-profile-&-verification"
+        <SectionContent
+          id="section-2"
           title="2. Profile & Verification"
           icon={Lock}
         >
@@ -145,11 +237,11 @@ export default function VendorGuide() {
               ))}
             </ul>
           </Subsection>
-        </Section>
+        </SectionContent>
 
         {/* Section 3: Creating Experiences */}
-        <Section
-          id="3.-creating-experiences"
+        <SectionContent
+          id="section-3"
           title="3. Creating Experiences"
           icon={FileText}
         >
@@ -202,11 +294,11 @@ export default function VendorGuide() {
               ))}
             </ul>
           </Subsection>
-        </Section>
+        </SectionContent>
 
         {/* Section 4: Pricing & Inventory */}
-        <Section
-          id="4.-pricing-&-inventory"
+        <SectionContent
+          id="section-4"
           title="4. Pricing & Inventory"
           icon={DollarSign}
         >
@@ -245,11 +337,11 @@ export default function VendorGuide() {
               Keep inventory accurate to avoid overbooking.
             </p>
           </Subsection>
-        </Section>
+        </SectionContent>
 
         {/* Section 5: Managing Bookings */}
-        <Section
-          id="5.-managing-bookings"
+        <SectionContent
+          id="section-5"
           title="5. Managing Bookings"
           icon={Clock}
         >
@@ -295,11 +387,11 @@ export default function VendorGuide() {
               ))}
             </ul>
           </Subsection>
-        </Section>
+        </SectionContent>
 
         {/* Section 6: Understanding Holds */}
-        <Section
-          id="6.-understanding-holds"
+        <SectionContent
+          id="section-6"
           title="6. Understanding Holds"
           icon={AlertCircle}
         >
@@ -348,11 +440,11 @@ export default function VendorGuide() {
               <br />✔ Token refunded if hold expires or customer cancels
             </p>
           </Subsection>
-        </Section>
+        </SectionContent>
 
         {/* Section 7: Analytics & Reports */}
-        <Section
-          id="7.-analytics-&-reports"
+        <SectionContent
+          id="section-7"
           title="7. Analytics & Reports"
           icon={BarChart3}
         >
@@ -404,11 +496,11 @@ export default function VendorGuide() {
               ))}
             </ul>
           </Subsection>
-        </Section>
+        </SectionContent>
 
         {/* Section 8: Settlements & Payments */}
-        <Section
-          id="8.-settlements-&-payments"
+        <SectionContent
+          id="section-8"
           title="8. Settlements & Payments"
           icon={DollarSign}
         >
@@ -445,11 +537,11 @@ export default function VendorGuide() {
               The platform charges a standard commission on each booking. Your settlement amount will reflect this deduction. Detailed breakdown is available in the settlements report.
             </p>
           </Subsection>
-        </Section>
+        </SectionContent>
 
         {/* Section 9: Customer Management */}
-        <Section
-          id="9.-customer-management"
+        <SectionContent
+          id="section-9"
           title="9. Customer Management"
           icon={Users}
         >
@@ -495,11 +587,11 @@ export default function VendorGuide() {
               ))}
             </ul>
           </Subsection>
-        </Section>
+        </SectionContent>
 
         {/* Section 10: Ratings & Reviews */}
-        <Section
-          id="10.-ratings-&-reviews"
+        <SectionContent
+          id="section-10"
           title="10. Ratings & Reviews"
           icon={Smartphone}
         >
@@ -553,11 +645,11 @@ export default function VendorGuide() {
               ))}
             </ul>
           </Subsection>
-        </Section>
+        </SectionContent>
 
         {/* Section 11: Best Practices */}
-        <Section
-          id="11.-best-practices"
+        <SectionContent
+          id="section-11"
           title="11. Best Practices"
           icon={TrendingUp}
         >
@@ -607,11 +699,11 @@ export default function VendorGuide() {
               ))}
             </ul>
           </Subsection>
-        </Section>
+        </SectionContent>
 
         {/* Section 12: Support & Troubleshooting */}
-        <Section
-          id="12.-support-&-troubleshooting"
+        <SectionContent
+          id="section-12"
           title="12. Support & Troubleshooting"
           icon={ShieldAlert}
         >
@@ -658,8 +750,7 @@ export default function VendorGuide() {
               ))}
             </div>
           </Subsection>
-        </Section>
-
+        </SectionContent>
       </div>
 
       {/* Help Section */}
@@ -684,9 +775,9 @@ export default function VendorGuide() {
 
 /* ================= COMPONENTS ================= */
 
-function Section({ id, title, icon: Icon, children }) {
+function SectionContent({ id, title, icon: Icon, children }) {
   return (
-    <div id={id} className="scroll-mt-20">
+    <div id={id} className="pt-0">
       <div className="flex items-center gap-3 mb-4">
         <div className="w-12 h-12 bg-brand-background dark:bg-gray-700 rounded-lg flex items-center justify-center">
           <Icon className="w-6 h-6 text-brand-primary dark:text-blue-400" />

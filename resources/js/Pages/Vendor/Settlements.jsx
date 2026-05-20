@@ -91,7 +91,7 @@ export default function Settlements() {
                     </div>
 
                     {/* Settlement Information */}
-                    <div className="bg-gradient-to-br from-brand-primary/10 to-brand-primary/5 border border-brand-primary/20 rounded-lg p-6">
+                    {/* <div className="bg-gradient-to-br from-brand-primary/10 to-brand-primary/5 border border-brand-primary/20 rounded-lg p-6">
                         <div className="flex items-center gap-2 mb-4">
                             <div className="w-8 h-8 rounded-lg bg-brand-primary/20 flex items-center justify-center">
                                 <AlertCircle size={16} className="text-brand-primary" />
@@ -117,7 +117,7 @@ export default function Settlements() {
                                 <p className="text-sm text-brand-primary">Platform fee deductions will be applied <span className="font-semibold">as per agreement</span></p>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
             </div>
         </VendorAppLayout>
     );

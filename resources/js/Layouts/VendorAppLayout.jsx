@@ -101,13 +101,13 @@ export default function VendorAppLayout({ children }) {
               onClick={() => setSidebarOpen(false)}
               currentUrl={url}
             />
-            <SidebarLink
+            {/* <SidebarLink
               href="/vendor/notifications"
               icon={Bell}
               label="Notifications"
               onClick={() => setSidebarOpen(false)}
               currentUrl={url}
-            />
+            /> */}
             <div className="my-4 border-t border-brand-border/50" />
             <SidebarLink
               href="/vendor/profile"
@@ -135,7 +135,7 @@ export default function VendorAppLayout({ children }) {
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium"
             >
               <LogOut className="w-5 h-5" />
-              <span>Logout</span>
+              <span>Log Out</span>
             </button>
           </div>
         </aside>
@@ -251,13 +251,13 @@ export default function VendorAppLayout({ children }) {
                   onClick={() => setSidebarOpen(false)}
                   currentUrl={url}
                 />
-                <SidebarLink
+                {/* <SidebarLink
                   href="/vendor/notifications"
                   icon={Bell}
                   label="Notifications"
                   onClick={() => setSidebarOpen(false)}
                   currentUrl={url}
-                />
+                /> */}
                 <div className="my-4 border-t border-brand-border/50" />
                 <SidebarLink
                   href="/vendor/profile"
@@ -285,7 +285,7 @@ export default function VendorAppLayout({ children }) {
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-medium"
                 >
                   <LogOut className="w-5 h-5" />
-                  <span>Logout</span>
+                  <span>Log Out</span>
                 </button>
               </div>
             </div>
@@ -322,10 +322,10 @@ export default function VendorAppLayout({ children }) {
 
             {/* Notifications & User Avatar */}
             <div className="flex items-center gap-4">
-              <Link href="/vendor/notifications" className="relative p-2 hover:bg-brand-border dark:hover:bg-gray-700 rounded-xl transition-colors">
+              {/* <Link href="/vendor/notifications" className="relative p-2 hover:bg-brand-border dark:hover:bg-gray-700 rounded-xl transition-colors">
                 <Bell className="w-6 h-6 text-brand-secondary dark:text-gray-400" />
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-danger rounded-full flex items-center justify-center text-xs font-bold text-white">3</span>
-              </Link>
+              </Link> */}
               
               <Link
                 href="/vendor/profile"

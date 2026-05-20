@@ -197,6 +197,26 @@ class BookingController extends Controller
     }
 
     /**
+     * Check in / validate a booking
+     */
+    public function checkIn(Booking $booking)
+    {
+        if ($booking->experience->vendor_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if ($booking->status !== 'confirmed') {
+            return back()->with('error', 'Only confirmed bookings can be checked in.');
+        }
+
+        $booking->update([
+            'validated_at' => now(),
+        ]);
+
+        return back()->with('success', 'Booking validated successfully.');
+    }
+
+    /**
      * Export bookings to CSV
      */
     public function export()

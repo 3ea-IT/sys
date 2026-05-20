@@ -8,7 +8,8 @@ import {
   MessageSquare,
   BookOpen,
   AlertCircle,
-  ArrowLeft
+  ArrowLeft,
+  MapPin
 } from "lucide-react";
 
 export default function HelpAndSupport() {
@@ -30,10 +31,10 @@ export default function HelpAndSupport() {
       color: "text-green-600 dark:text-green-400"
     },
     {
-      icon: MessageSquare,
-      title: "Live Chat",
-      description: "Chat with us in real-time",
-      value: "Available 9AM - 6PM",
+      icon: MapPin,
+      title: "Office Address",
+      description: "Visit us in person",
+      value: "123 Tech Street, City, Country",
       bgColor: "bg-purple-100 dark:bg-purple-900/30",
       color: "text-purple-600 dark:text-purple-400"
     },
