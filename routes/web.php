@@ -14,6 +14,11 @@ use App\Http\Controllers\SupportQueryController;
 use App\Http\Controllers\MovieTicketController;
 use App\Http\Controllers\IplController;
 use App\Http\Controllers\IplMatchBookingController;
+use App\Http\Controllers\TempleController;
+use App\Http\Controllers\ParkingController;
+use App\Http\Controllers\TransportController;
+use App\Http\Controllers\StayController;
+use App\Http\Controllers\AssistanceController;
 use Inertia\Inertia;
 
 /*
@@ -100,6 +105,21 @@ Route::group([], function () {
     Route::get('/experience/{experience}', [ExperienceController::class, 'show'])->name('experience.show');
     Route::get('/explore', [ExploreController::class, 'index'])->name('explore.index');
     Route::get('/explore/{category}', [ExploreController::class, 'showCategory'])->name('explore.category');
+    
+    // Temple Routes
+    Route::get('/temple', [TempleController::class, 'index'])->name('temple.index');
+    Route::get('/temple/book', [TempleController::class, 'book'])->name('temple.book');
+    Route::get('/temple/guide', [\App\Http\Controllers\GuideController::class, 'index'])->name('temple.guide');
+    Route::get('/temple/guide/{guide}', [\App\Http\Controllers\GuideController::class, 'show'])->name('temple.guide.show');
+    Route::get('/temple/festivals', [TempleController::class, 'festivals'])->name('temple.festivals');
+    Route::get('/temple/vip', [TempleController::class, 'vip'])->name('temple.vip');
+    Route::get('/temple/parking', [\App\Http\Controllers\ParkingController::class, 'index'])->name('temple.parking');
+    Route::get('/temple/transport', [\App\Http\Controllers\TransportController::class, 'index'])->name('temple.transport');
+    Route::get('/temple/stay', [\App\Http\Controllers\StayController::class, 'index'])->name('temple.stay');
+    Route::get('/temple/assistance', [\App\Http\Controllers\AssistanceController::class, 'index'])->name('temple.assistance');
+    Route::get('/temple/{temple}', [TempleController::class, 'show'])->name('temple.show');
+    Route::get('/temple/{temple}/book-confirm', [TempleController::class, 'bookConfirm'])->name('temple.book.confirm');
+    
     Route::get('/movies', [MovieTicketController::class, 'index'])->name('movies.index');
     Route::post('/holds', [HoldController::class, 'store'])->name('holds.store');
     Route::get('/holds', [HoldController::class, 'index'])->name('holds.index');
