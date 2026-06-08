@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class TempleController extends Controller
                 'id' => 1,
                 'name' => 'Kashi Vishwanath',
                 'location' => 'Varanasi, Uttar Pradesh',
-                'image' => '/banner/Kashi-temple.png',
+                'image' => '/banner/Kashi-temple.jpg',
                 'rating' => 4.9,
                 'crowd_level' => 'Moderate',
                 'has_vip_darshan' => true,
@@ -137,34 +138,136 @@ class TempleController extends Controller
      */
     public function show($id)
     {
-        // TODO: Fetch temple by ID from database
-        $temple = [
-            'id' => $id,
-            'name' => 'Kashi Vishwanath',
-            'location' => 'Varanasi, Uttar Pradesh',
-            'image' => '/banner/Kashi-temple.png',
-            'rating' => 4.9,
-            'crowd_level' => 'Moderate',
-            'has_vip_darshan' => true,
-            'description' => 'One of the most sacred and ancient temples in India. Experience the divine spirituality and participate in age-old rituals and ceremonies.',
-            'amenities' => ['Parking', 'Restrooms', 'Prasad Counter', 'Lockers', 'Food Court', 'Gift Shop'],
-            'timings' => [
-                ['name' => 'Morning Darshan', 'time' => '5:00 AM - 10:00 AM', 'type' => 'Regular'],
-                ['name' => 'Afternoon Darshan', 'time' => '12:00 PM - 3:00 PM', 'type' => 'Regular'],
-                ['name' => 'Evening Aarti', 'time' => '6:00 PM - 7:00 PM', 'type' => 'Special'],
-                ['name' => 'Night Darshan', 'time' => '8:00 PM - 11:00 PM', 'type' => 'Regular'],
+        // ── DYNAMIC CARD MATCHING LOOKUP TREE ─────────────────────────────────
+        $allTemples = [
+            1 => [
+                'id' => 1,
+                'name' => 'Kashi Vishwanath',
+                'location' => 'Varanasi, Uttar Pradesh',
+                'image' => '/banner/Kashi-temple.jpg',
+                'rating' => 4.9,
+                'crowd_level' => 'Moderate',
+                'has_vip_darshan' => true,
+                'description' => 'One of the most sacred and ancient temples in India. Experience the divine spirituality and participate in age-old rituals and ceremonies.',
+                'amenities' => ['Parking', 'Restrooms', 'Prasad Counter', 'Lockers', 'Food Court', 'Gift Shop'],
+                'timings' => [
+                    ['name' => 'Morning Darshan', 'time' => '5:00 AM - 10:00 AM', 'type' => 'Regular'],
+                    ['name' => 'Afternoon Darshan', 'time' => '12:00 PM - 3:00 PM', 'type' => 'Regular'],
+                    ['name' => 'Evening Aarti', 'time' => '6:00 PM - 7:00 PM', 'type' => 'Special'],
+                    ['name' => 'Night Darshan', 'time' => '8:00 PM - 11:00 PM', 'type' => 'Regular'],
+                ],
+                'reviews' => [
+                    ['name' => 'Priya Sharma', 'rating' => 5, 'text' => 'Amazing spiritual experience! Very peaceful and well-maintained.', 'date' => '2 days ago'],
+                    ['name' => 'Rajesh Kumar', 'rating' => 5, 'text' => 'The VIP darshan service was excellent. Highly recommended!', 'date' => '1 week ago'],
+                    ['name' => 'Anjali Patel', 'rating' => 4, 'text' => 'Beautiful temple with great atmosphere. Parking could be better.', 'date' => '2 weeks ago'],
+                ],
+                'regular_price' => 100,
+                'vip_price' => 250,
+                'daily_slots' => 500,
+                'avg_wait' => '30 min',
+                'total_reviews' => 1200,
             ],
-            'reviews' => [
-                ['name' => 'Priya Sharma', 'rating' => 5, 'text' => 'Amazing spiritual experience! Very peaceful and well-maintained.', 'date' => '2 days ago'],
-                ['name' => 'Rajesh Kumar', 'rating' => 5, 'text' => 'The VIP darshan service was excellent. Highly recommended!', 'date' => '1 week ago'],
-                ['name' => 'Anjali Patel', 'rating' => 4, 'text' => 'Beautiful temple with great atmosphere. Parking could be better.', 'date' => '2 weeks ago'],
+            2 => [
+                'id' => 2,
+                'name' => 'Ram Mandir',
+                'location' => 'Ayodhya, Uttar Pradesh',
+                'image' => '/banner/Ram_Mandir,_Ayodhya.png',
+                'rating' => 4.8,
+                'crowd_level' => 'High',
+                'has_vip_darshan' => true,
+                'description' => 'Experience the grand majesty of Lord Ram’s sacred birthplace. Witness beautiful traditional architectures, sacred spires, and continuous morning devotional chants.',
+                'amenities' => ['Prasad Counter', 'Restrooms', 'Lockers', 'Food Court', 'Medical Desk'],
+                'timings' => [
+                    ['name' => 'Aarti & Darshan', 'time' => '6:30 AM - 12:00 PM', 'type' => 'Regular'],
+                    ['name' => 'Bhog Distribution', 'time' => '12:30 PM - 1:30 PM', 'type' => 'Special'],
+                    ['name' => 'Evening Darshan', 'time' => '2:00 PM - 10:00 PM', 'type' => 'Regular'],
+                ],
+                'reviews' => [
+                    ['name' => 'Aman Verma', 'rating' => 5, 'text' => 'The grandeur of this place is absolutely out of this world!', 'date' => '1 day ago'],
+                    ['name' => 'Sita Reddy', 'rating' => 5, 'text' => 'Unbelievably serene infrastructure. Very clean lines and queues.', 'date' => '3 days ago'],
+                ],
+                'regular_price' => 150,
+                'vip_price' => 500,
+                'daily_slots' => 1000,
+                'avg_wait' => '90 min',
+                'total_reviews' => 3500,
             ],
-            'regular_price' => 100,
-            'vip_price' => 250,
-            'daily_slots' => 500,
-            'avg_wait' => '30 min',
-            'total_reviews' => 1200,
+            3 => [
+                'id' => 3,
+                'name' => 'Tirupati Balaji',
+                'location' => 'Tirupati, Andhra Pradesh',
+                'image' => '/banner/tirupati-balaji.png',
+                'rating' => 4.7,
+                'crowd_level' => 'High',
+                'has_vip_darshan' => true,
+                'description' => 'The world-famous shrine of Lord Venkateswara nestled in Tirumala hills. Experience intense devotion, massive scale distribution of sacred Laddus, and iconic architecture structures.',
+                'amenities' => ['Food Court', 'Restrooms', 'Lockers', 'Gift Shop', 'Stay Counter', 'Free Transit'],
+                'timings' => [
+                    ['name' => 'Sarvadarsanam', 'time' => 'Open 24 Hours', 'type' => 'Regular'],
+                    ['name' => 'Special Entry Darshan', 'time' => 'By Pre-booked Slots Only', 'type' => 'Special'],
+                ],
+                'reviews' => [
+                    ['name' => 'Kiran Kumar', 'rating' => 5, 'text' => 'Extremely well organized administration despite handling massive crowd levels.', 'date' => '3 weeks ago'],
+                ],
+                'regular_price' => 200,
+                'vip_price' => 1000,
+                'daily_slots' => 2500,
+                'avg_wait' => '180 min',
+                'total_reviews' => 8900,
+            ],
+            4 => [
+                'id' => 4,
+                'name' => 'Mahakaleshwar Jyotirlinga',
+                'location' => 'Ujjain, Madhya Pradesh',
+                'image' => '/banner/mahakaleshwar.jpg',
+                'rating' => 4.6,
+                'crowd_level' => 'Moderate',
+                'has_vip_darshan' => false,
+                'description' => 'One of the twelve revered Jyotirlingas of Lord Shiva. Experience the legendary early-morning Bhasma Aarti and feel the profound cosmic spiritual energy across the temple corridors.',
+                'amenities' => ['Parking', 'Restrooms', 'Prasad Counter', 'Lockers', 'Cloakroom'],
+                'timings' => [
+                    ['name' => 'Bhasma Aarti', 'time' => '4:00 AM - 6:00 AM', 'type' => 'Special'],
+                    ['name' => 'General Darshan', 'time' => '6:00 AM - 10:00 PM', 'type' => 'Regular'],
+                ],
+                'reviews' => [
+                    ['name' => 'Sanjay Mishra', 'rating' => 5, 'text' => 'Attending the morning Bhasma Aarti was completely life-changing.', 'date' => '5 days ago'],
+                ],
+                'regular_price' => 80,
+                'vip_price' => 150,
+                'daily_slots' => 800,
+                'avg_wait' => '20 min',
+                'total_reviews' => 4400,
+            ],
+            5 => [
+                'id' => 5,
+                'name' => 'Vaishno Devi',
+                'location' => 'Katra, Jammu & Kashmir',
+                'image' => '/banner/vaishano-devi.png',
+                'rating' => 4.8,
+                'crowd_level' => 'Low',
+                'has_vip_darshan' => true,
+                'description' => 'A holy cave shrine situated amidst the beautiful Trikuta Mountains. Embark on a rewarding spiritual trek culminating in peaceful, divine darshan of the natural rock formations (Pindies).',
+                'amenities' => ['Medical Counters', 'Restrooms', 'Blanket Stores', 'Food Outlets', 'Helipad Access'],
+                'timings' => [
+                    ['name' => 'Holy Cave Open', 'time' => 'Open 24 Hours', 'type' => 'Regular'],
+                    ['name' => 'Atka Aarti Session', 'time' => '6:00 AM & 7:00 PM', 'type' => 'Special'],
+                ],
+                'reviews' => [
+                    ['name' => 'Meena Dev', 'rating' => 5, 'text' => 'The trek is tough but the ultimate darshan makes everything feel light and magical.', 'date' => '4 days ago'],
+                ],
+                'regular_price' => 120,
+                'vip_price' => 600,
+                'daily_slots' => 1500,
+                'avg_wait' => '60 min',
+                'total_reviews' => 6200,
+            ]
         ];
+
+        // Explicitly cast dynamic parameter value to an integer map index
+        $templeId = (int)$id;
+
+        // Perform lookups on container data maps or fall back to array entry index 1
+        $temple = $allTemples[$templeId] ?? $allTemples[1];
 
         return Inertia::render('Temple/Show', [
             'temple' => $temple,
@@ -282,11 +385,49 @@ class TempleController extends Controller
     /**
      * Display festivals page
      */
-    public function festivals()
+    public function festivalShow($id)
     {
-        // TODO: Fetch festivals from database
-        return Inertia::render('Temple/Festivals', [
-            'festivals' => [],
+        $festivals = [
+            1 => [
+                'id' => 1,
+                'name' => 'Maha Shivaratri',
+                'location' => 'Kashi Vishwanath',
+                'image' => '/banner/festival-1.jpeg',
+                'crowd_level' => 'Very High',
+                'date' => '2026-02-15',
+                'description' => 'Night-long Shiva worship with special Aarti.',
+            ],
+            2 => [
+                'id' => 2,
+                'name' => 'Ram Navami',
+                'location' => 'Ram Mandir',
+                'image' => '/banner/festival-2.webp',
+                'crowd_level' => 'High',
+                'date' => '2026-03-29',
+                'description' => 'Birth celebration of Lord Ram.',
+            ],
+            3 => [
+                'id' => 3,
+                'name' => 'Ganesh Chaturthi',
+                'location' => 'Siddhi Vinayak',
+                'image' => '/banner/festival-3.jpg',
+                'crowd_level' => 'Extreme',
+                'date' => '2026-08-30',
+                'description' => 'Ganesh idol celebration and visarjan.',
+            ],
+        ];
+
+        // Explicitly cast to integer to ensure array index lookups hit flawlessly
+        $festivalId = (int)$id;
+        $festival = $festivals[$festivalId] ?? null;
+
+        if (!$festival) {
+            abort(404);
+        }
+
+        // 🌟 FIXED: Target the exact Temple directory structure folder path
+        return Inertia::render('Temple/FestivalShow', [
+            'festival' => $festival
         ]);
     }
 

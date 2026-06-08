@@ -274,7 +274,7 @@ export default function TempleIndex({
     const bannerSlides = [
         {
             title: "Kashi Vishwanath",
-            image: "/banner/Kashi-temple.jpg",
+            image: "/banner/Kashi-temple.png",
             tag: "Festival Season",
             description: "Witness the magical Ganga Aarti & ancient rituals"
         },
@@ -297,7 +297,7 @@ export default function TempleIndex({
 
         const interval = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
-        }, 3000);
+        }, 5000);
 
         return () => clearInterval(interval);
     }, [isPaused, bannerSlides.length]);
@@ -424,24 +424,25 @@ export default function TempleIndex({
                                     isActive ? "scale-105" : "scale-100"
                                 }`}
                                 style={{
-                                    backgroundImage: `linear-gradient(to right, rgba(180,60,0,0.82) 0%, rgba(100,30,0,0.55) 60%, rgba(0,0,0,0.35) 100%), url(${slide.image})`,
+                                    backgroundImage: `linear-gradient(to right, rgba(195,64,15,0.8) 0%, rgba(195,64,15,0.3) 50%, transparent 100%), url(${slide.image})`,
                                 }}
                             >
-                                <div className="absolute inset-0 flex flex-col justify-end p-5 md:p-7">
+                                {/* ✔️ FIXED: Removed the leaked raw text comment from this container to prevent it from displaying on top of the image banner */}
+                                <div className="absolute inset-0 flex flex-col justify-end p-5 md:p-7 pl-6 md:pl-10">
                                     <span
-                                        className={`inline-block text-[10px] font-bold tracking-widest uppercase mb-2 transform transition-all duration-700 delay-100 ${
+                                        className={`inline-block text-[10px] font-extrabold tracking-widest uppercase mb-2 transform transition-all duration-700 delay-100 bg-white/95 px-2.5 py-1 rounded-md w-max shadow-sm ${
                                             isActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
                                         }`}
                                         style={{ color: "#c33c01" }}
                                     >
                                         {slide.tag}
                                     </span>
-                                    <h2 className={`text-xl md:text-3xl font-bold text-white leading-tight mb-1 transform transition-all duration-700 delay-200 ${
+                                    <h2 className={`text-xl md:text-3xl font-black text-white leading-tight mb-1 drop-shadow-md transform transition-all duration-700 delay-200 ${
                                         isActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
                                     }`}>
                                         {slide.title}
                                     </h2>
-                                    <p className={`text-white/75 text-xs md:text-sm transform transition-all duration-700 delay-300 ${
+                                    <p className={`text-white/90 text-xs md:text-sm drop-shadow-sm font-medium max-w-md transform transition-all duration-700 delay-300 ${
                                         isActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
                                     }`}>
                                         {slide.description}
@@ -697,9 +698,9 @@ function TempleCard({ temple }) {
         High: "bg-red-500",
     };
     return (
-        <div
-            onClick={() => router.visit(`/temple/${temple.id}`)}
-            className="rounded-xl overflow-hidden cursor-pointer group"
+        <Link
+            href={`/temple/${temple.id}`}
+            className="block rounded-xl overflow-hidden cursor-pointer group"
         >
             <div className="relative h-40 md:h-44 bg-gray-100 dark:bg-gray-800 overflow-hidden rounded-xl">
                 <img
@@ -719,25 +720,28 @@ function TempleCard({ temple }) {
                 )}
             </div>
             <div className="pt-1.5 pb-0.5">
-                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 line-clamp-1">
+                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 line-clamp-1 group-hover:text-orange-600 transition-colors">
                     {temple.name}
                 </p>
                 <p className="flex items-center gap-0.5 text-[10px] text-amber-500 font-medium mt-0.5">
                     <Icon.Star className="w-3 h-3" /> {temple.rating || 4.5}
                 </p>
             </div>
-        </div>
+        </Link>
     );
 }
 
 function FestivalCard({ festival }) {
     return (
-        <div className="rounded-xl overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:shadow-md transition">
-            <div className="relative h-32 bg-gray-100 dark:bg-gray-700">
+        <Link
+            href={`/temple/festivals/${festival.id}`}
+            className="block rounded-xl overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:shadow-md transition cursor-pointer group"
+        >
+            <div className="relative h-32 bg-gray-100 dark:bg-gray-700 overflow-hidden">
                 <img
                     src={getPosterSrc(festival.image, "festivals")}
                     alt={festival.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
                         e.target.src =
                             "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=500&h=300&fit=crop";
@@ -745,24 +749,25 @@ function FestivalCard({ festival }) {
                 />
             </div>
             <div className="p-3">
-                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 line-clamp-1 mb-0.5">
+                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 line-clamp-1 mb-0.5 group-hover:text-orange-600 transition-colors">
                     {festival.name}
                 </p>
                 <p className="flex items-center gap-1 text-[10px] text-gray-400 mb-2">
                     <Icon.MapPin />
                     {festival.location}
                 </p>
-                <Link
-                    href="/temple/festivals"
-                    className="block w-full text-center text-white py-1.5 rounded-lg text-[10px] font-semibold transition hover:opacity-90"
+                <div 
+                    className="block w-full text-center text-white py-1.5 rounded-lg text-[10px] font-semibold transition group-hover:opacity-90"
                     style={{ backgroundColor: "#c33c01" }}
                 >
                     Learn More
-                </Link>
+                </div>
             </div>
-        </div>
+        </Link>
     );
 }
+
+// ── SUB-COMPONENTS ───────────────────────────────────────────────
 
 function VIPCard({ vip }) {
     return (
