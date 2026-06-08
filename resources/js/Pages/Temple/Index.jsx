@@ -297,7 +297,7 @@ export default function TempleIndex({
 
         const interval = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
-        }, 5000);
+        }, 3000);
 
         return () => clearInterval(interval);
     }, [isPaused, bannerSlides.length]);
