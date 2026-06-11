@@ -116,6 +116,7 @@ Route::group([], function () {
     Route::get('/temple/vip', [TempleController::class, 'vip'])->name('temple.vip');
     Route::get('/temple/vip/{id}', [TempleController::class, 'vipDetail'])->name('temple.vip.show');
     Route::get('/temple/parking', [\App\Http\Controllers\ParkingController::class, 'index'])->name('temple.parking');
+    Route::get('/parking/{id}', [\App\Http\Controllers\ParkingController::class, 'show'])->name('parking.show');
     Route::get('/temple/transport', [\App\Http\Controllers\TransportController::class, 'index'])->name('temple.transport');
     Route::get('/temple/stay', [\App\Http\Controllers\StayController::class, 'index'])->name('temple.stay');
     Route::get('/temple/assistance', [\App\Http\Controllers\AssistanceController::class, 'index'])->name('temple.assistance');

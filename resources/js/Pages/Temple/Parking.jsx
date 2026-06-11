@@ -260,7 +260,8 @@ export default function Parking({ parkings = [] }) {
                     return (
                         <div
                             key={p.id}
-                            className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all"
+                            onClick={() => router.visit(`/parking/${p.id}`)}
+                            className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all cursor-pointer"
                             onMouseEnter={(e) =>
                                 (e.currentTarget.style.borderColor = "#c33c01")
                             }
