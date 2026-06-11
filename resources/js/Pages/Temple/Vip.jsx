@@ -76,7 +76,7 @@ export default function Vip({ vipDarshans = [] }) {
 
             {/* ── RESULTS COUNT ── */}
             <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                ✓ {filteredVips.length} VIP darshan options available
+                [OK] {filteredVips.length} VIP darshan options available
             </div>
 
             {/* ── VIP GRID ── */}
@@ -93,8 +93,7 @@ export default function Vip({ vipDarshans = [] }) {
                                 alt={vip.temple_name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
-                                    e.target.src =
-                                        "/banner/kashi-temple.png";
+                                    e.target.src = "/banner/kashi-temple.png";
                                 }}
                             />
                             {/* VIP Badge */}
@@ -102,11 +101,11 @@ export default function Vip({ vipDarshans = [] }) {
                                 className="absolute top-3 left-3 text-white px-3 py-1 rounded-full text-xs font-bold"
                                 style={{ backgroundColor: "#c33c01" }}
                             >
-                                ✓ VIP Access
+                                [VIP] Access
                             </div>
                             {/* Rating Badge */}
                             <div className="absolute top-3 right-3 bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1">
-                                ★ {vip.rating}
+                                Rating: {vip.rating}
                                 <span className="text-xs font-normal">
                                     ({vip.reviews})
                                 </span>
@@ -120,13 +119,13 @@ export default function Vip({ vipDarshans = [] }) {
                                 {vip.temple_name}
                             </h3>
                             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                                📍 {vip.location}
+                                Location: {vip.location}
                             </p>
 
                             {/* Duration & Details */}
                             <div className="flex items-center gap-4 mb-3 pb-3 border-b border-gray-200 dark:border-gray-700 text-sm">
                                 <span className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
-                                    ⏱️ {vip.duration}
+                                    Duration: {vip.duration}
                                 </span>
                             </div>
 
@@ -141,8 +140,8 @@ export default function Vip({ vipDarshans = [] }) {
                                             key={idx}
                                             className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-2"
                                         >
-                                            <span className="text-green-500">
-                                                ✓
+                                            <span className="text-green-500 font-bold">
+                                                [✓]
                                             </span>
                                             {item}
                                         </p>
@@ -171,6 +170,7 @@ export default function Vip({ vipDarshans = [] }) {
                                             router.visit("/login");
                                             return;
                                         }
+                                        router.visit(`/temple/vip/${vip.id}`);
                                     }}
                                     className="text-white py-2 px-4 rounded-lg font-semibold text-sm transition-colors hover:opacity-90"
                                     style={{ backgroundColor: "#c33c01" }}

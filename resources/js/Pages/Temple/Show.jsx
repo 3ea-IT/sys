@@ -252,7 +252,7 @@ export default function TempleShow({ temple = {} }) {
             </Link>
 
             {/* ── HERO ── */}
-            <div className="relative h-52 md:h-72 rounded-2xl overflow-hidden shadow-md mb-5">
+            <div className="relative h-72 md:h-96 rounded-2xl overflow-hidden shadow-md mb-5">
                 <img
                     src={getPosterSrc(temple.image)}
                     alt={temple.name}

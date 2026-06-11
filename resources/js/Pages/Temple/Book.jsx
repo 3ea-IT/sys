@@ -79,7 +79,7 @@ const Icon = {
     ),
 };
 
-const FALLBACK ="/banner/kashi-temple.png";
+const FALLBACK = "/banner/kashi-temple.png";
 
 export default function TempleBook({ temples = [] }) {
     const { auth } = usePage().props;
@@ -118,14 +118,14 @@ export default function TempleBook({ temples = [] }) {
         searchQuery.trim() === ""
             ? []
             : temples.filter(
-                (t) =>
-                    t.name
-                        ?.toLowerCase()
-                        .includes(searchQuery.toLowerCase()) ||
-                    t.location
-                        ?.toLowerCase()
-                        .includes(searchQuery.toLowerCase()),
-            );
+                  (t) =>
+                      t.name
+                          ?.toLowerCase()
+                          .includes(searchQuery.toLowerCase()) ||
+                      t.location
+                          ?.toLowerCase()
+                          .includes(searchQuery.toLowerCase()),
+              );
 
     const filteredTemples = temples.filter((t) =>
         activeStateFilter === "all" ? true : stateMatch(t, activeStateFilter),
@@ -213,10 +213,11 @@ export default function TempleBook({ temples = [] }) {
                                     ? { backgroundColor: "#c33c01" }
                                     : {}
                             }
-                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${activeStateFilter === s.id
+                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                                activeStateFilter === s.id
                                     ? "text-white shadow-sm"
                                     : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-150 dark:hover:bg-gray-750"
-                                }`}
+                            }`}
                         >
                             {s.label}
                         </button>

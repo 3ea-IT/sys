@@ -259,7 +259,7 @@ export default function TempleIndex({
     festivals = [],
     vipDarshans = [],
     categories = [],
-    userLocation = "Ayodhya, UP",
+    userLocation = "Lucknow, UP",
 }) {
     const { auth } = usePage().props;
     const user = auth?.user;
@@ -274,22 +274,24 @@ export default function TempleIndex({
     const bannerSlides = [
         {
             title: "Kashi Vishwanath",
-            image: "/banner/Kashi-temple.png",
+            image: "/banner/Kashi-temple.jpg",
             tag: "Festival Season",
-            description: "Witness the magical Ganga Aarti & ancient rituals"
+            description: "Witness the magical Ganga Aarti & ancient rituals",
         },
         {
             title: "Shri Ram Mandir",
-            image: "/banner/Ram_Mandir,_Ayodhya.png",
+            image: "/banner/Ram_Mandir.jpg",
             tag: "Divine Ayodhya",
-            description: "Experience the grandeur of Lord Ram's sacred birthplace"
+            description:
+                "Experience the grandeur of Lord Ram's sacred birthplace",
         },
         {
             title: "Mahakaleshwar Jyotirlinga",
             image: "/banner/mahakaleshwar.jpg",
             tag: "Sacred Ujjain",
-            description: "Feel the spiritual energy of the revered Mahakal Temple"
-        }
+            description:
+                "Feel the spiritual energy of the revered Mahakal Temple",
+        },
     ];
 
     useEffect(() => {
@@ -405,8 +407,8 @@ export default function TempleIndex({
             </div>
 
             {/* ── HERO BANNER (AUTO-SLIDING CAROUSEL) ── */}
-            <div 
-                className="rounded-2xl overflow-hidden relative h-44 md:h-64 mb-6 shadow-md select-none group/carousel"
+            <div
+                className="rounded-2xl overflow-hidden relative h-52 md:h-72 mb-6 shadow-md select-none group/carousel"
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >
@@ -416,7 +418,9 @@ export default function TempleIndex({
                         <div
                             key={index}
                             className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
-                                isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+                                isActive
+                                    ? "opacity-100 z-10"
+                                    : "opacity-0 z-0 pointer-events-none"
                             }`}
                         >
                             <div
@@ -431,20 +435,30 @@ export default function TempleIndex({
                                 <div className="absolute inset-0 flex flex-col justify-end p-5 md:p-7 pl-6 md:pl-10">
                                     <span
                                         className={`inline-block text-[10px] font-extrabold tracking-widest uppercase mb-2 transform transition-all duration-700 delay-100 bg-white/95 px-2.5 py-1 rounded-md w-max shadow-sm ${
-                                            isActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+                                            isActive
+                                                ? "translate-y-0 opacity-100"
+                                                : "translate-y-4 opacity-0"
                                         }`}
                                         style={{ color: "#c33c01" }}
                                     >
                                         {slide.tag}
                                     </span>
-                                    <h2 className={`text-xl md:text-3xl font-black text-white leading-tight mb-1 drop-shadow-md transform transition-all duration-700 delay-200 ${
-                                        isActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-                                    }`}>
+                                    <h2
+                                        className={`text-xl md:text-3xl font-black text-white leading-tight mb-1 drop-shadow-md transform transition-all duration-700 delay-200 ${
+                                            isActive
+                                                ? "translate-y-0 opacity-100"
+                                                : "translate-y-4 opacity-0"
+                                        }`}
+                                    >
                                         {slide.title}
                                     </h2>
-                                    <p className={`text-white/90 text-xs md:text-sm drop-shadow-sm font-medium max-w-md transform transition-all duration-700 delay-300 ${
-                                        isActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-                                    }`}>
+                                    <p
+                                        className={`text-white/90 text-xs md:text-sm drop-shadow-sm font-medium max-w-md transform transition-all duration-700 delay-300 ${
+                                            isActive
+                                                ? "translate-y-0 opacity-100"
+                                                : "translate-y-4 opacity-0"
+                                        }`}
+                                    >
                                         {slide.description}
                                     </p>
                                 </div>
@@ -460,8 +474,8 @@ export default function TempleIndex({
                             key={index}
                             onClick={() => setCurrentSlide(index)}
                             className={`h-1.5 rounded-full transition-all duration-300 ${
-                                index === currentSlide 
-                                    ? "w-4 bg-white" 
+                                index === currentSlide
+                                    ? "w-4 bg-white"
                                     : "w-1.5 bg-white/50 hover:bg-white/80"
                             }`}
                             aria-label={`Go to slide ${index + 1}`}
@@ -702,7 +716,7 @@ function TempleCard({ temple }) {
             href={`/temple/${temple.id}`}
             className="block rounded-xl overflow-hidden cursor-pointer group"
         >
-            <div className="relative h-40 md:h-44 bg-gray-100 dark:bg-gray-800 overflow-hidden rounded-xl">
+            <div className="relative h-48 md:h-52 bg-gray-100 dark:bg-gray-800 overflow-hidden rounded-xl">
                 <img
                     src={getPosterSrc(temple.image)}
                     alt={temple.name}
@@ -737,7 +751,7 @@ function FestivalCard({ festival }) {
             href={`/temple/festivals/${festival.id}`}
             className="block rounded-xl overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:shadow-md transition cursor-pointer group"
         >
-            <div className="relative h-32 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+            <div className="relative h-40 bg-gray-100 dark:bg-gray-700 overflow-hidden">
                 <img
                     src={getPosterSrc(festival.image, "festivals")}
                     alt={festival.name}
@@ -756,7 +770,7 @@ function FestivalCard({ festival }) {
                     <Icon.MapPin />
                     {festival.location}
                 </p>
-                <div 
+                <div
                     className="block w-full text-center text-white py-1.5 rounded-lg text-[10px] font-semibold transition group-hover:opacity-90"
                     style={{ backgroundColor: "#c33c01" }}
                 >
@@ -775,7 +789,7 @@ function VIPCard({ vip }) {
             onClick={() => router.visit(`/temple/${vip.temple_id}`)}
             className="rounded-xl overflow-hidden cursor-pointer group"
         >
-            <div className="relative h-40 md:h-44 bg-gray-100 dark:bg-gray-800 overflow-hidden rounded-xl">
+            <div className="relative h-48 md:h-52 bg-gray-100 dark:bg-gray-800 overflow-hidden rounded-xl">
                 <img
                     src={getPosterSrc(vip.image, "vip")}
                     alt={vip.temple_name}
@@ -832,7 +846,8 @@ function FeaturedTempleRow({ temple }) {
                     </p>
                     <div className="flex items-center gap-2 mt-1">
                         <span className="flex items-center gap-0.5 text-[10px] text-amber-500 font-semibold">
-                            <Icon.Star className="w-3 h-3" /> {temple.rating || 4.5}
+                            <Icon.Star className="w-3 h-3" />{" "}
+                            {temple.rating || 4.5}
                         </span>
                     </div>
                 </div>
