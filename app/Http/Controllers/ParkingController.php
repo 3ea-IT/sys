@@ -2,92 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Parking;
 use Inertia\Inertia;
 
 class ParkingController extends Controller
 {
     public function index()
     {
-        $parkings = [
-            [
-                'id' => 1,
-                'name' => 'Ram Mandir Main Parking',
-                'location' => 'NH-27, Near Ram Janmabhoomi Gate, Ayodhya',
-                'distance' => '300m',
-                'image' => '/banner/park1.jpg',
-                'rating' => 4.5,
-                'vehicleType' => 'All',
-                'availableSpots' => 187,
-                'totalSpots' => 500,
-                'hourlyRate' => 30,
-                'amenities' => ['CCTV', 'Security', 'Covered'],
-            ],
-            [
-                'id' => 2,
-                'name' => 'Ayodhya Pilgrim Parking Zone',
-                'location' => 'Sector 5, Naya Ghat Road, Ayodhya',
-                'distance' => '800m',
-                'image' => '/banner/park2.jpg',
-                'rating' => 4.2,
-                'vehicleType' => '4-Wheeler',
-                'availableSpots' => 423,
-                'totalSpots' => 500,
-                'hourlyRate' => 20,
-                'amenities' => ['Security', 'EV Charging'],
-            ],
-            [
-                'id' => 3,
-                'name' => 'Two-Wheeler Stand Gate 2',
-                'location' => 'Near Gate 2, Ram Path, Ayodhya',
-                'distance' => '150m',
-                'image' => '/banner/park3.jpg',
-                'rating' => 4.3,
-                'vehicleType' => '2-Wheeler',
-                'availableSpots' => 134,
-                'totalSpots' => 200,
-                'hourlyRate' => 10,
-                'amenities' => ['CCTV', 'Covered'],
-            ],
-            [
-                'id' => 4,
-                'name' => 'Mahakal Parking Complex',
-                'location' => 'Mahakal Lok, Ujjain Bypass Road',
-                'distance' => '450m',
-                'image' => '/banner/park4.jpg',
-                'rating' => 4.6,
-                'vehicleType' => 'All',
-                'availableSpots' => 256,
-                'totalSpots' => 400,
-                'hourlyRate' => 25,
-                'amenities' => ['CCTV', 'Security', 'EV Charging', 'Covered'],
-            ],
-            [
-                'id' => 5,
-                'name' => 'Vaishno Devi Base Camp Parking',
-                'location' => 'Katra Bus Stand Area, Jammu',
-                'distance' => '1.2km',
-                'image' => '/banner/park5.jpg',
-                'rating' => 4.1,
-                'vehicleType' => 'All',
-                'availableSpots' => 89,
-                'totalSpots' => 200,
-                'hourlyRate' => 40,
-                'amenities' => ['CCTV', 'Security'],
-            ],
-            [
-                'id' => 6,
-                'name' => 'Katra Bike Stand',
-                'location' => 'Near Banganga Chowk, Katra',
-                'distance' => '600m',
-                'image' => '/banner/park6.jpg',
-                'rating' => 3.9,
-                'vehicleType' => '2-Wheeler',
-                'availableSpots' => 98,
-                'totalSpots' => 150,
-                'hourlyRate' => 15,
-                'amenities' => ['Security'],
-            ],
-        ];
+        // Fetch active parkings from database
+        $parkings = Parking::whereRelation('temple', 'status', 'active')
+                          ->where('status', 'active')
+                          ->with('temple')
+                          ->get()
+                          ->map(function ($parking) {
+                              return [
+                                  'id' => $parking->id,
+                                  'name' => $parking->name,
+                                  'location' => $parking->location,
+                                  'distance' => rand(100, 1200) . 'm',
+                                  'image' => '/banner/' . ($parking->image ?? 'park1.jpg'),
+                                  'rating' => $parking->temple?->rating ?? 4.5,
+                                  'vehicleType' => 'All',
+                                  'availableSpots' => rand(50, 400),
+                                  'totalSpots' => $parking->capacity,
+                                  'hourlyRate' => $parking->price,
+                                  'amenities' => ['CCTV', 'Security', 'Covered'],
+                              ];
+                          })
+                          ->toArray();
 
         return Inertia::render('Temple/Parking', [
             'parkings' => $parkings,
@@ -96,183 +38,33 @@ class ParkingController extends Controller
 
     public function show($id)
     {
-        $parkings = [
-            [
-                'id' => 1,
-                'name' => 'Ram Mandir Main Parking',
-                'location' => 'NH-27, Near Ram Janmabhoomi Gate, Ayodhya',
-                'distance' => '300m',
-                'image' => '/banner/park1.jpg',
-                'gallery' => ['/banner/park1.jpg', '/banner/park2.jpg', '/banner/park3.jpg'],
-                'rating' => 4.5,
-                'reviewCount' => 324,
+        $parking = Parking::where('status', 'active')
+                         ->whereRelation('temple', 'status', 'active')
+                         ->with('temple')
+                         ->findOrFail($id);
+
+        return Inertia::render('Temple/ParkingDetail', [
+            'parking' => [
+                'id' => $parking->id,
+                'name' => $parking->name,
+                'location' => $parking->location,
+                'distance' => rand(100, 1200) . 'm',
+                'image' => '/banner/' . ($parking->image ?? 'park1.jpg'),
+                'gallery' => ['/banner/' . ($parking->image ?? 'park1.jpg')],
+                'rating' => $parking->temple?->rating ?? 4.5,
+                'reviewCount' => rand(50, 500),
                 'vehicleType' => 'All',
-                'availableSpots' => 187,
-                'totalSpots' => 500,
-                'hourlyRate' => 30,
-                'dailyRate' => 200,
+                'availableSpots' => rand(50, 400),
+                'totalSpots' => $parking->capacity,
+                'hourlyRate' => $parking->price,
+                'dailyRate' => $parking->price * 8,
                 'amenities' => ['CCTV', 'Security', 'Covered', 'EV Charging'],
                 'operatingHours' => '24/7 Available',
                 'phone' => '+91 9876 543 210',
-                'email' => 'contact@rammandir-parking.com',
-                'description' => 'Secure and convenient parking facility with modern amenities. Well-maintained parking area with 24/7 security and surveillance. Easy access and quick entry/exit. Equipped with CCTV cameras, trained security staff, and covered parking spaces. EV charging stations available for electric vehicles.',
-                'reviews' => [
-                    [
-                        'name' => 'Rajesh Kumar',
-                        'date' => '2 weeks ago',
-                        'rating' => 5,
-                        'comment' => 'Excellent parking facility! Very secure and clean. Staff is very helpful. Will definitely recommend to others.',
-                    ],
-                    [
-                        'name' => 'Priya Singh',
-                        'date' => '1 month ago',
-                        'rating' => 4,
-                        'comment' => 'Good parking with decent rates. Location is convenient near the temple. Only wish there were more EV charging points.',
-                    ],
-                    [
-                        'name' => 'Vikas Patel',
-                        'date' => '1 month ago',
-                        'rating' => 5,
-                        'comment' => 'Best parking in the area. Always available slots, great security measures. Worth the price!',
-                    ],
-                ],
-            ],
-            [
-                'id' => 2,
-                'name' => 'Ayodhya Pilgrim Parking Zone',
-                'location' => 'Sector 5, Naya Ghat Road, Ayodhya',
-                'distance' => '800m',
-                'image' => '/banner/park2.jpg',
-                'gallery' => ['/banner/park2.jpg', '/banner/park1.jpg'],
-                'rating' => 4.2,
-                'reviewCount' => 156,
-                'vehicleType' => '4-Wheeler',
-                'availableSpots' => 423,
-                'totalSpots' => 500,
-                'hourlyRate' => 20,
-                'dailyRate' => 150,
-                'amenities' => ['Security', 'EV Charging', 'Covered'],
-                'operatingHours' => '24/7 Available',
-                'phone' => '+91 9876 543 211',
-                'email' => 'contact@ayodhya-parking.com',
-                'description' => 'Large capacity parking zone dedicated for 4-wheelers. Spacious parking spaces with easy entry and exit. Dedicated security personnel on duty round the clock. Modern surveillance system covers the entire facility.',
-                'reviews' => [
-                    [
-                        'name' => 'Anil Sharma',
-                        'date' => '3 days ago',
-                        'rating' => 4,
-                        'comment' => 'Spacious parking with reasonable rates. Good for extended parking. A bit far from the main temple but worth it.',
-                    ],
-                ],
-            ],
-            [
-                'id' => 3,
-                'name' => 'Two-Wheeler Stand Gate 2',
-                'location' => 'Near Gate 2, Ram Path, Ayodhya',
-                'distance' => '150m',
-                'image' => '/banner/park3.jpg',
-                'gallery' => ['/banner/park3.jpg', '/banner/park1.jpg'],
-                'rating' => 4.3,
-                'reviewCount' => 89,
-                'vehicleType' => '2-Wheeler',
-                'availableSpots' => 134,
-                'totalSpots' => 200,
-                'hourlyRate' => 10,
-                'dailyRate' => 50,
-                'amenities' => ['CCTV', 'Covered', 'Security'],
-                'operatingHours' => '24/7 Available',
-                'phone' => '+91 9876 543 212',
-                'email' => 'contact@gate2-parking.com',
-                'description' => 'Dedicated two-wheeler parking stand right at Gate 2. Very close to main temple entrance. Covered parking to protect from weather. CCTV surveillance and trained staff ensure vehicle safety.',
-                'reviews' => [
-                    [
-                        'name' => 'Neha Gupta',
-                        'date' => '1 week ago',
-                        'rating' => 5,
-                        'comment' => 'Perfect location! Very close to the temple. Affordable rates. Staff takes good care of bikes.',
-                    ],
-                ],
-            ],
-            [
-                'id' => 4,
-                'name' => 'Mahakal Parking Complex',
-                'location' => 'Mahakal Lok, Ujjain Bypass Road',
-                'distance' => '450m',
-                'image' => '/banner/park4.jpg',
-                'gallery' => ['/banner/park4.jpg', '/banner/park1.jpg', '/banner/park2.jpg'],
-                'rating' => 4.6,
-                'reviewCount' => 412,
-                'vehicleType' => 'All',
-                'availableSpots' => 256,
-                'totalSpots' => 400,
-                'hourlyRate' => 25,
-                'dailyRate' => 180,
-                'amenities' => ['CCTV', 'Security', 'EV Charging', 'Covered'],
-                'operatingHours' => '24/7 Available',
-                'phone' => '+91 9876 543 213',
-                'email' => 'contact@mahakal-parking.com',
-                'description' => 'Premium parking complex with state-of-the-art facilities. Multi-level parking structure with climate control. Accepts both 2-wheelers and 4-wheelers. High-tech security system with facial recognition. Multiple EV charging stations available.',
-                'reviews' => [
-                    [
-                        'name' => 'Arjun Verma',
-                        'date' => '5 days ago',
-                        'rating' => 5,
-                        'comment' => 'Best parking experience! Premium facilities at reasonable rates. Will use it every time I visit.',
-                    ],
-                ],
-            ],
-            [
-                'id' => 5,
-                'name' => 'Vaishno Devi Base Camp Parking',
-                'location' => 'Katra Bus Stand Area, Jammu',
-                'distance' => '1.2km',
-                'image' => '/banner/park5.jpg',
-                'gallery' => ['/banner/park5.jpg'],
-                'rating' => 4.1,
-                'reviewCount' => 203,
-                'vehicleType' => 'All',
-                'availableSpots' => 89,
-                'totalSpots' => 200,
-                'hourlyRate' => 40,
-                'dailyRate' => 250,
-                'amenities' => ['CCTV', 'Security', 'Covered'],
-                'operatingHours' => '24/7 Available',
-                'phone' => '+91 9876 543 214',
-                'email' => 'contact@vaishnodevi-parking.com',
-                'description' => 'Convenient parking facility at the base camp for Vaishno Devi pilgrims. Close to bus stand and accommodation areas. Secure overnight parking available. Good for both short-term and long-term parking.',
+                'email' => 'contact@parking.com',
+                'description' => $parking->description ?? 'Secure and convenient parking facility with modern amenities.',
                 'reviews' => [],
             ],
-            [
-                'id' => 6,
-                'name' => 'Katra Bike Stand',
-                'location' => 'Near Banganga Chowk, Katra',
-                'distance' => '600m',
-                'image' => '/banner/park6.jpg',
-                'gallery' => ['/banner/park6.jpg'],
-                'rating' => 3.9,
-                'reviewCount' => 67,
-                'vehicleType' => '2-Wheeler',
-                'availableSpots' => 98,
-                'totalSpots' => 150,
-                'hourlyRate' => 15,
-                'dailyRate' => 80,
-                'amenities' => ['Security', 'CCTV'],
-                'operatingHours' => '24/7 Available',
-                'phone' => '+91 9876 543 215',
-                'email' => 'contact@katra-parking.com',
-                'description' => 'Budget-friendly 2-wheeler parking stand in Katra. Affordable rates with decent security. Good for pilgrims traveling on motorcycles and scooters. Staff familiar with pilgrim needs.',
-                'reviews' => [],
-            ],
-        ];
-
-        $parking = collect($parkings)->firstWhere('id', (int) $id);
-
-        if (!$parking) {
-            abort(404);
-        }
-
-        return Inertia::render('Temple/ParkingDetail', [
-            'parking' => $parking,
         ]);
     }
 }

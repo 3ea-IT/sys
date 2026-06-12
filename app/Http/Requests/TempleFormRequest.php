@@ -1,0 +1,61 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class TempleFormRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return auth()->check() && auth()->user()->role === 'admin';
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     */
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'image' => 'nullable|string|max:255',
+            'rating' => 'required|numeric|min:0|max:5',
+            'crowd_level' => 'required|in:Low,Moderate,High,Very High,Extreme',
+            'has_vip_darshan' => 'required|boolean',
+            'instant_price' => 'nullable|numeric|min:0',
+            'hold_token' => 'nullable|numeric|min:0',
+            'description' => 'nullable|string',
+            'amenities' => 'nullable|array',
+            'amenities.*' => 'string|max:255',
+            'timings' => 'nullable|array',
+            'timings.*.name' => 'nullable|string|max:255',
+            'timings.*.time' => 'nullable|string|max:255',
+            'timings.*.type' => 'nullable|string|max:255',
+            'facilities' => 'nullable|array',
+            'facilities.*' => 'string|max:255',
+            'status' => 'required|in:active,inactive',
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Temple name is required.',
+            'location.required' => 'Location is required.',
+            'rating.required' => 'Rating is required.',
+            'rating.numeric' => 'Rating must be a number.',
+            'rating.min' => 'Rating must be at least 0.',
+            'rating.max' => 'Rating cannot exceed 5.',
+            'crowd_level.required' => 'Crowd level is required.',
+            'crowd_level.in' => 'Invalid crowd level selected.',
+            'has_vip_darshan.required' => 'VIP Darshan option is required.',
+        ];
+    }
+}

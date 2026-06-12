@@ -18,10 +18,17 @@ class DatabaseSeeder extends Seeder
             HoldSeeder::class,
             WalletTransactionSeeder::class,
             CinemaSeeder::class,
-            MovieSeeder::class,
             TeamsTableSeeder::class,
             VenuesTableSeeder::class,
             IplMatchesTableSeeder::class,
+            TempleSeeder::class,
+            StaySeeder::class,
+            TransportSeeder::class,
+            ParkingSeeder::class,
+            GuideSeeder::class,
+            VipSeeder::class,
+            FestivalShowSeeder::class,
+            AssistanceSeeder::class,
         ]);
     }
 }

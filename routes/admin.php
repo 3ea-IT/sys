@@ -7,6 +7,14 @@ use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\QueryController;
 use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\BookingsController;
+use App\Http\Controllers\Admin\TempleController;
+use App\Http\Controllers\Admin\Temples\StayController;
+use App\Http\Controllers\Admin\Temples\TransportController;
+use App\Http\Controllers\Admin\Temples\VipController;
+use App\Http\Controllers\Admin\Temples\ParkingController;
+use App\Http\Controllers\Admin\Temples\GuideController;
+use App\Http\Controllers\Admin\Temples\FestivalShowController;
+use App\Http\Controllers\Admin\Temples\AssistanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,4 +57,30 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Bookings Management
     Route::get('/bookings', [BookingsController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{booking}', [BookingsController::class, 'show'])->name('bookings.show');
+
+    // Temples Management
+    Route::resource('temples', TempleController::class);
+    Route::post('/temples/{temple}/toggle-status', [TempleController::class, 'toggleStatus'])->name('temples.toggle-status');
+    
+    // Temples Sub-resources (Standalone Routes)
+    Route::resource('stays', StayController::class);
+    Route::post('/stays/{stay}/toggle-status', [StayController::class, 'toggleStatus'])->name('stays.toggle-status');
+    
+    Route::resource('transports', TransportController::class);
+    Route::post('/transports/{transport}/toggle-status', [TransportController::class, 'toggleStatus'])->name('transports.toggle-status');
+    
+    Route::resource('vips', VipController::class);
+    Route::post('/vips/{vip}/toggle-status', [VipController::class, 'toggleStatus'])->name('vips.toggle-status');
+    
+    Route::resource('parkings', ParkingController::class);
+    Route::post('/parkings/{parking}/toggle-status', [ParkingController::class, 'toggleStatus'])->name('parkings.toggle-status');
+    
+    Route::resource('guides', GuideController::class);
+    Route::post('/guides/{guide}/toggle-status', [GuideController::class, 'toggleStatus'])->name('guides.toggle-status');
+    
+    Route::resource('festival-shows', FestivalShowController::class);
+    Route::post('/festival-shows/{festivalShow}/toggle-status', [FestivalShowController::class, 'toggleStatus'])->name('festival-shows.toggle-status');
+    
+    Route::resource('assistance', AssistanceController::class);
+    Route::post('/assistance/{assistance}/toggle-status', [AssistanceController::class, 'toggleStatus'])->name('assistance.toggle-status');
 });

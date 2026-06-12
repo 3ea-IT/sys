@@ -245,7 +245,8 @@ export function Stay({ stays = [] }) {
                 {filteredStays.map((stay) => (
                     <div
                         key={stay.id}
-                        className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all group"
+                        className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all group cursor-pointer"
+                        onClick={() => router.visit(`/stay/${stay.id}`)}
                         onMouseEnter={(e) =>
                             (e.currentTarget.style.borderColor = "#c33c01")
                         }
@@ -331,16 +332,14 @@ export function Stay({ stays = [] }) {
                                     )}
                                 </div>
                                 <button
-                                    onClick={() => {
-                                        if (!user) {
-                                            router.visit("/login");
-                                            return;
-                                        }
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        router.visit(`/stay/${stay.id}`);
                                     }}
                                     className="text-white px-4 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm hover:opacity-90"
                                     style={{ backgroundColor: "#c33c01" }}
                                 >
-                                    Book
+                                    View
                                 </button>
                             </div>
                         </div>
