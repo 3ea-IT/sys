@@ -280,7 +280,7 @@ const SnakeGame = () => {
         <>
             <div
                 id="snake-game-container"
-                className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#f0f4ff] to-[#e6ecfa] p-4 relative"
+                className="flex flex-col items-center justify-center min-h-screen bg-brand-background dark:bg-gray-900 p-4 relative"
                 style={{
                     backgroundImage: "url('/assets/images/games/SNAKE.png')",
                     backgroundSize: "cover",
@@ -295,23 +295,23 @@ const SnakeGame = () => {
                 {/* Back Button */}
                 <Link
                     href="/play-and-earn"
-                    className="fixed top-4 left-4 z-50 bg-white/50 active:bg-[#003399] text-[#003399] active:text-white p-3 xs:p-4 rounded-full shadow-xl transition-all duration-200 transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#003399]/30"
+                    className="fixed top-4 left-4 z-50 bg-white/80 dark:bg-gray-800/80 active:bg-brand-primary text-brand-primary dark:text-blue-400 active:text-white p-3 xs:p-4 rounded-full shadow-card transition-all duration-200 transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-brand-primary/30"
                     style={{ touchAction: "manipulation" }}
                 >
                     <ArrowLeft size={24} strokeWidth={2.5} />
                 </Link>
 
                 {gameOver ? (
-                    <div className="text-center bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 mt-[60px] border-2 border-[#003399]">
-                        <h2 className="text-3xl font-bold mb-4 text-[#003399]">
+                    <div className="text-center bg-white dark:bg-gray-800 rounded-lg shadow-card max-w-md w-full p-8 mt-[60px] border border-brand-border dark:border-gray-700">
+                        <h2 className="text-3xl font-bold mb-4 text-brand-primary dark:text-gray-100">
                             Game Over!
                         </h2>
-                        <p className="text-xl mb-6 text-[#003399] font-semibold">
+                        <p className="text-xl mb-6 text-brand-primary dark:text-blue-400 font-semibold">
                             Your Score: {score}
                         </p>
                         <button
                             onClick={restartGame}
-                            className="bg-gradient-to-r from-[#003399] to-[#0055cc] text-white rounded-full px-8 py-3 font-semibold shadow-lg hover:from-[#0055cc] hover:to-[#0073e6] transition-colors duration-300 active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#003399]/50"
+                            className="bg-brand-primary text-white rounded-full px-8 py-3 font-semibold shadow-lg hover:bg-brand-primary/90 transition-colors duration-300 active:scale-95 focus:outline-none focus:ring-4 focus:ring-brand-primary/30"
                         >
                             Restart Game
                         </button>
@@ -319,7 +319,7 @@ const SnakeGame = () => {
                 ) : (
                     <>
                         <div
-                            className="relative border-4 border-[#003399] bg-white rounded-3xl shadow-inner mt-[60px]"
+                            className="relative border-2 border-brand-primary/30 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg shadow-card mt-[60px]"
                             style={{
                                 width: `${gridSize * cellSize}px`,
                                 height: `${gridSize * cellSize}px`,
@@ -331,7 +331,7 @@ const SnakeGame = () => {
                             {snake.map((segment, idx) => (
                                 <div
                                     key={idx}
-                                    className={`absolute bg-[#003399] rounded-full`}
+                                    className={`absolute bg-brand-primary rounded-full`}
                                     style={{
                                         width: `${cellSize}px`,
                                         height: `${cellSize}px`,
@@ -363,7 +363,7 @@ const SnakeGame = () => {
                                 />
                             ))}
                         </div>
-                        <div className="mt-4 text-lg font-bold text-[#003399]">
+                        <div className="mt-4 text-lg font-bold text-brand-primary dark:text-gray-100">
                             Score: {score} | Current Food: {food.type} (+
                             {food.points})
                         </div>

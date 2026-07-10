@@ -81,11 +81,11 @@ export default function Quiz() {
             <div className="flex flex-col gap-4">
                 {!isCompleted ? (
                     <>
-                        <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
+                        <div className="rounded-lg bg-brand-background dark:bg-gray-900 px-4 py-3 text-sm font-semibold text-brand-primary dark:text-gray-100">
                             Question {progress} • Score {score}
                         </div>
-                        <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                            <p className="text-lg font-semibold text-slate-900">{questions[currentQuestion].question}</p>
+                        <div className="rounded-lg border border-brand-border dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+                            <p className="text-lg font-semibold text-brand-primary dark:text-gray-100">{questions[currentQuestion].question}</p>
                             <div className="mt-4 space-y-2">
                                 {questions[currentQuestion].options.map((option, index) => {
                                     const isCorrect = selectedAnswer !== null && index === questions[currentQuestion].answer;
@@ -96,7 +96,7 @@ export default function Quiz() {
                                             type="button"
                                             onClick={() => handleAnswer(index)}
                                             disabled={selectedAnswer !== null}
-                                            className={`w-full rounded-2xl border px-4 py-3 text-left text-sm font-medium transition ${isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : isWrong ? 'border-rose-500 bg-rose-50 text-rose-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}
+                                            className={`w-full rounded-lg border px-4 py-3 text-left text-sm font-medium transition ${isCorrect ? 'border-brand-success bg-brand-success/10 text-brand-success' : isWrong ? 'border-brand-danger bg-brand-danger/10 text-brand-danger' : 'border-brand-border dark:border-gray-700 bg-white dark:bg-gray-800 text-brand-secondary dark:text-gray-300 hover:bg-brand-background dark:hover:bg-gray-700'}`}
                                         >
                                             {option}
                                         </button>
@@ -105,15 +105,15 @@ export default function Quiz() {
                             </div>
                         </div>
                         <div className="flex justify-end">
-                            <button type="button" onClick={nextQuestion} disabled={selectedAnswer === null} className="rounded-full bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-slate-300">
+                            <button type="button" onClick={nextQuestion} disabled={selectedAnswer === null} className="rounded-full bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-brand-border">
                                 {currentQuestion === questions.length - 1 ? 'Finish Quiz' : 'Next'}
                             </button>
                         </div>
                     </>
                 ) : (
-                    <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-center">
-                        <h2 className="text-xl font-semibold text-emerald-700">Quiz complete</h2>
-                        <p className="mt-2 text-sm text-emerald-600">You scored {score} out of {questions.length} and earned your reward.</p>
+                    <div className="rounded-lg border border-brand-success/30 bg-brand-success/10 p-5 text-center">
+                        <h2 className="text-xl font-semibold text-brand-success">Quiz complete</h2>
+                        <p className="mt-2 text-sm text-brand-success/90">You scored {score} out of {questions.length} and earned your reward.</p>
                         <button type="button" onClick={resetGame} className="mt-4 rounded-full bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white">Try again</button>
                     </div>
                 )}

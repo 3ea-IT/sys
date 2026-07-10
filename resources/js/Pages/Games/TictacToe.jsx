@@ -183,15 +183,15 @@ const TicTacToe = () => {
                     rounded-2xl 
                     transition-all duration-300 
                     transform active:scale-95
-                    focus:outline-none focus:ring-4 focus:ring-[#003399]/30
+                    focus:outline-none focus:ring-4 focus:ring-[#0F2A44]/30
                     ${
                         board[index]
                             ? isWinningSquare
-                                ? "bg-gradient-to-br from-[#003399] to-[#0055cc] text-white shadow-xl scale-105"
-                                : "bg-gradient-to-br from-white to-[#e6ecfa] border-2 border-[#003399]"
-                            : "bg-white active:bg-gradient-to-br active:from-white active:to-[#f0f4ff] border-2 border-gray-300"
+                                ? "bg-gradient-to-br from-[#0F2A44] to-[#1E3A5F] text-white shadow-xl scale-105"
+                                : "bg-gradient-to-br from-white to-[#e6ecfa] dark:from-gray-700 dark:to-gray-800 border-2 border-[#0F2A44]"
+                            : "bg-white dark:bg-gray-700 active:bg-gradient-to-br active:from-white active:to-[#f0f4ff] dark:border-gray-600 border-2 border-gray-300"
                     }
-                    ${board[index] === "X" ? "text-[#003399]" : ""}
+                    ${board[index] === "X" ? "text-[#0F2A44]" : ""}
                     ${board[index] === "O" ? "text-[#ee2737]" : ""}
                     shadow-md active:shadow-xl
                     disabled:cursor-not-allowed
@@ -212,7 +212,7 @@ const TicTacToe = () => {
 
         const confettiPieces = [];
         for (let i = 0; i < 50; i++) {
-            const colors = ["#003399", "#0055cc", "#ee2737", "#FFD700"];
+            const colors = ["#0F2A44", "#1E3A5F", "#ee2737", "#FFD700"];
             const style = {
                 left: `${Math.random() * 100}%`,
                 top: `-${Math.random() * 20}%`,
@@ -246,7 +246,7 @@ const TicTacToe = () => {
                 title: "🎉 Victory!",
                 message: "+2 points earned",
                 bgColor:
-                    "bg-gradient-to-br from-[#003399] via-[#0055cc] to-[#0066dd]",
+                    "bg-gradient-to-br from-[#0F2A44] via-[#1E3A5F] to-[#28527A]",
                 textColor: "text-white",
                 animation: "animate-win",
                 icon: "🏆",
@@ -265,7 +265,7 @@ const TicTacToe = () => {
                 title: "Draw Game",
                 message: "Well played!",
                 bgColor: "bg-gradient-to-br from-gray-100 to-gray-200",
-                textColor: "text-[#003399]",
+                textColor: "text-[#0F2A44]",
                 animation: "animate-fadeIn",
                 icon: "🤝",
             };
@@ -292,7 +292,7 @@ const TicTacToe = () => {
                         </p>
                         <button
                             onClick={resetGame}
-                            className="w-full bg-white text-[#003399] font-bold py-3 xs:py-4 px-6 rounded-full shadow-lg active:shadow-xl transition-all duration-300 transform active:scale-95 text-base xs:text-lg"
+                            className="w-full bg-white text-[#0F2A44] font-bold py-3 xs:py-4 px-6 rounded-full shadow-lg active:shadow-xl transition-all duration-300 transform active:scale-95 text-base xs:text-lg"
                         >
                             Play Again
                         </button>
@@ -304,7 +304,7 @@ const TicTacToe = () => {
 
     return (
         <>
-            <div className="min-h-screen flex flex-col justify-center items-center p-4 xs:p-5 bg-gradient-to-br from-[#f0f4ff] via-white to-[#e6ecfa] safe-area-inset">
+            <div className="min-h-screen flex flex-col justify-center items-center p-4 xs:p-5 bg-brand-background dark:bg-gray-900 safe-area-inset">
                 <style>
                     {`
                       @keyframes fall {
@@ -349,32 +349,32 @@ const TicTacToe = () => {
                 {/* Back Button - Thumb-friendly bottom position for mobile */}
                 <Link
                     href="/play-and-earn"
-                    className="fixed top-4 left-4 z-50 bg-white/50 active:bg-[#003399] text-[#003399] active:text-white p-3 xs:p-4 rounded-full shadow-xl transition-all duration-200 transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#003399]/30"
+                    className="fixed top-4 left-4 z-50 bg-white/80 dark:bg-gray-800/80 active:bg-[#0F2A44] text-[#0F2A44] dark:text-blue-400 active:text-white p-3 xs:p-4 rounded-full shadow-card transition-all duration-200 transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#0F2A44]/30"
                     style={{ touchAction: "manipulation" }}
                 >
                     <ArrowLeft size={24} strokeWidth={2.5} />
                 </Link>
 
-                <div className="w-full max-w-[400px] px-3 xs:px-4 py-5 xs:py-6 bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-gray-200 relative overflow-hidden">
+                <div className="w-full max-w-[400px] px-3 xs:px-4 py-5 xs:py-6 bg-white dark:bg-gray-800 rounded-lg shadow-card border border-brand-border dark:border-gray-700 relative overflow-hidden">
                     {/* Decorative Elements */}
-                    <div className="absolute top-0 right-0 w-24 h-24 xs:w-32 xs:h-32 bg-[#003399]/5 rounded-full blur-3xl -z-10"></div>
+                    <div className="absolute top-0 right-0 w-24 h-24 xs:w-32 xs:h-32 bg-[#0F2A44]/5 rounded-full blur-3xl -z-10"></div>
                     <div className="absolute bottom-0 left-0 w-24 h-24 xs:w-32 xs:h-32 bg-[#ee2737]/5 rounded-full blur-3xl -z-10"></div>
 
                     {/* Header */}
                     <div className="text-center mb-4 xs:mb-5">
-                        <div className="bg-gradient-to-r from-[#003399] to-[#0055cc] text-white py-2 xs:py-3 px-5 xs:px-6 rounded-full inline-block shadow-lg mb-2 xs:mb-3">
+                        <div className="bg-gradient-to-r from-[#0F2A44] to-[#1E3A5F] text-white py-2 xs:py-3 px-5 xs:px-6 rounded-full inline-block shadow-lg mb-2 xs:mb-3">
                             <h1 className="text-xl xs:text-2xl font-bold">
                                 Tic Tac Toe
                             </h1>
                         </div>
-                        <p className="text-gray-600 text-xs xs:text-sm">
+                        <p className="text-brand-secondary dark:text-gray-400 text-xs xs:text-sm">
                             Challenge the AI
                         </p>
                     </div>
 
                     {/* Stats - Optimized for thumb reach */}
                     <div className="mb-4 xs:mb-5 flex justify-between items-center gap-2">
-                        <div className="flex-1 text-center px-2 xs:px-3 py-2 rounded-xl bg-gradient-to-br from-[#003399] to-[#0055cc] text-white shadow-md">
+                        <div className="flex-1 text-center px-2 xs:px-3 py-2 rounded-xl bg-gradient-to-br from-[#0F2A44] to-[#1E3A5F] text-white shadow-md">
                             <div className="text-[10px] xs:text-xs font-medium opacity-90">
                                 You
                             </div>
@@ -382,7 +382,7 @@ const TicTacToe = () => {
                                 {stats.wins}
                             </div>
                         </div>
-                        <div className="flex-1 text-center px-2 xs:px-3 py-2 rounded-xl bg-gray-100 text-gray-800 shadow-md">
+                        <div className="flex-1 text-center px-2 xs:px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 shadow-md">
                             <div className="text-[10px] xs:text-xs font-medium">
                                 Draws
                             </div>
@@ -403,18 +403,18 @@ const TicTacToe = () => {
                     {/* Game Board - Centered and optimized */}
                     <div className="relative mb-4 xs:mb-5">
                         {computerThinking && (
-                            <div className="absolute inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center z-20 rounded-2xl">
+                            <div className="absolute inset-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm flex items-center justify-center z-20 rounded-2xl">
                                 <div className="flex flex-col items-center space-y-2 xs:space-y-3">
-                                    <div className="text-lg xs:text-xl font-bold text-[#003399]">
+                                    <div className="text-lg xs:text-xl font-bold text-[#0F2A44] dark:text-blue-400">
                                         AI Thinking
                                     </div>
                                     <div className="flex space-x-2">
                                         <div
-                                            className="w-2.5 h-2.5 xs:w-3 xs:h-3 bg-[#003399] rounded-full animate-bounce"
+                                            className="w-2.5 h-2.5 xs:w-3 xs:h-3 bg-[#0F2A44] rounded-full animate-bounce"
                                             style={{ animationDelay: "0s" }}
                                         ></div>
                                         <div
-                                            className="w-2.5 h-2.5 xs:w-3 xs:h-3 bg-[#0055cc] rounded-full animate-bounce"
+                                            className="w-2.5 h-2.5 xs:w-3 xs:h-3 bg-[#1E3A5F] rounded-full animate-bounce"
                                             style={{ animationDelay: "0.15s" }}
                                         ></div>
                                         <div
@@ -426,7 +426,7 @@ const TicTacToe = () => {
                             </div>
                         )}
 
-                        <div className="grid grid-cols-3 gap-2 xs:gap-3 p-3 xs:p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-inner">
+                        <div className="grid grid-cols-3 gap-2 xs:gap-3 p-3 xs:p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-2xl shadow-inner">
                             {Array(9)
                                 .fill(null)
                                 .map((_, i) => (
@@ -443,8 +443,8 @@ const TicTacToe = () => {
                             <div
                                 className={`inline-block px-4 xs:px-6 py-2 rounded-full text-sm xs:text-base ${
                                     isXNext
-                                        ? "bg-[#003399]/10 text-[#003399]"
-                                        : "bg-gray-100 text-gray-700"
+                                        ? "bg-[#0F2A44]/10 text-[#0F2A44] dark:text-blue-400"
+                                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                                 } font-semibold transition-all duration-300`}
                             >
                                 {isXNext ? "Your Turn ⚡" : "AI's Turn 🤖"}
@@ -457,7 +457,7 @@ const TicTacToe = () => {
                         <div className="flex justify-center">
                             <button
                                 onClick={resetGame}
-                                className="px-6 xs:px-8 py-3 xs:py-4 bg-gradient-to-r from-[#003399] to-[#0055cc] text-white font-bold rounded-full shadow-lg active:shadow-xl transition-all duration-200 transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#003399]/30 text-sm xs:text-base"
+                                className="px-6 xs:px-8 py-3 xs:py-4 bg-gradient-to-r from-[#0F2A44] to-[#1E3A5F] text-white font-bold rounded-full shadow-lg active:shadow-xl transition-all duration-200 transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#0F2A44]/30 text-sm xs:text-base"
                                 style={{ touchAction: "manipulation" }}
                             >
                                 New Game

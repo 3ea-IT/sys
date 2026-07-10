@@ -39,7 +39,7 @@ const Tetris = () => {
             }
             
             canvas {
-                border: 3px solid #039;
+                border: 3px solid #0F2A44;
                 background: rgba(0, 0, 0, 0.8);
                 border-radius: 4px;
                 box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
@@ -99,7 +99,7 @@ const Tetris = () => {
             }
             
             #game-control button:active {
-                background: #039;
+                background: #0F2A44;
                 transform: scale(0.95);
             }
             
@@ -110,7 +110,7 @@ const Tetris = () => {
                 background: rgba(0, 0, 0, 0.85);
                 padding: 8px 12px;
                 border-radius: 8px;
-                border: 2px solid #039;
+                border: 2px solid #0F2A44;
                 z-index: 50;
             }
             
@@ -135,7 +135,7 @@ const Tetris = () => {
                 background: rgba(0, 0, 0, 0.85);
                 padding: 8px 12px;
                 border-radius: 8px;
-                border: 2px solid #039;
+                border: 2px solid #0F2A44;
                 z-index: 50;
             }
 
@@ -481,7 +481,7 @@ const Tetris = () => {
         context.fillStyle = "rgba(0, 0, 0, 0.75)";
         context.fillRect(0, 0, canvas.width, canvas.height);
 
-        context.fillStyle = "#ff0066";
+        context.fillStyle = "#D64545";
         context.font = "24px 'Press Start 2P'";
         context.textAlign = "center";
         context.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 48);
@@ -495,7 +495,7 @@ const Tetris = () => {
         );
 
         if (bonusPoints > 0) {
-            context.fillStyle = "#00ff00";
+            context.fillStyle = "#1F8A70";
             context.font = "12px 'Press Start 2P'";
             context.fillText(
                 `Time Bonus: +${bonusPoints}`,
@@ -823,7 +823,7 @@ const Tetris = () => {
                 {/* Back Button - Top Left */}
                 <Link
                     href="/play-and-earn"
-                    className="fixed top-4 left-4 z-50 bg-white/50 active:bg-[#039] text-[#039] active:text-white p-3 xs:p-4 rounded-full shadow-xl transition-all duration-200 transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#039]/30"
+                    className="fixed top-4 left-4 z-50 bg-white/50 active:bg-[#0F2A44] text-[#0F2A44] active:text-white p-3 xs:p-4 rounded-full shadow-xl transition-all duration-200 transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#0F2A44]/30"
                     style={{ touchAction: "manipulation" }}
                 >
                     <ArrowLeft size={24} strokeWidth={2.5} />
@@ -893,7 +893,7 @@ const Tetris = () => {
                             </p>
                             <button
                                 onClick={() => setShowInstructions(false)}
-                                className="mt-6 w-full bg-[#039] text-white py-3 rounded-lg hover:bg-[#027] transition font-bold"
+                                className="mt-6 w-full bg-[#0F2A44] text-white py-3 rounded-lg hover:bg-[#0A1F33] transition font-bold"
                             >
                                 Got it!
                             </button>
@@ -909,7 +909,7 @@ const Tetris = () => {
                             style={{
                                 marginTop: "6px",
                                 padding: "12px 24px",
-                                backgroundColor: "#039",
+                                backgroundColor: "#0F2A44",
                                 color: "white",
                                 cursor: "pointer",
                                 position: "absolute",
@@ -1014,7 +1014,7 @@ const Tetris = () => {
                             onClick={restartGame}
                             style={{
                                 padding: "12px 30px",
-                                background: "#039",
+                                background: "#0F2A44",
                                 color: "white",
                                 border: "none",
                                 borderRadius: "25px",
@@ -1041,7 +1041,7 @@ const Tetris = () => {
                             <div className="score-label">BONUS</div>
                             <div
                                 className="score-value"
-                                style={{ color: "#00ff00" }}
+                                style={{ color: "#1F8A70" }}
                             >
                                 +{Math.floor(window.seconds / 10) * 10} pts
                             </div>
