@@ -15,6 +15,13 @@ use App\Http\Controllers\Admin\Temples\ParkingController;
 use App\Http\Controllers\Admin\Temples\GuideController;
 use App\Http\Controllers\Admin\Temples\FestivalShowController;
 use App\Http\Controllers\Admin\Temples\AssistanceController;
+use App\Http\Controllers\Admin\TourismPackageController;
+use App\Http\Controllers\Admin\FlightController;
+use App\Http\Controllers\Admin\RestaurantController;
+use App\Http\Controllers\Admin\Restaurants\DiningOfferController;
+use App\Http\Controllers\Admin\PropertyController;
+use App\Http\Controllers\Admin\Properties\RoomTypeController;
+use App\Http\Controllers\Admin\Properties\PropertyBookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,4 +90,31 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     Route::resource('assistance', AssistanceController::class);
     Route::post('/assistance/{assistance}/toggle-status', [AssistanceController::class, 'toggleStatus'])->name('assistance.toggle-status');
+
+    // Tourism Packages Management (Spiritual Tourism)
+    Route::resource('tourism-packages', TourismPackageController::class);
+    Route::post('/tourism-packages/{tourismPackage}/toggle-status', [TourismPackageController::class, 'toggleStatus'])->name('tourism-packages.toggle-status');
+
+    // Flights Management (Air Booking)
+    Route::resource('flights', FlightController::class);
+    Route::post('/flights/{flight}/toggle-status', [FlightController::class, 'toggleStatus'])->name('flights.toggle-status');
+
+    // Restaurants Management (Dining & Restaurants)
+    Route::resource('restaurants', RestaurantController::class);
+    Route::post('/restaurants/{restaurant}/toggle-status', [RestaurantController::class, 'toggleStatus'])->name('restaurants.toggle-status');
+
+    Route::resource('dining-offers', DiningOfferController::class);
+    Route::post('/dining-offers/{diningOffer}/toggle-status', [DiningOfferController::class, 'toggleStatus'])->name('dining-offers.toggle-status');
+
+    // Properties Management (Accommodation)
+    Route::resource('properties', PropertyController::class);
+    Route::post('/properties/{property}/toggle-status', [PropertyController::class, 'toggleStatus'])->name('properties.toggle-status');
+    Route::delete('/properties/{property}/images/{image}', [PropertyController::class, 'destroyImage'])->name('properties.images.destroy');
+
+    Route::resource('room-types', RoomTypeController::class);
+    Route::post('/room-types/{roomType}/toggle-status', [RoomTypeController::class, 'toggleStatus'])->name('room-types.toggle-status');
+
+    Route::get('/property-bookings', [PropertyBookingController::class, 'index'])->name('property-bookings.index');
+    Route::get('/property-bookings/{propertyBooking}', [PropertyBookingController::class, 'show'])->name('property-bookings.show');
+    Route::post('/property-bookings/{propertyBooking}/status', [PropertyBookingController::class, 'updateStatus'])->name('property-bookings.update-status');
 });

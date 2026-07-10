@@ -29,6 +29,12 @@ class DatabaseSeeder extends Seeder
             VipSeeder::class,
             FestivalShowSeeder::class,
             AssistanceSeeder::class,
+            TourismPackageSeeder::class,
+            FlightSeeder::class,
+            RestaurantSeeder::class,
+            DiningOfferSeeder::class,
+            PropertySeeder::class,
+            RoomTypeSeeder::class,
         ]);
     }
 }

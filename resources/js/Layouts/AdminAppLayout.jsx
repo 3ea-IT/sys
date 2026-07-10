@@ -52,6 +52,10 @@ export default function AdminAppLayout({ children }) {
         { href: "/admin/vendors", icon: Store, label: "Vendors" },
         { href: "/admin/experiences", icon: Sparkles, label: "Experiences" },
         { href: "/admin/temples", icon: Store, label: "Temples" },
+        { href: "/admin/tourism-packages", icon: Store, label: "Tourism Packages" },
+        { href: "/admin/flights", icon: Store, label: "Flights" },
+        { href: "/admin/restaurants", icon: Store, label: "Restaurants" },
+        { href: "/admin/properties", icon: Store, label: "Properties" },
         { href: "/admin/bookings", icon: Calendar, label: "Bookings" },
         { href: "/admin/queries", icon: HelpCircle, label: "Support Queries" },
     ];
@@ -66,9 +70,35 @@ export default function AdminAppLayout({ children }) {
         if (url?.startsWith("/admin/vendors")) return "Vendors";
         if (url?.startsWith("/admin/experiences")) return "Experiences";
         if (url?.startsWith("/admin/temples")) return "Temples";
+        if (url?.startsWith("/admin/tourism-packages")) return "Tourism Packages";
+        if (url?.startsWith("/admin/flights")) return "Flights";
+        if (url?.startsWith("/admin/restaurants")) return "Restaurants";
+        if (url?.startsWith("/admin/dining-offers")) return "Dining Offers";
+        if (url?.startsWith("/admin/properties")) return "Properties";
+        if (url?.startsWith("/admin/room-types")) return "Room Types";
+        if (url?.startsWith("/admin/property-bookings")) return "Property Bookings";
         if (url?.startsWith("/admin/bookings")) return "Bookings";
         return "Admin";
     };
+
+    const restaurantSubTabs = [
+        { href: "/admin/restaurants", label: "Overview" },
+        { href: "/admin/dining-offers", label: "Offers" },
+    ];
+
+    const isRestaurantSection =
+        url?.startsWith("/admin/restaurants") || url?.startsWith("/admin/dining-offers");
+
+    const propertySubTabs = [
+        { href: "/admin/properties", label: "Overview" },
+        { href: "/admin/room-types", label: "Room Types" },
+        { href: "/admin/property-bookings", label: "Bookings" },
+    ];
+
+    const isPropertySection =
+        url?.startsWith("/admin/properties") ||
+        url?.startsWith("/admin/room-types") ||
+        url?.startsWith("/admin/property-bookings");
 
     const templeSubTabs = [
         { href: "/admin/temples", label: "Overview" },
@@ -395,6 +425,50 @@ export default function AdminAppLayout({ children }) {
                             </div>
                         </div>
                     )}
+                    {isRestaurantSection && (
+                        <div className="mb-6 border-b border-brand-border dark:border-gray-700 -mx-4 px-4">
+                            <div className="flex gap-2 overflow-x-auto pb-3">
+                                {restaurantSubTabs.map((tab) => {
+                                    const isActive = url === tab.href;
+                                    return (
+                                        <Link
+                                            key={tab.href}
+                                            href={tab.href}
+                                            className={`px-3 py-2 font-medium text-xs whitespace-nowrap transition-colors rounded ${
+                                                isActive
+                                                    ? "text-brand-primary bg-brand-background dark:bg-gray-800"
+                                                    : "text-brand-secondary hover:text-brand-primary"
+                                            }`}
+                                        >
+                                            {tab.label}
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+                    {isPropertySection && (
+                        <div className="mb-6 border-b border-brand-border dark:border-gray-700 -mx-4 px-4">
+                            <div className="flex gap-2 overflow-x-auto pb-3">
+                                {propertySubTabs.map((tab) => {
+                                    const isActive = url === tab.href;
+                                    return (
+                                        <Link
+                                            key={tab.href}
+                                            href={tab.href}
+                                            className={`px-3 py-2 font-medium text-xs whitespace-nowrap transition-colors rounded ${
+                                                isActive
+                                                    ? "text-brand-primary bg-brand-background dark:bg-gray-800"
+                                                    : "text-brand-secondary hover:text-brand-primary"
+                                            }`}
+                                        >
+                                            {tab.label}
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
                     {children}
                 </main>
             </div>
@@ -486,6 +560,50 @@ export default function AdminAppLayout({ children }) {
                             <div className="mb-6 border-b border-brand-border dark:border-gray-700">
                                 <div className="flex gap-4 overflow-x-auto">
                                     {templeSubTabs.map((tab) => {
+                                        const isActive = url === tab.href;
+                                        return (
+                                            <Link
+                                                key={tab.href}
+                                                href={tab.href}
+                                                className={`px-4 py-3 font-medium text-sm whitespace-nowrap transition-colors ${
+                                                    isActive
+                                                        ? "text-brand-primary border-b-2 border-brand-primary"
+                                                        : "text-brand-secondary hover:text-brand-primary"
+                                                }`}
+                                            >
+                                                {tab.label}
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+                        {isRestaurantSection && (
+                            <div className="mb-6 border-b border-brand-border dark:border-gray-700">
+                                <div className="flex gap-4 overflow-x-auto">
+                                    {restaurantSubTabs.map((tab) => {
+                                        const isActive = url === tab.href;
+                                        return (
+                                            <Link
+                                                key={tab.href}
+                                                href={tab.href}
+                                                className={`px-4 py-3 font-medium text-sm whitespace-nowrap transition-colors ${
+                                                    isActive
+                                                        ? "text-brand-primary border-b-2 border-brand-primary"
+                                                        : "text-brand-secondary hover:text-brand-primary"
+                                                }`}
+                                            >
+                                                {tab.label}
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+                        {isPropertySection && (
+                            <div className="mb-6 border-b border-brand-border dark:border-gray-700">
+                                <div className="flex gap-4 overflow-x-auto">
+                                    {propertySubTabs.map((tab) => {
                                         const isActive = url === tab.href;
                                         return (
                                             <Link

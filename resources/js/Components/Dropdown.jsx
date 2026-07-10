@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, Fragment } from 'react';
+import { useState, useRef, useEffect, createContext, useContext, Fragment } from 'react';
 import { Link } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
 
@@ -6,28 +6,36 @@ const DropDownContext = createContext();
 
 const Dropdown = ({ children }) => {
     const [open, setOpen] = useState(false);
+    const containerRef = useRef(null);
 
     const toggleOpen = () => {
         setOpen((previousState) => !previousState);
     };
 
+    useEffect(() => {
+        if (!open) return;
+
+        const handleClickOutside = (event) => {
+            if (containerRef.current && !containerRef.current.contains(event.target)) {
+                setOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [open]);
+
     return (
         <DropDownContext.Provider value={{ open, setOpen, toggleOpen }}>
-            <div className="relative">{children}</div>
+            <div className="relative" ref={containerRef}>{children}</div>
         </DropDownContext.Provider>
     );
 };
 
 const Trigger = ({ children }) => {
-    const { open, setOpen, toggleOpen } = useContext(DropDownContext);
+    const { toggleOpen } = useContext(DropDownContext);
 
-    return (
-        <>
-            <div onClick={toggleOpen}>{children}</div>
-
-            {open && <div className="fixed inset-0 z-40" onClick={() => setOpen(false)}></div>}
-        </>
-    );
+    return <div onClick={toggleOpen}>{children}</div>;
 };
 
 const Content = ({ align = 'right', width = '48', contentClasses = 'py-1 bg-white', children }) => {

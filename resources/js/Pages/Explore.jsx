@@ -1,6 +1,7 @@
 import AppLayout from "@/Layouts/AppLayout";
+import Dropdown from "@/Components/Dropdown";
 import { Link, usePage, router } from "@inertiajs/react";
-import { Clock, X, ArrowLeft } from "lucide-react";
+import { Clock, X, ArrowLeft, ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 export default function Explore({
@@ -170,7 +171,7 @@ export default function Explore({
             {/* Categories */}
             <section className="mb-8 md:mb-12">
                 <h2 className="text-sm md:text-base font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 md:mb-6">
-                    Event Categories
+                    Categories
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                     <CategoryCard
@@ -180,37 +181,47 @@ export default function Explore({
                         href="/movies"
                     />
                     <CategoryCard
-                        title="TATA IPL 2026"
-                        icon="🏏"
-                        image="/assets/categories/ipl.jpg"
-                        href="/ipl"
+                        title="Events"
+                        icon="🎟️"
+                        image="/assets/categories/events.jpg"
+                        children={[
+                            { label: "Concerts", href: "/explore/concerts" },
+                            { label: "Comedy Shows", href: "/explore/comedy-shows" },
+                            { label: "Workshops", href: "/explore/workshops" },
+                            { label: "Exhibitions", href: "/explore/exhibitions" },
+                            { label: "Sports Events", href: "/explore/sports" },
+                            { label: "Live Performances", href: "/explore/music-shows" },
+                        ]}
                     />
                     <CategoryCard
-                        title="Sports"
-                        icon="⚽"
-                        image="/assets/categories/sports.jpg"
-                        href="/explore/sports"
+                        title="Air Booking"
+                        icon="✈️"
+                        image="/assets/categories/air-booking.jpg"
+                        href="/air-booking"
                     />
                     <CategoryCard
-                        title="Music Shows"
-                        icon="🎵"
-                        image="/assets/categories/music-shows.jpg"
-                        href="/explore/music-shows"
+                        title="Tourism"
+                        icon="🛕"
+                        image="/assets/categories/tourism.jpg"
+                        children={[
+                            { label: "Spiritual Tourism", href: "/tourism/spiritual" },
+                            { label: "Pilgrimage Tourism", href: "/temple" },
+                        ]}
                     />
                 </div>
                 <div className="mt-3 md:mt-4 flex gap-3 md:gap-4">
                     <CategoryCard
-                        title="Comedy Shows"
-                        icon="😂"
-                        image="/assets/categories/comedy-shows.jpg"
-                        href="/explore/comedy-shows"
+                        title="Dining & Restaurants"
+                        icon="🍽️"
+                        image="/assets/categories/dining.jpg"
+                        href="/dining"
                         className="w-32 md:w-40"
                     />
                     <CategoryCard
-                        title="Temples"
-                        icon="🛕"
-                        image="/assets/categories/temples.jpg"
-                        href="/temple"
+                        title="Accommodation"
+                        icon="🛏️"
+                        image="/assets/categories/accommodation.jpg"
+                        href="/accommodation"
                         className="w-32 md:w-40"
                     />
                 </div>
@@ -315,20 +326,48 @@ export default function Explore({
 }
 
 // Components unchanged
-function CategoryCard({ title, icon, image, href, className = "" }) {
+function CategoryCard({ title, icon, image, href, children, className = "" }) {
+    const cardBody = (
+        <div
+            className="rounded-lg p-4 h-28 flex flex-col justify-between text-white relative overflow-hidden"
+            style={{
+                backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.3) 100%), url(${image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+            }}
+        >
+            <div className="flex items-center justify-between">
+                <div className="text-lg">{icon}</div>
+                {children && <ChevronDown className="w-4 h-4" />}
+            </div>
+            <h3 className="text-sm font-semibold">{title}</h3>
+        </div>
+    );
+
+    if (children) {
+        return (
+            <Dropdown align="left">
+                <Dropdown.Trigger>
+                    <div className={`cursor-pointer ${className}`}>{cardBody}</div>
+                </Dropdown.Trigger>
+                <Dropdown.Content width="auto" contentClasses="py-1.5 bg-white dark:bg-gray-900 w-56 border border-gray-100 dark:border-gray-800">
+                    {children.map((child) => (
+                        <Dropdown.Link
+                            key={child.label}
+                            href={child.href}
+                            className="dark:text-gray-300 dark:hover:bg-gray-800"
+                        >
+                            {child.label}
+                        </Dropdown.Link>
+                    ))}
+                </Dropdown.Content>
+            </Dropdown>
+        );
+    }
+
     return (
         <Link href={href} className={className}>
-            <div
-                className="rounded-lg p-4 h-28 flex flex-col justify-between text-white relative overflow-hidden"
-                style={{
-                    backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.3) 100%), url(${image})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                }}
-            >
-                <div className="text-lg">{icon}</div>
-                <h3 className="text-sm font-semibold">{title}</h3>
-            </div>
+            {cardBody}
         </Link>
     );
 }

@@ -19,6 +19,10 @@ use App\Http\Controllers\ParkingController;
 use App\Http\Controllers\TransportController;
 use App\Http\Controllers\StayController;
 use App\Http\Controllers\AssistanceController;
+use App\Http\Controllers\TourismController;
+use App\Http\Controllers\AirBookingController;
+use App\Http\Controllers\DiningController;
+use App\Http\Controllers\AccommodationController;
 use Inertia\Inertia;
 
 /*
@@ -123,7 +127,46 @@ Route::group([], function () {
     Route::get('/temple/assistance', [\App\Http\Controllers\AssistanceController::class, 'index'])->name('temple.assistance');
     Route::get('/temple/{temple}', [TempleController::class, 'show'])->name('temple.show');
     Route::get('/temple/{temple}/book-confirm', [TempleController::class, 'bookConfirm'])->name('temple.book.confirm');
-    
+
+    // Tourism Routes (Spiritual Tourism)
+    Route::get('/tourism/spiritual', [TourismController::class, 'index'])->name('tourism.spiritual.index');
+    Route::get('/tourism/spiritual/{id}', [TourismController::class, 'show'])->name('tourism.spiritual.show');
+    Route::post('/tourism/spiritual/{id}/book', [TourismController::class, 'book'])->name('tourism.spiritual.book');
+    Route::get('/tourism/spiritual/booking/{booking}', [TourismController::class, 'showBooking'])->name('tourism.spiritual.booking');
+    Route::post('/tourism/spiritual/booking/{booking}/cancel', [TourismController::class, 'cancelBooking'])->name('tourism.spiritual.booking.cancel');
+
+    // Air Booking Routes
+    Route::get('/air-booking', [AirBookingController::class, 'index'])->name('air-booking.index');
+    Route::get('/air-booking/my-bookings', [AirBookingController::class, 'myBookings'])->name('air-booking.my-bookings');
+    Route::get('/air-booking/booking/{booking}', [AirBookingController::class, 'showBooking'])->name('air-booking.booking');
+    Route::post('/air-booking/booking/{booking}/cancel', [AirBookingController::class, 'cancelBooking'])->name('air-booking.booking.cancel');
+    Route::get('/air-booking/booking/{booking}/change', [AirBookingController::class, 'changeStep'])->name('air-booking.booking.change');
+    Route::post('/air-booking/booking/{booking}/change', [AirBookingController::class, 'changeConfirm'])->name('air-booking.booking.change.confirm');
+    Route::post('/air-booking/checkout/{booking}/travelers', [AirBookingController::class, 'travelersStore'])->name('air-booking.checkout.travelers.store');
+    Route::get('/air-booking/checkout/{booking}/travelers', [AirBookingController::class, 'travelersStep'])->name('air-booking.checkout.travelers');
+    Route::post('/air-booking/checkout/{booking}/seats', [AirBookingController::class, 'seatsStore'])->name('air-booking.checkout.seats.store');
+    Route::get('/air-booking/checkout/{booking}/seats', [AirBookingController::class, 'seatsStep'])->name('air-booking.checkout.seats');
+    Route::post('/air-booking/checkout/{booking}/addons', [AirBookingController::class, 'addonsStore'])->name('air-booking.checkout.addons.store');
+    Route::get('/air-booking/checkout/{booking}/addons', [AirBookingController::class, 'addonsStep'])->name('air-booking.checkout.addons');
+    Route::post('/air-booking/checkout/{booking}/review', [AirBookingController::class, 'reviewConfirm'])->name('air-booking.checkout.review.confirm');
+    Route::get('/air-booking/checkout/{booking}/review', [AirBookingController::class, 'reviewStep'])->name('air-booking.checkout.review');
+    Route::get('/air-booking/{id}', [AirBookingController::class, 'show'])->name('air-booking.show');
+    Route::post('/air-booking/{id}/start', [AirBookingController::class, 'start'])->name('air-booking.start');
+
+    // Dining & Restaurants Routes
+    Route::get('/dining', [DiningController::class, 'index'])->name('dining.index');
+    Route::get('/dining/booking/{booking}', [DiningController::class, 'showBooking'])->name('dining.booking');
+    Route::post('/dining/booking/{booking}/cancel', [DiningController::class, 'cancelBooking'])->name('dining.booking.cancel');
+    Route::get('/dining/{id}', [DiningController::class, 'show'])->name('dining.show');
+    Route::post('/dining/{id}/book', [DiningController::class, 'book'])->name('dining.book');
+
+    // Accommodation Routes
+    Route::get('/accommodation', [AccommodationController::class, 'index'])->name('accommodation.index');
+    Route::get('/accommodation/booking/{booking}', [AccommodationController::class, 'showBooking'])->name('accommodation.booking');
+    Route::post('/accommodation/booking/{booking}/cancel', [AccommodationController::class, 'cancelBooking'])->name('accommodation.booking.cancel');
+    Route::get('/accommodation/{id}', [AccommodationController::class, 'show'])->name('accommodation.show');
+    Route::post('/accommodation/room/{id}/book', [AccommodationController::class, 'book'])->name('accommodation.book');
+
     Route::get('/movies', [MovieTicketController::class, 'index'])->name('movies.index');
     Route::post('/holds', [HoldController::class, 'store'])->name('holds.store');
     Route::get('/holds', [HoldController::class, 'index'])->name('holds.index');
