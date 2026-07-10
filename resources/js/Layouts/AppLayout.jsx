@@ -1,8 +1,9 @@
 import { Link, usePage, router } from "@inertiajs/react";
-import { Home, User, Search, Ticket, Bell, LogOut, Settings, Film, HelpCircle, Menu, X, Calendar } from "lucide-react";
+import { Home, User, Search, Ticket, Bell, LogOut, Settings, Film, HelpCircle, Menu, X, Calendar, Gamepad2, Wallet } from "lucide-react";
 import { useState, useEffect } from "react";
 import PWAInstallPrompt from "../Components/PWAInstallPrompt";
 import AppLoader from "../Components/AppLoader";
+import PlayEarnFab from "../Components/PlayEarnFab";
 import { useLoader } from "../Contexts/LoaderContext";
 
 export default function AppLayout({ children }) {
@@ -140,6 +141,22 @@ export default function AppLayout({ children }) {
                 currentUrl={url}
               />
             )}
+            {usePage().props.auth?.user && (
+              <SidebarLink
+                href="/wallet"
+                icon={Wallet}
+                label="Wallet"
+                onClick={() => setSidebarOpen(false)}
+                currentUrl={url}
+              />
+            )}
+            <SidebarLink
+              href="/play-and-earn"
+              icon={Gamepad2}
+              label="Play & Earn"
+              onClick={() => setSidebarOpen(false)}
+              currentUrl={url}
+            />
             <SidebarLink
               href="/help"
               icon={HelpCircle}
@@ -306,6 +323,22 @@ export default function AppLayout({ children }) {
                   currentUrl={url}
                 />
               )}
+              {usePage().props.auth?.user && (
+                <SidebarLink
+                  href="/wallet"
+                  icon={Wallet}
+                  label="Wallet"
+                  onClick={() => setSidebarOpen(false)}
+                  currentUrl={url}
+                />
+              )}
+              <SidebarLink
+                href="/play-and-earn"
+                icon={Gamepad2}
+                label="Play & Earn"
+                onClick={() => setSidebarOpen(false)}
+                currentUrl={url}
+              />
               <SidebarLink
                 href="/help"
                 icon={HelpCircle}
@@ -371,6 +404,8 @@ export default function AppLayout({ children }) {
             </div>
           </div>
         </nav>
+
+        <PlayEarnFab />
         </div>
 
         {/* Desktop Layout - Visible only on lg and above */}

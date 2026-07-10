@@ -16,34 +16,67 @@ class WalletController extends Controller
      */
     public function index()
     {
-        // Fetch the authenticated user's wallet
-        $wallet = auth()->user()->wallet;
+        $user = auth()->user();
+        $wallet = $user->wallet()->firstOrCreate(
+            ['user_id' => $user->id],
+            ['balance' => 0.00]
+        );
 
-        // Fetch all transactions, including those linked to bookings (both instant and hold bookings)
-        $transactions = $wallet?->transactions()
-            ->with(['booking' => function($query) {
-                // Load booking data and check if the booking type is 'instant' or 'hold'
+        $transactions = $this->mappedTransactions($wallet)->take(5)->values();
+
+        return Inertia::render('Wallet/Index', [
+            'wallet' => $this->walletProp($wallet),
+            'transactions' => $transactions,
+        ]);
+    }
+
+    /**
+     * Full wallet transaction history / logs page.
+     */
+    public function transactions()
+    {
+        $user = auth()->user();
+        $wallet = $user->wallet()->firstOrCreate(
+            ['user_id' => $user->id],
+            ['balance' => 0.00]
+        );
+
+        return Inertia::render('Wallet/Transactions', [
+            'wallet' => $this->walletProp($wallet),
+            'transactions' => $this->mappedTransactions($wallet)->values(),
+        ]);
+    }
+
+    private function walletProp(Wallet $wallet): array
+    {
+        return [
+            'id' => $wallet->id,
+            'user_id' => $wallet->user_id,
+            'balance' => (float) $wallet->balance,
+        ];
+    }
+
+    private function mappedTransactions(Wallet $wallet)
+    {
+        return $wallet->transactions()
+            ->with(['booking' => function ($query) {
                 $query->select('id', 'user_id', 'booking_type', 'status', 'total_amount');
             }])
             ->latest()
-            ->get() ?? [];
-
-        // Pass wallet and transaction data to the view
-        return Inertia::render('Wallet/Index', [
-            'wallet' => $wallet,
-            'transactions' => $transactions->map(function ($transaction) {
+            ->get()
+            ->map(function ($transaction) {
                 return [
                     'id' => $transaction->id,
-                    'amount' => $transaction->amount,
+                    'amount' => (float) $transaction->amount,
                     'type' => $transaction->type,
                     'description' => $transaction->description ?? 'Wallet transaction',
                     'created_at' => $transaction->created_at->diffForHumans(),
+                    'date' => $transaction->created_at->toISOString(),
                     'booking_id' => $transaction->booking->id ?? null,
-                    'booking_type' => $transaction->booking->booking_type ?? null,  // Instant or Hold
-                    'booking_status' => $transaction->booking->status ?? null,      // Status of the booking
-                    'booking_total_amount' => $transaction->booking->total_amount ?? null, // Total amount of the booking
+                    'booking_type' => $transaction->booking->booking_type ?? null,
+                    'booking_status' => $transaction->booking->status ?? null,
+                    'booking_total_amount' => $transaction->booking->total_amount ?? null,
                 ];
-            }),
-        ]);
+            });
     }
 }

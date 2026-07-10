@@ -111,7 +111,7 @@ function MembershipBar({ points = 450, target = 500 }) {
       <div className="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mb-2">
         <div
           className="h-full bg-yellow-400 rounded-full"
-          style={{ width: `₹{pct}%` }}
+          style={{ width: `${pct}%` }}
         />
       </div>
 

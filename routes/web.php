@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PlayEarnController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\HoldController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\AirBookingController;
 use App\Http\Controllers\DiningController;
 use App\Http\Controllers\AccommodationController;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -173,7 +175,8 @@ Route::group([], function () {
     Route::get('/holds/{hold}', [HoldController::class, 'active'])->name('holds.active');
     Route::post('/holds/{hold}/release', [HoldController::class, 'release']);
     Route::post('/holds/{hold}/confirm', [HoldController::class, 'confirm']);
-    Route::get('/wallet', [WalletController::class, 'index']);
+    Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
+    Route::get('/wallet/transactions', [WalletController::class, 'transactions'])->name('wallet.transactions');
     
     // Payment Routes
     Route::prefix('api/payment')->group(function () {
@@ -189,6 +192,26 @@ Route::group([], function () {
     Route::get('/help', function () {
         return Inertia::render('Help/Index');
     })->name('help');
+
+    Route::get('/play-and-earn', [PlayEarnController::class, 'index'])->name('play-and-earn');
+
+    Route::get('/games/tictactoe', function () {
+        return Inertia::render('Games/TictacToe');
+    })->name('games.tictactoe');
+
+    Route::get('/games/snake', function () {
+        return Inertia::render('Games/Snake');
+    })->name('games.snake');
+
+    Route::get('/games/tetris', function () {
+        return Inertia::render('Games/Tetris');
+    })->name('games.tetris');
+
+    Route::get('/games/quizz', function () {
+        return Inertia::render('Games/Quizz');
+    })->name('games.quizz');
+
+    Route::post('/games/score', [PlayEarnController::class, 'reward'])->name('games.score');
     Route::get('/user-guide', function () {
         return Inertia::render('Help/UserGuide');
     })->name('user-guide');
