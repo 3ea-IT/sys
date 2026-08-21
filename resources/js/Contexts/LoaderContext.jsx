@@ -23,9 +23,9 @@ export function LoaderProvider({ children }) {
       
       const originalOnFinish = options.onFinish;
       options.onFinish = () => {
-        setTimeout(() => {
+          setTimeout(() => {
           hideLoader();
-        }, 2000);
+        }, 300);
         if (typeof originalOnFinish === 'function') {
           originalOnFinish();
         }

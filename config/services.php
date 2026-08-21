@@ -36,6 +36,13 @@ return [
         'secret' => env('RAZORPAY_SECRET'),
     ],
 
+    'swiggy' => [
+        'base_url' => env('SWIGGY_BASE_URL', 'https://mcp.swiggy.com'),
+        'redirect_uri' => env('SWIGGY_REDIRECT_URI'),
+        'scope' => env('SWIGGY_SCOPE', 'mcp:tools mcp:resources mcp:prompts'),
+        'default_address_id' => env('SWIGGY_DEFAULT_ADDRESS_ID'),
+    ],
+
     'movieglu' => [
         'base_url' => env('MOVIEGLU_BASE_URL', 'https://api-gate2.movieglu.com'),
         'client' => env('MOVIEGLU_CLIENT'),

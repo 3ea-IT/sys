@@ -103,7 +103,6 @@ export default function FAQ() {
     const matchesCategory = !selectedCategory || faq.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
-
   const getCategoryColor = (category) => {
     const colors = {
       "Booking": "from-blue-500 to-blue-600 text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30",
@@ -112,7 +111,6 @@ export default function FAQ() {
     };
     return colors[category] || "from-gray-500 to-gray-600 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-900/30";
   };
-
   return (
     <AppLayout>
       {/* Header */}
@@ -132,8 +130,7 @@ export default function FAQ() {
           Find answers to common questions about Secure My Seat
         </p>
       </div>
-
-      {/* Search Bar */}
+      {/* Search Bar bar*/}
       <div className="mb-8 relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-brand-secondary dark:text-gray-400" />
         <input
@@ -144,7 +141,6 @@ export default function FAQ() {
           className="w-full pl-10 pr-4 py-3 md:py-4 bg-white dark:bg-gray-800 rounded-xl border border-brand-border dark:border-gray-700 text-brand-primary dark:text-gray-100 placeholder-brand-secondary dark:placeholder-gray-400 focus:outline-none focus:border-brand-primary dark:focus:border-blue-400 transition-colors text-sm md:text-base"
         />
       </div>
-
       {/* Category Filter */}
       <div className="mb-8">
         <p className="text-xs font-bold text-brand-secondary dark:text-gray-400 uppercase tracking-widest mb-2">
@@ -157,8 +153,7 @@ export default function FAQ() {
               selectedCategory === null
                 ? "bg-brand-primary text-white shadow-md"
                 : "bg-white dark:bg-gray-800 text-brand-primary dark:text-gray-100 border border-brand-border dark:border-gray-700 hover:border-brand-primary dark:hover:border-blue-400"
-            }`}
-          >
+            }`}>
             <span className="hidden md:inline">All ({faqs.length})</span>
             <span className="md:hidden">All</span>
           </button>
@@ -178,7 +173,6 @@ export default function FAQ() {
           ))}
         </div>
       </div>
-
       {/* Stats */}
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -192,7 +186,6 @@ export default function FAQ() {
           </span>
         )}
       </div>
-
       {/* FAQ Items */}
       <div className="space-y-3 mb-10">
         {filteredFaqs.length > 0 ? (
@@ -226,7 +219,6 @@ export default function FAQ() {
           </div>
         )}
       </div>
-
       {/* Help Section */}
       {filteredFaqs.length > 0 && (
         <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border border-blue-200 dark:border-blue-700/50 rounded-lg p-4 md:p-6">

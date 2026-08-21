@@ -54,12 +54,12 @@ export default function Login({ status, canResetPassword }) {
       <Head title="Log in" />
 
       {/* ── Full screen white container ── */}
-      <div className="min-h-screen w-full bg-white flex flex-col items-center justify-center px-6 py-10">
-        <div className="w-full max-w-[360px] flex flex-col items-center">
+      <div className="min-h-screen w-full bg-[#f5f8fc] px-3 py-3 sm:px-6 sm:py-6">
+        <div className="mx-auto flex min-h-[calc(100vh-1.5rem)] w-full max-w-[390px] flex-col items-center justify-center rounded-[22px] border border-[#e4eaf2] bg-white px-5 py-5 shadow-[0_10px_30px_rgba(15,42,68,0.08)] sm:min-h-0 sm:px-8 sm:py-7">
 
           {/* ── App icon ── */}
           <div
-            className="w-14 h-14 rounded-xl flex items-center justify-center mb-3 shadow-lg overflow-hidden"
+            className="mb-2 flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl shadow-md"
             style={{ background: '#0F2A44' }}
           >
             <img
@@ -73,18 +73,18 @@ export default function Login({ status, canResetPassword }) {
           </div>
 
           {/* App name */}
-          <p className="text-[11px] font-bold tracking-[0.22em] text-brand-secondary uppercase mb-8">
+          <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.24em] text-brand-secondary">
             Secure Seat
           </p>
 
           {/* ── Hero text ── */}
           <h1
-            className="text-[2rem] font-black text-center leading-tight mb-3"
+            className="mb-2 text-center font-serif text-[2rem] font-bold leading-[1.05] tracking-tight"
             style={{ color: '#0F2A44' }}
           >
             Secure First,<br />Decide Later
           </h1>
-          <p className="text-sm text-brand-secondary text-center leading-relaxed mb-8 max-w-[260px]">
+          <p className="mb-5 max-w-[290px] text-center text-xs leading-5 text-brand-secondary sm:text-sm">
             Access premium seat reservations with total peace of mind and bank-level security.
           </p>
 
@@ -131,7 +131,7 @@ export default function Login({ status, canResetPassword }) {
           </div> */}
 
           {/* ── Form (all original logic UNCHANGED) ── */}
-          <form onSubmit={submit} className="w-full space-y-4">
+          <form onSubmit={submit} className="w-full space-y-3.5">
 
             {/* Email field */}
             <div>
@@ -150,7 +150,7 @@ export default function Login({ status, canResetPassword }) {
                 autoFocus
                 placeholder="you@example.com"
                 onChange={(e) => setData('email', e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-brand-border bg-white text-brand-primary placeholder-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all"
+                className="w-full rounded-xl border border-brand-border bg-[#f8fafc] px-4 py-3 text-sm text-brand-primary placeholder-gray-400 outline-none transition-all focus:border-brand-primary focus:bg-white focus:ring-2 focus:ring-brand-primary/15"
               />
               <InputError message={errors.email} className="mt-1.5" />
             </div>
@@ -182,7 +182,7 @@ export default function Login({ status, canResetPassword }) {
                   autoComplete="current-password"
                   placeholder="••••••••"
                   onChange={(e) => setData('password', e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-brand-border bg-white text-brand-primary placeholder-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all"
+                  className="w-full rounded-xl border border-brand-border bg-[#f8fafc] px-4 py-3 text-sm text-brand-primary placeholder-gray-400 outline-none transition-all focus:border-brand-primary focus:bg-white focus:ring-2 focus:ring-brand-primary/15"
                 />
                 <button
                   type="button"
@@ -196,7 +196,7 @@ export default function Login({ status, canResetPassword }) {
             </div>
 
             {/* Helper text */}
-            <p className="text-[11px] text-brand-secondary leading-relaxed">
+            <p className="text-[10px] leading-4 text-brand-secondary">
               We'll verify your identity securely to access your account.
             </p>
 
@@ -224,14 +224,14 @@ export default function Login({ status, canResetPassword }) {
             <button
               type="submit"
               disabled={processing}
-              className="w-full py-4 rounded-xl text-sm font-black tracking-[0.12em] text-white uppercase transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed hover:opacity-90 active:scale-[0.98]"
+              className="w-full rounded-xl py-3.5 text-sm font-black uppercase tracking-[0.14em] text-white shadow-[0_6px_15px_rgba(15,42,68,0.18)] transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 hover:opacity-95 active:scale-[0.98]"
               style={{ background: '#0F2A44' }}
             >
               {processing ? 'Signing in…' : 'Continue'}
             </button>
 
             {/* Already Registered */}
-            <div className="text-center mt-4 space-y-3">
+            <div className="mt-2 space-y-2.5 text-center">
               <div>
                 <Link
                   href={route("register")}
@@ -241,11 +241,11 @@ export default function Login({ status, canResetPassword }) {
                 </Link>
               </div>
               
-              <div className="border-t border-brand-border pt-3">
-                <p className="text-[11px] text-brand-secondary mb-2">Want to list your experiences?</p>
+              <div className="border-t border-brand-border pt-2.5">
+                <p className="mb-1.5 text-[10px] text-brand-secondary">Want to list your experiences?</p>
                 <Link
                   href={route("register.vendor")}
-                  className="inline-block px-4 py-2.5 rounded-lg bg-brand-primary text-white text-xs font-bold hover:opacity-90 transition-all"
+                  className="inline-block rounded-lg bg-brand-primary px-4 py-2 text-[11px] font-bold text-white transition-all hover:opacity-90"
                 >
                   Register as Vendor
                 </Link>
@@ -255,7 +255,7 @@ export default function Login({ status, canResetPassword }) {
           </form>
 
           {/* ── Security footer ── */}
-          <div className="mt-8 flex flex-col items-center gap-2">
+          <div className="mt-5 flex flex-col items-center gap-2">
             {/* <div className="flex items-center gap-1.5">
               <ShieldIcon />
               <span className="text-[10px] font-bold tracking-[0.14em] text-brand-secondary uppercase">

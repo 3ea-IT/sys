@@ -22,7 +22,7 @@ use App\Http\Controllers\StayController;
 use App\Http\Controllers\AssistanceController;
 use App\Http\Controllers\TourismController;
 use App\Http\Controllers\AirBookingController;
-use App\Http\Controllers\DiningController;
+use App\Http\Controllers\DineoutController;
 use App\Http\Controllers\AccommodationController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -155,12 +155,20 @@ Route::group([], function () {
     Route::get('/air-booking/{id}', [AirBookingController::class, 'show'])->name('air-booking.show');
     Route::post('/air-booking/{id}/start', [AirBookingController::class, 'start'])->name('air-booking.start');
 
-    // Dining & Restaurants Routes
-    Route::get('/dining', [DiningController::class, 'index'])->name('dining.index');
-    Route::get('/dining/booking/{booking}', [DiningController::class, 'showBooking'])->name('dining.booking');
-    Route::post('/dining/booking/{booking}/cancel', [DiningController::class, 'cancelBooking'])->name('dining.booking.cancel');
-    Route::get('/dining/{id}', [DiningController::class, 'show'])->name('dining.show');
-    Route::post('/dining/{id}/book', [DiningController::class, 'book'])->name('dining.book');
+    // Swiggy Dineout integration (Laravel port of the Node "swiggy" CLI).
+    // Each logged-in user connects their own Swiggy account.
+    Route::middleware('auth')->prefix('dineout')->name('dineout.')->group(function () {
+        Route::get('/', [DineoutController::class, 'index'])->name('index');
+        Route::get('/connect', [DineoutController::class, 'connect'])->name('connect');
+        Route::get('/callback', [DineoutController::class, 'callback'])->name('callback');
+        Route::get('/locations', [DineoutController::class, 'locations'])->name('locations');
+        Route::get('/search', [DineoutController::class, 'search'])->name('search');
+        Route::get('/bookings', [DineoutController::class, 'bookings'])->name('bookings');
+        Route::get('/restaurants/{restaurantId}', [DineoutController::class, 'restaurantDetails'])->name('restaurants.show');
+        Route::get('/restaurants/{restaurantId}/booking', [DineoutController::class, 'bookingPage'])->name('restaurants.booking');
+        Route::get('/restaurants/{restaurantId}/slots', [DineoutController::class, 'slots'])->name('restaurants.slots');
+        Route::post('/restaurants/{restaurantId}/book', [DineoutController::class, 'bookTable'])->name('restaurants.book');
+    });
 
     // Accommodation Routes
     Route::get('/accommodation', [AccommodationController::class, 'index'])->name('accommodation.index');

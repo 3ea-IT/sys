@@ -161,7 +161,7 @@ class CinemaSeeder extends Seeder
                 'language' => 'English',
                 'format' => 'IMAX',
                 'description' => 'The story of the Manhattan Project.',
-                'image' => '/icons/movie-3.png',
+                'image' => 'openheimer.jpg',
                 'duration' => 180,
                 'genre' => 'Biography',
                 'rating' => 'UA',

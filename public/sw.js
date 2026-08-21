@@ -1,5 +1,5 @@
 // Service Worker for Secure Seat PWA
-const CACHE_NAME = 'secure-seat-v1';
+const CACHE_NAME = 'secure-seat-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -29,6 +29,13 @@ self.addEventListener('fetch', event => {
   // Skip chrome-extension and other unsupported schemes
   if (event.request.url.startsWith('chrome-extension://') || 
       event.request.url.startsWith('moz-extension://')) {
+    return;
+  }
+
+  // Skip cross-origin requests entirely (e.g. a Vite dev server running
+  // on a different port, or third-party APIs). Intercepting these caused
+  // net::ERR_FAILED loops when the dev server wasn't reachable.
+  if (new URL(event.request.url).origin !== self.location.origin) {
     return;
   }
 
@@ -65,10 +72,16 @@ self.addEventListener('fetch', event => {
             return response;
           })
           .catch(() => {
-            // Return offline page if available
+            // Return offline page if available for full page navigations
             if (event.request.destination === 'document') {
-              return caches.match('/offline.html');
+              return caches.match('/offline.html').then(cached => {
+                return cached || Response.error();
+              });
             }
+            // For scripts/styles/images/etc, we MUST still return a
+            // valid Response — returning undefined here is what caused
+            // "Failed to convert value to 'Response'" errors.
+            return Response.error();
           });
       })
   );

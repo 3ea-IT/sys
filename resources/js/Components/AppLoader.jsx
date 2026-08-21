@@ -1,284 +1,46 @@
-// resources/js/Components/AppLoader.jsx
-import { useEffect, useState } from "react";
-
-const STEPS = [
-  { label: "Finding seats…",      sub: "Scanning premium availability" },
-  { label: "Securing hold…",      sub: "Bank-level encryption active" },
-  { label: "Reserving your row…", sub: "Locking in your selection" },
-  { label: "Almost confirmed…",   sub: "Your seat is being guaranteed" },
-  { label: "You're all set!",     sub: "Secure First, Decide Later" },
-];
-
-const TOTAL = 4;
-
-function Seat({ filled }) {
-  return (
-    <div className={`seat-wrap${filled ? " filled" : ""}`}>
-      <svg
-        viewBox="0 0 32 36"
-        width="36"
-        height="40"
-        className="seat-svg"
-        fill={filled ? "#0F2A44" : "none"}
-      >
-        {/* Head */}
-        <circle
-          cx="16"
-          cy="5"
-          r="3.5"
-          fill={filled ? "#0F2A44" : "none"}
-          stroke={filled ? "none" : "#0F2A44"}
-          strokeWidth={filled ? 0 : 1.8}
-        />
-        {/* Backrest */}
-        <rect
-          x="9"
-          y="10"
-          width="14"
-          height="12"
-          rx="2"
-          fill={filled ? "#0F2A44" : "none"}
-          stroke={filled ? "none" : "#0F2A44"}
-          strokeWidth={filled ? 0 : 1.8}
-        />
-        {/* Seat base */}
-        <rect
-          x="7"
-          y="22"
-          width="18"
-          height="5"
-          rx="2"
-          fill={filled ? "#0F2A44" : "none"}
-          stroke={filled ? "none" : "#0F2A44"}
-          strokeWidth={filled ? 0 : 1.8}
-        />
-        {/* Legs */}
-        <path
-          d="M11 27v5M21 27v5"
-          stroke="#0F2A44"
-          strokeWidth={filled ? 2.2 : 1.8}
-          strokeLinecap="round"
-        />
-      </svg>
-      <div
-        className="seat-dot"
-        style={{ transform: filled ? "scale(1)" : "scale(0)" }}
-      />
-    </div>
-  );
-}
-
 export default function AppLoader() {
-  const [filledCount, setFilledCount] = useState(0);
-  const [stepIndex, setStepIndex] = useState(0);
-
-  // Sync stepIndex with filledCount immediately
-  useEffect(() => {
-    setStepIndex(Math.min(filledCount, STEPS.length - 1));
-  }, [filledCount]);
-
-  useEffect(() => {
-    let timeouts = [];
-
-    const run = () => {
-      // Reset if finished
-      if (filledCount >= TOTAL) {
-        const resetTimeout = setTimeout(() => {
-          setFilledCount(0);
-        }, 900);
-        timeouts.push(resetTimeout);
-        return;
-      }
-
-      // Fill next seat
-      const seatTimeout = setTimeout(() => {
-        setFilledCount((prev) => prev + 1);
-      }, 0);
-      timeouts.push(seatTimeout);
-
-      // Schedule next step
-      const nextTimeout = setTimeout(run, 700);
-      timeouts.push(nextTimeout);
-    };
-
-    const firstTimeout = setTimeout(run, 600);
-    timeouts.push(firstTimeout);
-
-    return () => {
-      timeouts.forEach(clearTimeout);
-    };
-  }, [filledCount]);
-
-  const progressPercent = ((filledCount > TOTAL ? TOTAL : filledCount) / TOTAL) * 100;
-
   return (
     <>
       <style>{`
-        .loader-root *,
-        .loader-root *::before,
-        .loader-root *::after {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-        }
-        .loader-root {
-          font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        }
-        .loader {
-          position: fixed;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          background: #F7F9FC;
-          user-select: none;
-          pointer-events: none;
-          z-index: 9999;
-        }
-        .wordmark {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 6px;
-          margin-bottom: 52px;
-        }
-        .wordmark-icon {
-          width: 52px;
-          height: 52px;
-          border-radius: 16px;
-          background: #0F2A44;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 8px 24px rgba(15,42,68,0.22);
-        }
-        .wordmark-label {
-          font-size: 11px;
-          font-weight: 700;
-          letter-spacing: 0.20em;
-          text-transform: uppercase;
-          color: #0F2A44;
-        }
-        .seats-row {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 12px;
-          margin-bottom: 40px;
-          height: 60px;
-        }
-        .seat-wrap {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          opacity: 0.4;
-          transform: scale(0.85);
-          transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .seat-wrap.filled {
-          opacity: 1;
-          transform: scale(1);
-        }
-        .seat-svg {
-          transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-          filter: drop-shadow(0 2px 6px rgba(15, 42, 68, 0.15));
-        }
-        .seat-wrap.filled .seat-svg {
-          filter: drop-shadow(0 4px 12px rgba(15, 42, 68, 0.25));
-        }
-        .status-text {
-          text-align: center;
-          min-height: 44px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 5px;
-        }
-        .status-label {
-          font-size: 17px;
-          font-weight: 800;
-          color: #0F2A44;
-          letter-spacing: -0.3px;
-        }
-        .status-sub {
-          font-size: 13px;
-          color: #5F6C7B;
-          line-height: 1.5;
-          min-height: 19px;
-        }
-        .bottom {
-          position: absolute;
-          bottom: 44px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-        }
-        .tagline {
-          font-size: 11px;
-          font-weight: 600;
-          color: #9CA8B4;
-          letter-spacing: 0.04em;
-        }
-        .progress-track {
-          width: 48px;
-          height: 2px;
-          border-radius: 99px;
-          background: #E3E8EF;
-          overflow: hidden;
-        }
-        .progress-fill {
-          height: 100%;
-          border-radius: 99px;
-          background: #0F2A44;
-          width: 0%;
-          transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .loader-root *, .loader-root *::before, .loader-root *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        .loader-root { position: fixed; inset: 0; z-index: 9999; font-family: Inter, system-ui, sans-serif; }
+        .loader { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(circle at 50% 38%, #ffffff 0%, #f8fbfd 48%, #edf3f7 100%); color: #0f2a44; user-select: none; pointer-events: none; }
+        .loader::before { content: ""; position: absolute; width: 42vmin; height: 42vmin; border-radius: 50%; background: rgba(78, 174, 220, .08); filter: blur(34px); }
+        .loader-stage { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .loader-orbit { position: relative; width: 68px; height: 68px; border: 1px solid rgba(15, 42, 68, .18); border-radius: 50%; box-shadow: 0 0 0 4px rgba(50, 164, 229, .035), inset 0 0 9px rgba(50, 164, 229, .08), 0 4px 12px rgba(40, 109, 145, .14); }
+        .loader-orbit::before, .loader-orbit::after { content: ""; position: absolute; inset: 7px; border: 1px dashed rgba(49, 107, 162, 0.14); border-radius: 50%; }
+        .loader-orbit::after { inset: 19px; border-style: solid; border-color: rgba(39, 122, 200, 0.1); }
+        .loader-ring { --loader-radius: 27px; position: absolute; inset: 7px; animation: loader-spin .8s linear infinite; will-change: transform; }
+        .loader-segment { position: absolute; top: 50%; left: 50%; width: 3px; height: 8px; margin: calc(var(--loader-radius) * -1) 0 0 -1.5px; border-radius: 5px; background: #d9e4ea; transform-origin: 1.5px var(--loader-radius); }
+        .loader-segment:nth-child(-n+16) { background: linear-gradient(#0f2a44, #065f82); box-shadow: 0 0 8px rgba(7, 30, 40, 0.55); }
+        .loader-segment:nth-child(n+17):nth-child(-n+24) { background: #0b4d65; box-shadow: 0 0 4px rgba(27, 71, 93, 0.3); }
+        .loader-core { position: absolute; inset: 21px; display: grid; place-items: center; border: 1px solid rgba(122, 146, 169, 0.18); border-radius: 50%; background: radial-gradient(circle, rgba(73, 186, 241, .16), rgba(255, 255, 255, .9) 68%); box-shadow: 0 0 8px rgba(44, 175, 235, .18); }
+        .loader-seat { position: relative; width: 14px; height: 16px; border: 2px solid #102538; border-radius: 4px 4px 2px 2px; box-shadow: 0 0 5px rgba(66, 182, 232, .45); }
+        .loader-seat::before { content: ""; position: absolute; left: -5px; right: -5px; bottom: -6px; height: 6px; border: 2px solid #3881c6; border-top: 0; border-radius: 0 0 4px 4px; }
+        .loader-seat::after { content: ""; position: absolute; left: 3px; right: 3px; bottom: -12px; height: 6px; border-left: 2px solid #1f5384; border-right: 2px solid #0f2a44; }
+        .loader-copy { text-align: center; }
+        .loader-title { font-size: 11px; font-weight: 700; letter-spacing: .24em; text-transform: uppercase; color: #174673; }
+        .loader-status { margin-top: 6px; color: #6b7d8b; font-size: 12px; letter-spacing: .04em; }
+        .loader-line { position: absolute; left: -20vw; right: -20vw; top: 65%; height: 1px; background: linear-gradient(90deg, transparent, rgba(63, 181, 255, .3), #8ddcff, rgba(63, 181, 255, .3), transparent); box-shadow: 0 0 18px 3px rgba(46, 158, 255, .2); }
+        @keyframes loader-spin { to { transform: rotate(360deg); } }
+        @media (max-width: 480px) { .loader-orbit { width: 60px; height: 60px; } .loader-ring { --loader-radius: 24px; inset: 6px; } .loader-segment { height: 7px; } .loader-core { inset: 18px; } .loader-title { font-size: 10px; } .loader-status { font-size: 11px; } }
       `}</style>
-
       <div className="loader-root">
         <div className="loader">
-          {/* Wordmark */}
-          {/* <div className="wordmark">
-            <div className="wordmark-icon">
-              <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
-                <circle cx="16" cy="7" r="3" stroke="white" strokeWidth="1.8" />
-                <path d="M12 13v8" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M9 21h14" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M11 21v5M21 21v5" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M12 16h7" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
+          <div className="loader-line" />
+          <div className="loader-stage">
+            <div className="loader-orbit" role="status" aria-label="Loading">
+              <div className="loader-ring">
+                {Array.from({ length: 24 }, (_, index) => (
+                  <span key={index} className="loader-segment" style={{ transform: `rotate(${index * 15}deg)` }} />
+                ))}
+              </div>
+              <div className="loader-core"><span className="loader-seat" /></div>
             </div>
-            <span className="wordmark-label">Secure Seat</span>
-          </div> */}
-
-          {/* Seats */}
-          <div className="seats-row">
-            {Array.from({ length: TOTAL }).map((_, idx) => (
-              <Seat key={idx} filled={idx < filledCount} />
-            ))}
-          </div>
-
-          {/* Status text */}
-          <div className="status-text">
-            <p className="status-label">
-              {STEPS[stepIndex]?.label}
-            </p>
-            <p className="status-sub">
-              {STEPS[stepIndex]?.sub}
-            </p>
-          </div>
-
-          {/* Bottom */}
-          <div className="bottom">
-            <div className="progress-track">
-              <div
-                className="progress-fill"
-                style={{ width: `${progressPercent}%` }}
-              />
+            <div className="loader-copy">
+              <p className="loader-title">Secure My Seat</p>
+              <p className="loader-status">Preparing your experience...</p>
             </div>
-            <p className="tagline">Secure First, Decide Later</p>
           </div>
         </div>
       </div>

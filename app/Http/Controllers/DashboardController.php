@@ -9,6 +9,10 @@ use App\Models\WalletTransaction;
 use App\Models\Booking;
 use App\Models\Movie;
 use App\Models\MovieTicketBooking;
+use App\Models\Temple;
+use App\Models\Restaurant;
+use App\Models\TourismPackage;
+use App\Models\DiningOffer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 
@@ -17,6 +21,8 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $moodCards = $this->moodCards();
+        $diningOffers = $this->diningOffers();
 
         // ── Unauthenticated: return public experience list with no hold/booking state ──
         if (!$user) {
@@ -74,6 +80,19 @@ class DashboardController extends Controller
                     ['title' => 'Welcome', 'subtitle' => 'Sign in to see your activity', 'time' => 'Now'],
                 ],
                 'wallet' => ['id' => null, 'balance' => 0, 'user_id' => null],
+                'spiritualPlaces' => Temple::active()
+                    ->orderByDesc('rating')
+                    ->limit(4)
+                    ->get()
+                    ->map(fn ($temple) => [
+                        'id' => $temple->id,
+                        'name' => $temple->name,
+                        'location' => $temple->location,
+                        'image' => $temple->image_url,
+                        'rating' => (float) $temple->rating,
+                    ]),
+                'moodCards' => $moodCards,
+                'diningOffers' => $diningOffers,
             ]);
         }
 
@@ -127,6 +146,18 @@ class DashboardController extends Controller
                     'seats_full'           => $exp->areAllSeatsFull(),
                 ];
             });
+
+        $spiritualPlaces = Temple::active()
+            ->orderByDesc('rating')
+            ->limit(4)
+            ->get()
+            ->map(fn ($temple) => [
+                'id' => $temple->id,
+                'name' => $temple->name,
+                'location' => $temple->location,
+                'image' => $temple->image_url,
+                'rating' => (float) $temple->rating,
+            ]);
 
         // ── Expiring holds (within 24h) ───────────────────────────────────────────
         $expiring = Hold::where('user_id', $user->id)
@@ -214,6 +245,60 @@ class DashboardController extends Controller
             ];
         });
 
-        return Inertia::render('Dashboard', compact('nearby', 'expiring', 'activity', 'movies') + ['wallet' => $walletData]);
+        return Inertia::render('Dashboard', compact('nearby', 'expiring', 'activity', 'movies', 'spiritualPlaces', 'moodCards', 'diningOffers') + ['wallet' => $walletData]);
+    }
+
+    private function moodCards()
+    {
+        $movie = Movie::orderByDesc('rating')->first();
+        $restaurant = Restaurant::active()->orderByDesc('rating')->first();
+        $temple = Temple::active()->orderByDesc('rating')->first();
+        $package = TourismPackage::active()->where('available_slots', '>', 0)->orderByDesc('rating')->first();
+
+        return collect([
+            $movie ? [
+                'key' => 'watch', 'title' => 'Watch', 'subtitle' => 'Movies & shows',
+                'detail' => $movie->title,
+                'image' => $movie->image
+                    ? (str_starts_with($movie->image, '/') ? $movie->image : '/assets/movies/' . $movie->image)
+                    : null,
+                'href' => '/movies', 'count' => Movie::count(),
+            ] : null,
+            $restaurant ? [
+                'key' => 'taste', 'title' => 'Taste', 'subtitle' => 'Dining out',
+                'detail' => $restaurant->name, 'image' => $restaurant->image_url ?: '/assets/experiences/1772192568_dining.jpg',
+                'href' => '/dineout', 'count' => Restaurant::active()->count(),
+            ] : null,
+            $temple ? [
+                'key' => 'connect', 'title' => 'Connect', 'subtitle' => 'Darshan & puja',
+                'detail' => $temple->name, 'image' => $temple->image_url,
+                'href' => '/temple', 'count' => Temple::active()->count(),
+            ] : null,
+            $package ? [
+                'key' => 'explore', 'title' => 'Explore', 'subtitle' => 'Travel & stays',
+                'detail' => $package->name, 'image' => $package->image_url,
+                'href' => '/tourism/spiritual', 'count' => TourismPackage::active()->where('available_slots', '>', 0)->count(),
+            ] : null,
+        ])->filter()->values();
+    }
+
+    private function diningOffers()
+    {
+        return DiningOffer::with('restaurant')
+            ->where('status', 'active')
+            ->where(function ($query) {
+                $query->whereNull('valid_until')->orWhere('valid_until', '>=', now()->toDateString());
+            })
+            ->latest()
+            ->limit(3)
+            ->get()
+            ->map(fn ($offer) => [
+                'id' => $offer->id,
+                'title' => $offer->title,
+                'description' => $offer->description,
+                'discount_percent' => $offer->discount_percent,
+                'valid_until' => $offer->valid_until?->format('d M Y'),
+                'restaurant_name' => $offer->restaurant?->name ?? 'Dining offer',
+            ]);
     }
 }
