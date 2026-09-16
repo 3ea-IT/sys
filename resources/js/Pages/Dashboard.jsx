@@ -776,24 +776,13 @@ export default function Dashboard({
             bg: "bg-teal-50 dark:bg-teal-900/20",
             comingSoon: true,
         },
-        {
-            label: "Tourism",
-            icon: <LandmarkIcon size={18} />,
-            color: "text-orange-500",
-            bg: "bg-orange-50 dark:bg-orange-900/20",
-            children: [
-                {
-                    label: "Spiritual Tourism",
-                    icon: <LandmarkIcon size={16} />,
-                    href: "/tourism/spiritual",
-                },
-                {
-                    label: "Pilgrimage Tourism",
-                    icon: <LandmarkIcon size={16} />,
-                    href: "/temple",
-                },
-            ],
-        },
+     {
+    label: "Spiritual",
+    icon: <LandmarkIcon size={18} />,
+    color: "text-orange-500",
+    bg: "bg-orange-50 dark:bg-orange-900/20",
+    href: "/temple",
+},
         {
             label: "Dining & Restaurants",
             icon: <UtensilsIcon size={18} />,
