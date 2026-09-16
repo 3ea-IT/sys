@@ -261,7 +261,7 @@ class DashboardController extends Controller
                 'detail' => $movie->title,
                 'image' => $movie->image
                     ? (str_starts_with($movie->image, '/') ? $movie->image : '/assets/movies/' . $movie->image)
-                    : null,
+                    : '/banner/banner-2.png',
                 'href' => '/movies', 'count' => Movie::count(),
             ] : null,
             $restaurant ? [
@@ -271,12 +271,12 @@ class DashboardController extends Controller
             ] : null,
             $temple ? [
                 'key' => 'connect', 'title' => 'Connect', 'subtitle' => 'Darshan & puja',
-                'detail' => $temple->name, 'image' => $temple->image_url,
+                'detail' => $temple->name, 'image' => $temple->image_url ?: '/banner/Kashi-temple-1.jpg',
                 'href' => '/temple', 'count' => Temple::active()->count(),
             ] : null,
             $package ? [
                 'key' => 'explore', 'title' => 'Explore', 'subtitle' => 'Travel & stays',
-                'detail' => $package->name, 'image' => $package->image_url,
+                'detail' => $package->name, 'image' => $package->image_url ?: '/banner/vaishano-devi-1.png',
                 'href' => '/tourism/spiritual', 'count' => TourismPackage::active()->where('available_slots', '>', 0)->count(),
             ] : null,
         ])->filter()->values();

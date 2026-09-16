@@ -572,7 +572,7 @@ export default function TempleIndex({
             </section>
 
             {/* ── BROWSE BY CROWD ── */}
-            <section className="mb-7">
+            <section id="browse-by-crowd" className="mb-7 scroll-mt-20">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">
                     Browse By Crowd
                 </p>
@@ -669,7 +669,7 @@ export default function TempleIndex({
 
 // ── SHARED SUB-COMPONENTS ───────────────────────────────────────
 
-function SectionHeader({ title, href, label = "View all" }) {
+function SectionHeader({ title, href, label = "View all", onClick }) {
     return (
         <div className="flex items-center justify-between mb-3">
             <h2 className="text-base font-bold text-gray-900 dark:text-gray-100">
@@ -677,6 +677,7 @@ function SectionHeader({ title, href, label = "View all" }) {
             </h2>
             <Link
                 href={href}
+                onClick={onClick}
                 className="flex items-center gap-0.5 text-xs font-medium hover:underline"
                 style={{ color: "#c33c01" }}
             >

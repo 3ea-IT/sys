@@ -131,7 +131,7 @@ export default function Status({ connected, token }) {
       <div className="mx-auto max-w-2xl px-3 pb-28 pt-4 sm:p-6">
         <div className="mb-5 flex items-center gap-2 sm:mb-6 sm:gap-3">
           <UtensilsCrossed className="h-5 w-5 shrink-0 text-orange-500 sm:h-6 sm:w-6" />
-          <h1 className="text-lg font-semibold sm:text-xl">Connect Your Swiggy Account</h1>
+          <h1 className="text-lg font-semibold text-gray-900 sm:text-xl">Connect Your Swiggy Account</h1>
         </div>
 
         <p className="mb-5 text-xs leading-5 text-gray-600 sm:mb-6 sm:text-sm">
@@ -157,7 +157,7 @@ export default function Status({ connected, token }) {
             ) : (
               <XCircle className="w-5 h-5 text-gray-400" />
             )}
-            <span className="font-medium">
+            <span className="font-medium text-gray-900">
               {connected ? "Connected" : "Not connected"}
             </span>
           </div>
@@ -190,9 +190,9 @@ export default function Status({ connected, token }) {
           </a>
         </div>
         {connected && <div className="mt-4 space-y-4 sm:mt-6 sm:space-y-5">
-          {bookings.length > 0 && <section className="rounded-xl border border-gray-200 bg-white p-4 sm:p-5"><div className="mb-3 flex items-center justify-between"><h2 className="font-semibold">My booked tables</h2><span className="text-xs text-gray-500">{bookings.length} booking{bookings.length === 1 ? "" : "s"}</span></div><div className="space-y-2">{bookings.map((booking) => <div key={booking.id || booking.booking_reference} className="rounded-lg border border-green-200 bg-green-50 p-3"><div className="flex items-start justify-between gap-2"><div><p className="text-sm font-semibold text-gray-900">{booking.restaurant_name || `Restaurant ${booking.restaurant_id}`}</p><p className="mt-1 text-xs text-gray-600">{booking.reservation_date} at {booking.reservation_time} · {booking.guest_count} guests</p></div><span className="rounded-full bg-green-100 px-2 py-1 text-[10px] font-medium uppercase text-green-700">{booking.status}</span></div><p className="mt-2 text-[11px] text-gray-500">Reference: {booking.booking_reference}</p></div>)}</div></section>}
+          {bookings.length > 0 && <section className="rounded-xl border border-gray-200 bg-white p-4 sm:p-5"><div className="mb-3 flex items-center justify-between"><h2 className="font-semibold text-gray-900">My booked tables</h2><span className="text-xs text-gray-500">{bookings.length} booking{bookings.length === 1 ? "" : "s"}</span></div><div className="space-y-2">{bookings.map((booking) => <div key={booking.id || booking.booking_reference} className="rounded-lg border border-green-200 bg-green-50 p-3"><div className="flex items-start justify-between gap-2"><div><p className="text-sm font-semibold text-gray-900">{booking.restaurant_name || `Restaurant ${booking.restaurant_id}`}</p><p className="mt-1 text-xs text-gray-600">{booking.reservation_date} at {booking.reservation_time} · {booking.guest_count} guests</p></div><span className="rounded-full bg-green-100 px-2 py-1 text-[10px] font-medium uppercase text-green-700">{booking.status}</span></div><p className="mt-2 text-[11px] text-gray-500">Reference: {booking.booking_reference}</p></div>)}</div></section>}
           <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
-            <div className="mb-4 flex items-center gap-2"><MapPin className="h-5 w-5 text-orange-500" /><h2 className="font-semibold">Find restaurants near you</h2></div>
+            <div className="mb-4 flex items-center gap-2"><MapPin className="h-5 w-5 text-orange-500" /><h2 className="font-semibold text-gray-900">Find restaurants near you</h2></div>
             <form onSubmit={searchRestaurants} className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
               <label className="text-xs font-medium text-gray-600">Search cuisine or locality<input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Italian, Biryani, Koramangala" className="mt-1 block w-full rounded-lg border-gray-300 text-sm" /></label>
               <div className="text-xs font-medium text-gray-600">
@@ -243,17 +243,17 @@ export default function Status({ connected, token }) {
             const isSelected = String(restaurant?.restaurantId || restaurant?.restaurant_id || restaurant?.id || "") === String(itemId);
 
             return <div key={itemId} className={`rounded-xl border bg-white p-3 sm:p-4 ${isSelected ? "border-orange-300" : "border-gray-200"}`}>
-              <h3 className="text-sm font-semibold sm:text-base">{item.name || item.restaurantName || item.title || "Restaurant"}</h3>
+              <h3 className="text-sm font-semibold text-gray-900 sm:text-base">{item.name || item.restaurantName || item.title || "Restaurant"}</h3>
               <p className="mt-1 line-clamp-2 text-xs text-gray-500 sm:text-sm">{item.cuisines || item.description || item.address || item.locality || "Swiggy Dineout restaurant"}</p>
               <button onClick={() => router.visit(`/dineout/restaurants/${itemId}/booking?name=${encodeURIComponent(item.name || item.restaurantName || item.title || "Restaurant")}&description=${encodeURIComponent(item.cuisines || item.description || item.address || item.locality || "Swiggy Dineout restaurant")}&latitude=${coordinates.latitude}&longitude=${coordinates.longitude}`)} className="mt-3 inline-flex items-center gap-2 rounded-lg bg-gray-900 px-3 py-2 text-xs text-white sm:text-sm"><CalendarDays className="h-4 w-4" />View tables</button>
             </div>;
           })}</div>}
           {restaurant && <div className="rounded-xl border border-orange-200 bg-white p-4 sm:p-5">
             <button type="button" onClick={() => { setRestaurant(null); setSlots([]); setSelectedSlot(null); }} className="mb-4 text-sm font-medium text-gray-600">← Back to restaurants</button>
-            <h2 className="text-lg font-semibold">{restaurant.name || restaurant.restaurantName || restaurant.title || "Restaurant"}</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{restaurant.name || restaurant.restaurantName || restaurant.title || "Restaurant"}</h2>
             <p className="mt-1 text-sm text-gray-500">{restaurant.cuisines || restaurant.description || restaurant.address || restaurant.locality || "Swiggy Dineout restaurant"}</p>
             <div className="mt-4 border-t border-gray-100 pt-4">
-              <h3 className="font-semibold">Choose a table time</h3>
+              <h3 className="font-semibold text-gray-900">Choose a table time</h3>
               <div className="mt-3 grid grid-cols-[1fr_auto] gap-2"><input type="date" min={today} value={date} onChange={(event) => { setDate(event.target.value); showSlots(restaurant); }} className="min-w-0 rounded-lg border-gray-300 text-sm" /><label className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-2 text-sm"><Users className="h-4 w-4" /><input type="number" min="1" max="20" value={guestCount} onChange={(event) => setGuestCount(event.target.value)} className="w-8 border-0 p-0 text-sm focus:ring-0" /></label></div>
               <div className="mt-4 grid grid-cols-2 gap-2">{slots.map((slot, slotIndex) => <button key={`${slot.slotId || slot.slot_id || "slot"}-${slot.reservationTime || slot.reservation_time || slotIndex}-${slotIndex}`} onClick={() => setSelectedSlot(slot)} className={`min-h-12 rounded-lg border px-2 py-3 text-left text-xs sm:text-sm ${selectedSlot === slot ? "border-orange-500 bg-orange-50" : "border-gray-200"}`}><Clock3 className="mr-1 inline h-4 w-4" />{slot.displayTime || slot.time || slot.label || `Slot ${slotIndex + 1}`}</button>)}</div>
               {selectedSlot && <div className="mt-4 rounded-lg border border-orange-200 bg-orange-50 p-3"><p className="text-xs text-orange-800">Selected time: <strong>{selectedSlot.displayTime || selectedSlot.time || selectedSlot.label}</strong></p><button onClick={bookTable} disabled={busy || !selectedSlot.itemId} className="mt-2 w-full rounded-lg bg-orange-500 px-4 py-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50">Book this table</button>{!selectedSlot.itemId && <p className="mt-1 text-xs text-red-600">Booking details are unavailable for this slot.</p>}</div>}

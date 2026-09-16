@@ -1,6 +1,6 @@
 // resources/js/Pages/Experiences/Show.jsx
 import React from "react";
-import DetailLayout from "@/Layouts/DetailLayout";
+import DetailLayout from "@/Layouts/AppLayout";
 import { Link, router, usePage } from "@inertiajs/react";
 import { ArrowLeft, Clock, Shield } from "lucide-react";
 import Swal from 'sweetalert2';
@@ -545,7 +545,7 @@ export default function Show({
   return (
     <DetailLayout>
       {/* Hero Image with Overlay */}
-      <div className="relative h-80 md:h-96 lg:h-[500px] overflow-hidden md:rounded-2xl">
+      <div className="relative h-56 sm:h-72 md:h-96 lg:h-[500px] overflow-hidden rounded-2xl">
         {/* Experience Image — fixed path handling */}
         {experience.image ? (
           <img
@@ -586,22 +586,22 @@ export default function Show({
         )}
 
         {/* Title & Location */}
-        <div className="absolute bottom-6 left-4 right-4 md:bottom-8 md:left-6 md:right-6 z-10 text-white">
-          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight mb-1 md:mb-2 drop-shadow-md">
+        <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-6 md:right-6 z-10 text-white">
+          <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-tight mb-1 md:mb-2 drop-shadow-md line-clamp-2">
             {experience.title}
           </h1>
-          <div className="space-y-1">
-            <p className="text-sm md:text-base opacity-90 flex items-center gap-1">
+          <div className="space-y-0.5 md:space-y-1">
+            <p className="text-xs sm:text-sm md:text-base opacity-90 flex items-center gap-1 line-clamp-1">
               📍 {experience.location}
             </p>
             {experience.start_date && (
-              <p className="text-sm md:text-base opacity-90 flex items-center gap-1">
+              <p className="text-xs sm:text-sm md:text-base opacity-90 flex items-center gap-1 line-clamp-1">
                 📅 {new Date(experience.start_date).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                 {experience.end_date && ` - ${new Date(experience.end_date).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}`}
               </p>
             )}
             {experience.start_time && (
-              <p className="text-sm md:text-base opacity-90 flex items-center gap-1">
+              <p className="text-xs sm:text-sm md:text-base opacity-90 flex items-center gap-1 line-clamp-1">
                 🕐 {formatTime12Hour(experience.start_time)}
                 {experience.end_time && ` to ${formatTime12Hour(experience.end_time)}`}
               </p>
@@ -610,9 +610,9 @@ export default function Show({
         </div>
       </div>
 
-      <div className="mx-3 md:mx-6 lg:mx-8">
+      <div className="mt-4">
         {/* ENHANCED Key Info Cards WITH DUAL MODE */}
-        <div className="mt-6 md:mt-8 lg:mt-10 grid grid-cols-3 gap-2 md:gap-4 mb-6 md:mb-8">
+        <div className="mt-4 md:mt-8 lg:mt-10 grid grid-cols-3 gap-2 md:gap-4 mb-6 md:mb-8">
           <InfoCard
             icon="💎"
             label="Hold Token"
@@ -651,7 +651,7 @@ export default function Show({
 
         {/* About Section */}
         <section className="mb-8 md:mb-10 lg:mb-12">
-          <h2 className="text-xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4 md:mb-6">Description</h2>
+          <h2 className="text-lg md:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3 md:mb-5">Description</h2>
           <div className="text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: description }} />
         </section>
 
@@ -702,7 +702,7 @@ export default function Show({
 
 
         {/* Highlights */}
-        <section className="mb-8 md:mb-10 lg:mb-12 pb-32">
+        <section className="mb-8 md:mb-10 lg:mb-12">
           <h3 className="text-lg md:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4 md:mb-6">Highlights</h3>
           <div className="space-y-1">
             {highlightsList.map((highlight, index) => (
@@ -711,8 +711,8 @@ export default function Show({
           </div>
         </section>
 
-        {/* ENHANCED Price & CTA Footer - Simple buttons that open modal */}
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-3 md:p-5 shadow-2xl">
+        {/* Price & CTA - normal in-page card, not fixed (AppLayout already has its own fixed bottom nav) */}
+        <div className="mb-6 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-3 md:p-5 shadow-sm">
           <div className="max-w-2xl mx-auto">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4">
               <div className="flex-1">
@@ -931,18 +931,18 @@ export default function Show({
 
 function InfoCard({ icon: Icon, label, value, subtitle }) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-2 md:p-4 text-center hover:shadow-md transition-shadow w-full aspect-square flex flex-col items-center justify-center overflow-hidden">
-      <div className="w-10 h-10 mx-auto mb-1 md:mb-2 flex items-center justify-center flex-shrink-0">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm px-1.5 py-2.5 md:p-4 text-center hover:shadow-md transition-shadow w-full flex flex-col items-center justify-center gap-0.5 overflow-hidden">
+      <div className="flex items-center justify-center flex-shrink-0 mb-0.5 md:mb-1.5">
         {typeof Icon === 'string' ? (
-          <span className="text-lg">{Icon}</span>
+          <span className="text-base md:text-lg">{Icon}</span>
         ) : (
-          <Icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <Icon className="w-4 h-4 md:w-5 md:h-5 text-blue-600 dark:text-blue-400" />
         )}
       </div>
-      <p className="text-[9px] md:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-tight md:tracking-wide mb-0.5 md:mb-1 line-clamp-1">{label}</p>
-      <p className="text-[10px] md:text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-1">{value}</p>
+      <p className="text-[8px] md:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase leading-tight tracking-tight md:tracking-wide line-clamp-2">{label}</p>
+      <p className="text-[11px] md:text-lg font-bold text-gray-900 dark:text-gray-100 leading-tight line-clamp-1">{value}</p>
       {subtitle && (
-        <p className="text-[8px] md:text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">{subtitle}</p>
+        <p className="text-[8px] md:text-[10px] text-gray-500 dark:text-gray-400 line-clamp-1">{subtitle}</p>
       )}
     </div>
   );

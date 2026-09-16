@@ -30,7 +30,7 @@ class TourismPackageSeeder extends Seeder
             [
                 'name' => 'Char Dham Yatra Package',
                 'location' => 'Uttarakhand',
-                'image' => null,
+                'image' => 'mahakaleshwar.jpg',
                 'price' => 15999,
                 'duration' => '7 Days / 6 Nights',
                 'rating' => 4.8,
@@ -85,7 +85,7 @@ class TourismPackageSeeder extends Seeder
             [
                 'name' => 'Amarnath Yatra Package',
                 'location' => 'Jammu & Kashmir',
-                'image' => null,
+                'image' => 'vaishano-devi-1.png',
                 'price' => 22999,
                 'duration' => '6 Days / 5 Nights',
                 'rating' => 4.9,

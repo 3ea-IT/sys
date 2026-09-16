@@ -13,17 +13,17 @@ export default {
                 sans: ["Inter", ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                brand: {
-                    primary: "#0F2A44", // main navy
-                    secondary: "#5F6C7B", // slate text
-                    background: "#F7F9FC", // app bg
-                    card: "#FFFFFF",
-                    border: "#E3E8EF",
+                 brand: {
+        primary: "rgb(var(--color-brand-primary) / <alpha-value>)",
+        secondary: "rgb(var(--color-brand-secondary) / <alpha-value>)",
+        background: "rgb(var(--color-brand-background) / <alpha-value>)",
+        card: "rgb(var(--color-brand-card) / <alpha-value>)",
+        border: "rgb(var(--color-brand-border) / <alpha-value>)",
 
-                    success: "#1F8A70",
-                    warning: "#F2A541",
-                    danger: "#D64545",
-                },
+        success: "#1F8A70",
+        warning: "#F2A541",
+        danger: "#D64545",
+    },
                 temple: {
                     50: "#faf4f0",
                     100: "#f5e8df",

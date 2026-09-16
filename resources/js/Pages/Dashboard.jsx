@@ -536,18 +536,18 @@ const CategoryDropdown = ({ cat }) => {
                 type="button"
                 ref={triggerRef}
                 onClick={toggleOpen}
-                className="flex flex-col items-center gap-2 group cursor-pointer"
+                className="flex w-full flex-col items-center gap-1.5 group cursor-pointer"
                 aria-haspopup="true"
                 aria-expanded={open}
             >
-                <span className="relative w-14 h-14 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:bg-gray-200 dark:group-hover:bg-gray-700 transition-colors">
+                <span className="relative w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:bg-gray-200 dark:group-hover:bg-gray-700 transition-colors">
                     <span className={cat.color}>{cat.icon}</span>
                     <ChevronDownIcon
-                        size={10}
-                        className={`absolute -bottom-1 -right-1 bg-white dark:bg-gray-900 rounded-full p-0.5 w-4 h-4 border border-gray-100 dark:border-gray-700 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`}
+                        size={9}
+                        className={`absolute -bottom-1 -right-1 bg-white dark:bg-gray-900 rounded-full p-0.5 w-3.5 h-3.5 border border-gray-100 dark:border-gray-700 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`}
                     />
                 </span>
-                <span className="w-16 text-[11px] leading-tight font-medium text-gray-700 dark:text-gray-300 text-center line-clamp-2 break-words">
+                <span lang="en" className="w-full px-0.5 text-[10px] leading-tight font-medium text-gray-700 dark:text-gray-300 text-center line-clamp-2 break-normal [hyphens:auto]">
                     {cat.label}
                 </span>
             </button>
@@ -710,14 +710,14 @@ export default function Dashboard({
     const categories = [
         {
             label: "Movies",
-            icon: <ClapperboardIcon size={20} />,
+            icon: <ClapperboardIcon size={18} />,
             href: "/movies",
             color: "text-red-500",
             bg: "bg-red-50 dark:bg-red-900/20",
         },
         {
             label: "Events",
-            icon: <TicketIcon size={20} />,
+            icon: <TicketIcon size={18} />,
             color: "text-yellow-500",
             bg: "bg-yellow-50 dark:bg-yellow-900/20",
             children: [
@@ -755,14 +755,14 @@ export default function Dashboard({
         },
         {
             label: "Air Booking",
-            icon: <PlaneIcon size={20} />,
+            icon: <PlaneIcon size={18} />,
             href: "/air-booking",
             color: "text-sky-500",
             bg: "bg-sky-50 dark:bg-sky-900/20",
         },
         {
             label: "Cab",
-            icon: <CarIcon size={20} />,
+            icon: <CarIcon size={18} />,
             href: "#",
             color: "text-violet-500",
             bg: "bg-violet-50 dark:bg-violet-900/20",
@@ -770,7 +770,7 @@ export default function Dashboard({
         },
         {
             label: "Bus",
-            icon: <BusIcon size={20} />,
+            icon: <BusIcon size={18} />,
             href: "#",
             color: "text-teal-500",
             bg: "bg-teal-50 dark:bg-teal-900/20",
@@ -778,7 +778,7 @@ export default function Dashboard({
         },
         {
             label: "Tourism",
-            icon: <LandmarkIcon size={20} />,
+            icon: <LandmarkIcon size={18} />,
             color: "text-orange-500",
             bg: "bg-orange-50 dark:bg-orange-900/20",
             children: [
@@ -796,14 +796,14 @@ export default function Dashboard({
         },
         {
             label: "Dining & Restaurants",
-            icon: <UtensilsIcon size={20} />,
+            icon: <UtensilsIcon size={18} />,
             href: "/dineout",
             color: "text-amber-600",
             bg: "bg-amber-50 dark:bg-amber-900/20",
         },
         {
-            label: "Accommodation",
-            icon: <BedIcon size={20} />,
+            label: "stay",
+            icon: <BedIcon size={18} />,
             href: "/accommodation",
             color: "text-indigo-500",
             bg: "bg-indigo-50 dark:bg-indigo-900/20",
@@ -1103,9 +1103,9 @@ export default function Dashboard({
 
             <div className="bg-[#FAF6F0] dark:bg-gray-950 -mx-4 md:-mx-6 lg:-mx-8 px-4 md:px-6 lg:px-8 pt-5 pb-4 rounded-3xl mt-5">
                 {/* ── Explore Card (Category Grid) ────────────────────── */}
-                <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm px-4 py-5">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="font-serif text-lg font-bold text-gray-900 dark:text-gray-100">
+                <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm px-4 py-4">
+                    <div className="flex items-center justify-between mb-3">
+                        <h2 className="font-serif text-base font-bold text-gray-900 dark:text-gray-100">
                             Explore
                         </h2>
                         <Link
@@ -1115,7 +1115,7 @@ export default function Dashboard({
                             See everything <ArrowRightIcon size={12} />
                         </Link>
                     </div>
-                    <div className="grid grid-cols-4 sm:grid-cols-6 gap-y-6 gap-x-1 justify-items-center">
+                    <div className="grid grid-cols-4 sm:grid-cols-6 gap-y-4 gap-x-2 justify-items-center">
                         {categories.map((cat) =>
                             cat.children ? (
                                 <CategoryDropdown key={cat.label} cat={cat} />
@@ -1123,14 +1123,14 @@ export default function Dashboard({
                                 <Link
                                     key={cat.label}
                                     href={cat.href}
-                                    className="flex flex-col items-center gap-2 group"
+                                    className="flex w-full flex-col items-center gap-1.5 group"
                                 >
-                                    <span className="w-14 h-14 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:bg-gray-200 dark:group-hover:bg-gray-700 transition-colors">
+                                    <span className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:bg-gray-200 dark:group-hover:bg-gray-700 transition-colors">
                                         <span className={cat.color}>
                                             {cat.icon}
                                         </span>
                                     </span>
-                                    <span className="w-16 text-[11px] leading-tight font-medium text-gray-700 dark:text-gray-300 text-center line-clamp-2 break-words">
+                                    <span lang="en" className="w-full px-0.5 text-[10px] leading-tight font-medium text-gray-700 dark:text-gray-300 text-center line-clamp-2 break-normal [hyphens:auto]">
                                         {cat.label}
                                     </span>
                                 </Link>
@@ -1140,37 +1140,37 @@ export default function Dashboard({
                 </div>
 
                 {/* ── Quick Book ───────────────────────────────────────── */}
-                <div className="mt-3 rounded-[20px] border border-[#d9dde7] bg-[#f1f2f6] px-4 py-4 dark:border-gray-700 dark:bg-gray-800/70 sm:px-5">
-                    <p className="mb-2 flex items-center gap-2 text-[13px] font-bold uppercase tracking-[0.14em] text-[#15285f] dark:text-blue-300">
-                        <ZapIcon size={16} className="text-[#f59b19]" />
+                <div className="mt-3 rounded-2xl border border-[#d9dde7] bg-[#f1f2f6] px-3 py-3 dark:border-gray-700 dark:bg-gray-800/70 sm:px-4">
+                    <p className="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#15285f] dark:text-blue-300">
+                        <ZapIcon size={13} className="text-[#f59b19]" />
                         Quick Book
                     </p>
-                    <div className="flex flex-nowrap gap-3 overflow-x-auto pb-1">
+                    <div className="flex flex-nowrap gap-2 overflow-x-auto no-scrollbar pb-0.5">
                         {[
                             {
                                 label: "Movie",
-                                icon: <ClapperboardIcon size={15} />,
+                                icon: <ClapperboardIcon size={13} />,
                                 href: categories.find(
                                     (c) => c.label === "Movies",
                                 )?.href,
                             },
                             {
                                 label: "Flight",
-                                icon: <PlaneIcon size={15} />,
+                                icon: <PlaneIcon size={13} />,
                                 href: categories.find(
                                     (c) => c.label === "Air Booking",
                                 )?.href,
                             },
                             {
                                 label: "Hotel",
-                                icon: <BedIcon size={15} />,
+                                icon: <BedIcon size={13} />,
                                 href: categories.find(
-                                    (c) => c.label === "Accommodation",
+                                    (c) => c.label === "Stay",
                                 )?.href,
                             },
                             {
                                 label: "Dining",
-                                icon: <UtensilsIcon size={15} />,
+                                icon: <UtensilsIcon size={13} />,
                                 href: categories.find(
                                     (c) => c.label === "Dining & Restaurants",
                                 )?.href,
@@ -1181,7 +1181,7 @@ export default function Dashboard({
                                 <Link
                                     key={item.label}
                                     href={item.href}
-                                    className="flex min-h-[46px] min-w-[120px] flex-1 items-center justify-center gap-2 rounded-full border border-[#d9dde7] bg-white px-4 py-2 text-[15px] font-semibold text-[#071b50] shadow-sm transition-colors hover:border-[#9ca8bd] dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:border-gray-400"
+                                    className="flex shrink-0 items-center justify-center gap-1.5 rounded-full border border-[#d9dde7] bg-white px-3 py-1.5 text-[12px] font-semibold text-[#071b50] shadow-sm transition-colors hover:border-[#9ca8bd] dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:border-gray-400"
                                 >
                                     <span className="text-[#172c70] dark:text-blue-300">
                                         {item.icon}
@@ -1202,7 +1202,7 @@ export default function Dashboard({
                     <div className="grid grid-cols-2 gap-3 md:gap-4">
                         {moodCards.map((card) => (
                             <Link key={card.key} href={card.href} className="group relative min-h-[150px] overflow-hidden rounded-2xl bg-[#17203b] sm:min-h-[175px] md:min-h-[205px] md:rounded-[22px]">
-                                {card.image && <img src={card.image} alt={card.detail || card.title} className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-105" />}
+                                {card.image && <img src={card.image} alt={card.detail || card.title} className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-105" onError={(e) => { e.target.style.display = "none"; }} />}
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#11152c] via-[#11152c]/25 to-black/5" />
                                 <div className="absolute bottom-3 left-3 right-3 text-white sm:bottom-4 sm:left-4">
                                     <h3 className="font-serif text-xl font-bold leading-none sm:text-2xl md:text-3xl">{card.title}</h3>

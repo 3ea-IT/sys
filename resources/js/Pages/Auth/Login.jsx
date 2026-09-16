@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import InputError from '@/Components/InputError';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { Eye, EyeOff } from 'lucide-react';
+import AppLoader from '@/Components/AppLoader';
+import { useLoader } from '@/Contexts/LoaderContext';
 
 // ─── Inline SVG: seated person icon (matches the image) ──────────────────────
 // REMOVED - Now using imported secure_seat_logo.png image instead
@@ -33,6 +35,8 @@ export default function Login({ status, canResetPassword }) {
     remember: false,
   });
 
+  const { isLoading, showLoader, hideLoader } = useLoader();
+
   useEffect(() => {
     return () => {
       reset('password');
@@ -41,7 +45,10 @@ export default function Login({ status, canResetPassword }) {
 
   const submit = (e) => {
     e.preventDefault();
-    post(route('login'));
+    showLoader();
+    post(route('login'), {
+      onFinish: () => hideLoader(),
+    });
   };
   // ────────────────────────────────────────────────────────────────────────
 
@@ -52,6 +59,7 @@ export default function Login({ status, canResetPassword }) {
   return (
     <>
       <Head title="Log in" />
+      {isLoading && <AppLoader />}
 
       {/* ── Full screen white container ── */}
       <div className="min-h-screen w-full bg-[#f5f8fc] px-3 py-3 sm:px-6 sm:py-6">

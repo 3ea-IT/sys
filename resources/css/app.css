@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-brand-primary: 15 42 68;       /* #0F2A44 navy */
+  --color-brand-secondary: 95 108 123;   /* #5F6C7B */
+  --color-brand-background: 247 249 252; /* #F7F9FC */
+  --color-brand-card: 255 255 255;       /* #FFFFFF */
+  --color-brand-border: 227 232 239;     /* #E3E8EF */
+}
+
+.dark {
+  --color-brand-primary: 96 165 250;     /* blue-400 — jaisa aapke code me pehle se dark:text-blue-400 intent tha */
+  --color-brand-secondary: 209 213 219;  /* gray-300 */
+  --color-brand-background: 17 24 39;    /* gray-900 */
+  --color-brand-card: 31 41 55;          /* gray-800 */
+  --color-brand-border: 75 85 99;        /* gray-600 */
+}
+
 /* Dark Mode Styles */
 @layer base {
   @media (prefers-color-scheme: dark) {
@@ -41,9 +57,8 @@
     @apply text-gray-300;
   }
 
-  .dark .text-gray-900,
-  .dark .text-brand-primary {
-    @apply text-gray-100;
+  .dark .text-gray-900 {
+    @apply text-gray-200;
   }
 
   .dark .text-gray-400 {

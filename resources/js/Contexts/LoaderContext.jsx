@@ -1,8 +1,11 @@
 import React, { createContext, useState, useCallback } from 'react';
-import { router } from '@inertiajs/react';
 
 export const LoaderContext = createContext();
 
+// NOTE: This loader is shown ONLY when a page explicitly calls showLoader()
+// (currently: the Login page, while the login request is in flight).
+// It is intentionally NOT hooked into every Inertia navigation anymore —
+// that used to make it pop up on every single page change across the app.
 export function LoaderProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -13,39 +16,6 @@ export function LoaderProvider({ children }) {
   const hideLoader = useCallback(() => {
     setIsLoading(false);
   }, []);
-
-  // Hook into Inertia's visit to show loader
-  React.useEffect(() => {
-    const originalVisit = router.visit;
-    
-    router.visit = function(url, options = {}) {
-      showLoader();
-      
-      const originalOnFinish = options.onFinish;
-      options.onFinish = () => {
-          setTimeout(() => {
-          hideLoader();
-        }, 300);
-        if (typeof originalOnFinish === 'function') {
-          originalOnFinish();
-        }
-      };
-
-      const originalOnError = options.onError;
-      options.onError = (errors) => {
-        hideLoader();
-        if (typeof originalOnError === 'function') {
-          originalOnError(errors);
-        }
-      };
-
-      return originalVisit.call(router, url, options);
-    };
-
-    return () => {
-      router.visit = originalVisit;
-    };
-  }, [showLoader, hideLoader]);
 
   return (
     <LoaderContext.Provider value={{ isLoading, showLoader, hideLoader }}>

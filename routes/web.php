@@ -114,6 +114,7 @@ Route::group([], function () {
     
     // Temple Routes
     Route::get('/temple', [TempleController::class, 'index'])->name('temple.index');
+    Route::get('/temple/all', [TempleController::class, 'all'])->name('temple.all');
     Route::get('/temple/book', [TempleController::class, 'book'])->name('temple.book');
     Route::get('/temple/guide', [\App\Http\Controllers\GuideController::class, 'index'])->name('temple.guide');
     Route::get('/temple/guide/{guide}', [\App\Http\Controllers\GuideController::class, 'show'])->name('temple.guide.show');

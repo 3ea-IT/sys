@@ -11,6 +11,45 @@ use Inertia\Inertia;
 class TempleController extends Controller
 {
     /**
+     * Display full temple listing (all seeded temples, with search)
+     */
+    public function all(Request $request)
+    {
+        $search = $request->get('search');
+        $crowdLevel = $request->get('crowd_level');
+
+        $query = Temple::where('status', 'active');
+
+        if ($search) {
+            $query->search($search);
+        }
+
+        if ($crowdLevel) {
+            $query->where('crowd_level', $crowdLevel);
+        }
+
+        $temples = $query->orderByDesc('rating')
+            ->get()
+            ->map(function ($temple) {
+                return [
+                    'id' => $temple->id,
+                    'name' => $temple->name,
+                    'location' => $temple->location,
+                    'image' => $temple->image,
+                    'image_url' => $temple->image_url,
+                    'rating' => $temple->rating,
+                    'crowd_level' => $temple->crowd_level,
+                    'has_vip_darshan' => $temple->has_vip_darshan,
+                ];
+            })
+            ->toArray();
+
+        return Inertia::render('Temple/All', [
+            'temples' => $temples,
+        ]);
+    }
+
+    /**
      * Display temple listing (user-facing index)
      */
     public function index(Request $request)
