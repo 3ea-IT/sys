@@ -90,8 +90,16 @@ class TempleController extends Controller
         return Inertia::render('Admin/Temples/Show', [
             'temple' => [
                 'id' => $temple->id,
+                'list_no' => $temple->list_no,
                 'name' => $temple->name,
                 'location' => $temple->location,
+                'city' => $temple->city,
+                'state' => $temple->state,
+                'main_deity' => $temple->main_deity,
+                'established' => $temple->established,
+                'significance' => $temple->significance,
+                'online_booking' => $temple->online_booking,
+                'booking_url' => $temple->booking_url,
                 'image' => $temple->image,
                 'image_url' => $temple->image_url,
                 'rating' => $temple->rating,
@@ -118,8 +126,16 @@ class TempleController extends Controller
         return Inertia::render('Admin/Temples/Edit', [
             'temple' => [
                 'id' => $temple->id,
+                'list_no' => $temple->list_no,
                 'name' => $temple->name,
                 'location' => $temple->location,
+                'city' => $temple->city,
+                'state' => $temple->state,
+                'main_deity' => $temple->main_deity,
+                'established' => $temple->established,
+                'significance' => $temple->significance,
+                'online_booking' => $temple->online_booking,
+                'booking_url' => $temple->booking_url,
                 'image' => $temple->image,
                 'rating' => $temple->rating,
                 'crowd_level' => $temple->crowd_level,

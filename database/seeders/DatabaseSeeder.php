@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             VenuesTableSeeder::class,
             IplMatchesTableSeeder::class,
             TempleSeeder::class,
+            IndianTemplesSeeder::class,
             StaySeeder::class,
             TransportSeeder::class,
             ParkingSeeder::class,

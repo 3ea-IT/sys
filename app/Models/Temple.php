@@ -7,15 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 class Temple extends Model
 {
     protected $fillable = [
+        'list_no',
         'name',
         'location',
+        'city',
+        'state',
+        'main_deity',
         'image',
         'rating',
         'crowd_level',
         'has_vip_darshan',
+        'online_booking',
+        'booking_url',
         'instant_price',
         'hold_token',
         'description',
+        'established',
+        'significance',
         'amenities',
         'timings',
         'facilities',
@@ -23,10 +31,12 @@ class Temple extends Model
     ];
 
     protected $casts = [
+        'list_no' => 'integer',
         'rating' => 'decimal:1',
         'instant_price' => 'decimal:2',
         'hold_token' => 'decimal:2',
         'has_vip_darshan' => 'boolean',
+        'online_booking' => 'boolean',
         'amenities' => 'array',
         'timings' => 'array',
         'facilities' => 'array',

@@ -1,5 +1,5 @@
 import AdminAppLayout from "@/Layouts/AdminAppLayout";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { ArrowLeft, Edit2, Trash2, MapPin, Star } from "lucide-react";
 
 export default function TempleShow({ temple }) {
@@ -116,16 +116,51 @@ export default function TempleShow({ temple }) {
                 <div>
                   <p className="text-sm text-brand-secondary dark:text-gray-400">Instant Price</p>
                   <p className="text-2xl font-bold text-brand-primary dark:text-gray-100 mt-1">
-                    ₹{temple.instant_price}
+                    {temple.instant_price != null ? `₹${temple.instant_price}` : "—"}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-brand-secondary dark:text-gray-400">Hold Token</p>
                   <p className="text-2xl font-bold text-brand-primary dark:text-gray-100 mt-1">
-                    ₹{temple.hold_token}
+                    {temple.hold_token != null ? `₹${temple.hold_token}` : "—"}
                   </p>
                 </div>
               </div>
+            </div>
+
+            {/* Temple Details */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold text-brand-primary dark:text-gray-100 mb-4">Temple Details</h2>
+              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  ["City", temple.city],
+                  ["State", temple.state],
+                  ["Main Deity", temple.main_deity],
+                  ["Established", temple.established],
+                  ["Significance", temple.significance],
+                  ["Online Booking", temple.online_booking ? "Available" : "Not Available"],
+                ].map(([label, value]) => (
+                  <div key={label}>
+                    <dt className="text-sm text-brand-secondary dark:text-gray-400">{label}</dt>
+                    <dd className="text-brand-primary dark:text-gray-100 mt-1">{value || "—"}</dd>
+                  </div>
+                ))}
+                {temple.booking_url && (
+                  <div className="sm:col-span-2">
+                    <dt className="text-sm text-brand-secondary dark:text-gray-400">Booking URL</dt>
+                    <dd className="mt-1 break-all">
+                      <a
+                        href={temple.booking_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 dark:text-blue-400 hover:underline"
+                      >
+                        {temple.booking_url}
+                      </a>
+                    </dd>
+                  </div>
+                )}
+              </dl>
             </div>
 
             {/* Description */}

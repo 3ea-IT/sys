@@ -22,6 +22,13 @@ class TempleFormRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'main_deity' => 'nullable|string|max:255',
+            'established' => 'nullable|string|max:255',
+            'significance' => 'nullable|string|max:255',
+            'online_booking' => 'sometimes|boolean',
+            'booking_url' => 'nullable|string|max:500',
             'image' => 'nullable|string|max:255',
             'rating' => 'required|numeric|min:0|max:5',
             'crowd_level' => 'required|in:Low,Moderate,High,Very High,Extreme',

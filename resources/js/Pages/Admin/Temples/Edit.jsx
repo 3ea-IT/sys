@@ -5,20 +5,45 @@ import { ArrowLeft } from "lucide-react";
 
 export default function TempleEdit({ temple, crowdLevels = [] }) {
   const { data, setData, put, errors, processing } = useForm({
-    name: temple.name,
-    location: temple.location,
+    name: temple.name || "",
+    location: temple.location || "",
+    city: temple.city || "",
+    state: temple.state || "",
+    main_deity: temple.main_deity || "",
+    established: temple.established || "",
+    significance: temple.significance || "",
+    online_booking: !!temple.online_booking,
+    booking_url: temple.booking_url || "",
     image: temple.image || "",
-    rating: temple.rating,
-    crowd_level: temple.crowd_level,
-    has_vip_darshan: temple.has_vip_darshan,
-    instant_price: temple.instant_price,
-    hold_token: temple.hold_token,
+    rating: temple.rating ?? 4.5,
+    crowd_level: temple.crowd_level || "Moderate",
+    has_vip_darshan: !!temple.has_vip_darshan,
+    instant_price: temple.instant_price ?? "",
+    hold_token: temple.hold_token ?? "",
     description: temple.description || "",
     amenities: temple.amenities || [],
     timings: temple.timings || [],
     facilities: temple.facilities || [],
-    status: temple.status,
+    status: temple.status || "active",
   });
+
+  // Keep empty number inputs as "" (saved as null) instead of sending NaN
+  const toNumber = (value) => (value === "" ? "" : parseFloat(value));
+
+  const updateTiming = (index, field, value) => {
+    setData(
+      "timings",
+      data.timings.map((t, i) => (i === index ? { ...t, [field]: value } : t))
+    );
+  };
+
+  const addTiming = () => {
+    setData("timings", [...data.timings, { name: "", time: "", type: "Regular" }]);
+  };
+
+  const removeTiming = (index) => {
+    setData("timings", data.timings.filter((_, i) => i !== index));
+  };
 
   const [amenityInput, setAmenityInput] = useState("");
   const [facilityInput, setFacilityInput] = useState("");
@@ -136,6 +161,49 @@ export default function TempleEdit({ temple, crowdLevels = [] }) {
             </div>
           </div>
 
+          {/* Temple Details */}
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold text-brand-primary dark:text-gray-100">Temple Details</h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                ["city", "City"],
+                ["state", "State"],
+                ["main_deity", "Main Deity"],
+                ["established", "Established (Date/Century)"],
+                ["significance", "Significance / Notes"],
+                ["booking_url", "Booking / Verification URL"],
+              ].map(([field, label]) => (
+                <div key={field}>
+                  <label className="block text-sm font-medium text-brand-primary dark:text-gray-200 mb-2">
+                    {label}
+                  </label>
+                  <input
+                    type="text"
+                    value={data[field]}
+                    onChange={(e) => setData(field, e.target.value)}
+                    className="w-full px-4 py-2 border border-brand-border dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                  />
+                  {errors[field] && <p className="mt-1 text-red-600 text-sm">{errors[field]}</p>}
+                </div>
+              ))}
+
+              <div className="flex items-center">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={data.online_booking}
+                    onChange={(e) => setData("online_booking", e.target.checked)}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium text-brand-primary dark:text-gray-200">
+                    Online Darshan / Puja Booking Available
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
           {/* Pricing & Details */}
           <div className="space-y-6">
             <h2 className="text-xl font-semibold text-brand-primary dark:text-gray-100">Pricing & Availability</h2>
@@ -166,7 +234,7 @@ export default function TempleEdit({ temple, crowdLevels = [] }) {
                 <input
                   type="number"
                   value={data.instant_price}
-                  onChange={(e) => setData("instant_price", parseFloat(e.target.value))}
+                  onChange={(e) => setData("instant_price", toNumber(e.target.value))}
                   className="w-full px-4 py-2 border border-brand-border dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
                 />
                 {errors.instant_price && <p className="mt-1 text-red-600 text-sm">{errors.instant_price}</p>}
@@ -179,7 +247,7 @@ export default function TempleEdit({ temple, crowdLevels = [] }) {
                 <input
                   type="number"
                   value={data.hold_token}
-                  onChange={(e) => setData("hold_token", parseFloat(e.target.value))}
+                  onChange={(e) => setData("hold_token", toNumber(e.target.value))}
                   className="w-full px-4 py-2 border border-brand-border dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
                 />
               </div>
@@ -209,6 +277,56 @@ export default function TempleEdit({ temple, crowdLevels = [] }) {
               rows="4"
               className="w-full px-4 py-2 border border-brand-border dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
             />
+          </div>
+
+          {/* Timings */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-brand-primary dark:text-gray-100">Timings</h2>
+              <button
+                type="button"
+                onClick={addTiming}
+                className="px-4 py-2 bg-brand-primary text-white rounded-lg hover:opacity-90"
+              >
+                Add Timing
+              </button>
+            </div>
+            {data.timings.map((timing, index) => (
+              <div key={index} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_140px_auto] gap-2">
+                <input
+                  type="text"
+                  value={timing.name || ""}
+                  onChange={(e) => updateTiming(index, "name", e.target.value)}
+                  placeholder="e.g., Morning Darshan"
+                  className="px-4 py-2 border border-brand-border dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                />
+                <input
+                  type="text"
+                  value={timing.time || ""}
+                  onChange={(e) => updateTiming(index, "time", e.target.value)}
+                  placeholder="e.g., 6:00 AM – 12:00 PM"
+                  className="px-4 py-2 border border-brand-border dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                />
+                <select
+                  value={timing.type || "Regular"}
+                  onChange={(e) => updateTiming(index, "type", e.target.value)}
+                  className="px-4 py-2 border border-brand-border dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
+                >
+                  {["Regular", "Special", "Seasonal"].map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => removeTiming(index)}
+                  className="px-3 py-2 text-red-600 dark:text-red-400 hover:opacity-75"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
           </div>
 
           {/* Amenities */}

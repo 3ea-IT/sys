@@ -270,7 +270,7 @@ class AirBookingController extends Controller
             'travelers.*.title' => 'nullable|string|max:10',
             'travelers.*.first_name' => 'required|string|max:100',
             'travelers.*.last_name' => 'required|string|max:100',
-            'travelers.*.dob' => 'nullable|date',
+            'travelers.*.dob' => 'nullable|date',   
             'travelers.*.passport_number' => 'nullable|string|max:30',
             'travelers.*.passport_expiry' => 'nullable|date',
             'travelers.*.passport_country' => 'nullable|string|max:60',
