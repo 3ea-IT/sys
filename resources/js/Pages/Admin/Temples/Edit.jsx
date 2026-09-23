@@ -2,9 +2,10 @@ import AdminAppLayout from "@/Layouts/AdminAppLayout";
 import { Link, router, useForm } from "@inertiajs/react";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import ImageSourceInput from "@/Components/ImageSourceInput";
 
 export default function TempleEdit({ temple, crowdLevels = [] }) {
-  const { data, setData, put, errors, processing } = useForm({
+  const { data, setData, post, errors, processing } = useForm({
     name: temple.name || "",
     location: temple.location || "",
     city: temple.city || "",
@@ -15,6 +16,8 @@ export default function TempleEdit({ temple, crowdLevels = [] }) {
     online_booking: !!temple.online_booking,
     booking_url: temple.booking_url || "",
     image: temple.image || "",
+    image_file: null,
+    _method: "put",
     rating: temple.rating ?? 4.5,
     crowd_level: temple.crowd_level || "Moderate",
     has_vip_darshan: !!temple.has_vip_darshan,
@@ -50,7 +53,8 @@ export default function TempleEdit({ temple, crowdLevels = [] }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    put(route("admin.temples.update", temple.id));
+    // POST with _method=put so the image file can be uploaded
+    post(route("admin.temples.update", temple.id));
   };
 
   const addAmenity = () => {
@@ -132,19 +136,6 @@ export default function TempleEdit({ temple, crowdLevels = [] }) {
 
               <div>
                 <label className="block text-sm font-medium text-brand-primary dark:text-gray-200 mb-2">
-                  Image Path
-                </label>
-                <input
-                  type="text"
-                  value={data.image}
-                  onChange={(e) => setData("image", e.target.value)}
-                  className="w-full px-4 py-2 border border-brand-border dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                />
-                {errors.image && <p className="mt-1 text-red-600 text-sm">{errors.image}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-brand-primary dark:text-gray-200 mb-2">
                   Rating (0-5) *
                 </label>
                 <input
@@ -158,6 +149,8 @@ export default function TempleEdit({ temple, crowdLevels = [] }) {
                 />
                 {errors.rating && <p className="mt-1 text-red-600 text-sm">{errors.rating}</p>}
               </div>
+
+              <ImageSourceInput data={data} setData={setData} errors={errors} label="Temple Image" />
             </div>
           </div>
 

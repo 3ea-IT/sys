@@ -2,12 +2,14 @@ import AdminAppLayout from "@/Layouts/AdminAppLayout";
 import { Link, router, useForm } from "@inertiajs/react";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import ImageSourceInput from "@/Components/ImageSourceInput";
 
 export default function TempleCreate({ crowdLevels = [] }) {
   const { data, setData, post, errors, processing } = useForm({
     name: "",
     location: "",
     image: "",
+    image_file: null,
     rating: 4.5,
     crowd_level: "Moderate",
     has_vip_darshan: false,
@@ -108,20 +110,6 @@ export default function TempleCreate({ crowdLevels = [] }) {
 
               <div>
                 <label className="block text-sm font-medium text-brand-primary dark:text-gray-200 mb-2">
-                  Image Path
-                </label>
-                <input
-                  type="text"
-                  value={data.image}
-                  onChange={(e) => setData("image", e.target.value)}
-                  className="w-full px-4 py-2 border border-brand-border dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
-                  placeholder="e.g., /banner/temple-name.jpg"
-                />
-                {errors.image && <p className="mt-1 text-red-600 text-sm">{errors.image}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-brand-primary dark:text-gray-200 mb-2">
                   Rating (0-5) *
                 </label>
                 <input
@@ -135,6 +123,8 @@ export default function TempleCreate({ crowdLevels = [] }) {
                 />
                 {errors.rating && <p className="mt-1 text-red-600 text-sm">{errors.rating}</p>}
               </div>
+
+              <ImageSourceInput data={data} setData={setData} errors={errors} label="Temple Image" />
             </div>
           </div>
 

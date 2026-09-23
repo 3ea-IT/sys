@@ -9,6 +9,8 @@ use Inertia\Inertia;
 
 class TempleController extends Controller
 {
+    private const UPLOAD_DIR = 'banner/temples';
+
     /**
      * Display a listing of temples
      */
@@ -74,7 +76,7 @@ class TempleController extends Controller
      */
     public function store(TempleFormRequest $request)
     {
-        $data = $request->validated();
+        $data = $this->handleImage($request->validated());
 
         Temple::create($data);
 
@@ -157,7 +159,12 @@ class TempleController extends Controller
      */
     public function update(TempleFormRequest $request, Temple $temple)
     {
-        $data = $request->validated();
+        $data = $this->handleImage($request->validated());
+
+        // Remove the previously uploaded file when the image changes
+        if ($temple->image !== $data['image']) {
+            $this->deleteUploadedImage($temple->image);
+        }
 
         $temple->update($data);
 
@@ -170,6 +177,7 @@ class TempleController extends Controller
      */
     public function destroy(Temple $temple)
     {
+        $this->deleteUploadedImage($temple->image);
         $temple->delete();
 
         return redirect()->route('admin.temples.index')
@@ -187,5 +195,36 @@ class TempleController extends Controller
 
         return redirect()->back()
             ->with('success', 'Temple status updated successfully.');
+    }
+
+    /**
+     * Use the uploaded file if present, otherwise keep the image URL/path
+     */
+    private function handleImage(array $data): array
+    {
+        if (request()->hasFile('image_file')) {
+            $file = request()->file('image_file');
+            $filename = time() . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path(self::UPLOAD_DIR), $filename);
+            $data['image'] = '/' . self::UPLOAD_DIR . '/' . $filename;
+        }
+
+        unset($data['image_file']);
+        $data['image'] = $data['image'] ?? null;
+
+        return $data;
+    }
+
+    /**
+     * Delete an image file previously uploaded through the admin panel
+     */
+    private function deleteUploadedImage(?string $image): void
+    {
+        if ($image && str_starts_with($image, '/' . self::UPLOAD_DIR . '/')) {
+            $path = public_path(ltrim($image, '/'));
+            if (file_exists($path)) {
+                unlink($path);
+            }
+        }
     }
 }

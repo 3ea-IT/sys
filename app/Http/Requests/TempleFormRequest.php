@@ -29,7 +29,8 @@ class TempleFormRequest extends FormRequest
             'significance' => 'nullable|string|max:255',
             'online_booking' => 'sometimes|boolean',
             'booking_url' => 'nullable|string|max:500',
-            'image' => 'nullable|string|max:255',
+            'image' => ['nullable', 'string', 'max:255', 'regex:#^(https?://|/)#i'],
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
             'rating' => 'required|numeric|min:0|max:5',
             'crowd_level' => 'required|in:Low,Moderate,High,Very High,Extreme',
             'has_vip_darshan' => 'required|boolean',
@@ -63,6 +64,20 @@ class TempleFormRequest extends FormRequest
             'crowd_level.required' => 'Crowd level is required.',
             'crowd_level.in' => 'Invalid crowd level selected.',
             'has_vip_darshan.required' => 'VIP Darshan option is required.',
+            'image.regex' => 'Image URL must start with http://, https:// or / (e.g. https://example.com/temple.jpg).',
+            'image.max' => 'Image URL is too long (max 255 characters). Try uploading the image instead.',
+            'image_file.image' => 'The uploaded file must be an image.',
+            'image_file.max' => 'The image may not be larger than 5MB.',
         ];
+    }
+
+    /**
+     * Trim the image URL before validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        if (is_string($this->image)) {
+            $this->merge(['image' => trim($this->image)]);
+        }
     }
 }

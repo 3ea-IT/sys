@@ -51,8 +51,8 @@ class Temple extends Model
             return null;
         }
 
-        // If image path starts with /, it's already a public path
-        if (str_starts_with($this->image, '/')) {
+        // External URLs and public paths are used as-is
+        if (preg_match('#^(https?:)?//#i', $this->image) || str_starts_with($this->image, '/')) {
             return $this->image;
         }
 
