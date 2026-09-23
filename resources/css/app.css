@@ -20,14 +20,27 @@
 
 /* Dark Mode Styles */
 @layer base {
-  @media (prefers-color-scheme: dark) {
-    :root {
-      color-scheme: dark;
-    }
+  /* The theme is driven by the `dark` class on <html> (see ThemeContext),
+     which already seeds itself from the OS preference. Letting the OS set
+     color-scheme independently meant a light-mode page on a dark-mode OS
+     got the browser's dark UA defaults: form controls inherit their text
+     colour, so they rendered white on the white background that
+     @tailwindcss/forms gives them. color-scheme has to follow the class. */
+  :root {
+    color-scheme: light;
   }
 
   .dark {
     color-scheme: dark;
+  }
+
+  /* Form controls inherit their colour, so pin it instead of depending on
+     whatever the UA stylesheet decides. Kept at element specificity so any
+     text-* utility on the control still wins. */
+  input,
+  textarea,
+  select {
+    color: rgb(var(--color-brand-primary));
   }
 }
 
